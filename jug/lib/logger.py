@@ -109,6 +109,8 @@ logger.info('======== logger started ========')
 # logger.warning()
 # logger.error()
 # logger.critical()
+# Logger.log("info", "message")
 
 # Special exception logger; shorthand;
 # logger.exception(f"config.toml Load Error: {e}")
+
