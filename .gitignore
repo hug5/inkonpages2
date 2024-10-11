@@ -1,5 +1,4 @@
 **/conf.d/*
 **/conf/*
   # the ** seems to denote any directory; just doing * doesn't work
-**/__pycache__
 *.scss

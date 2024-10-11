@@ -29,7 +29,6 @@ class RouterCtl():
 
         self.jug = Flask(
             __name__,
-            # template_folder="jug/html"
             template_folder=dir_html,
         )
 
@@ -82,29 +81,29 @@ class RouterCtl():
 
 
 
-    # def doCommon(self):
-    #     from jug.control import headerCtl
-    #     from jug.control import footerCtl
+    def doCommon(self):
+        from jug.control import headerCtl
+        from jug.control import footerCtl
 
-    #     logger.info('DoCommon')
+        logger.info('DoCommon')
 
-    #     def doHeader():
-    #         obj = headerCtl.HeaderCtl()
-    #         self.header = obj.doStart()
+        def doHeader():
+            obj = headerCtl.HeaderCtl()
+            self.header = obj.doStart()
 
-    #     def doFooter():
-    #         obj = footerCtl.FooterCtl()
-    #         self.footer = obj.doStart()
+        def doFooter():
+            obj = footerCtl.FooterCtl()
+            self.footer = obj.doStart()
 
-    #     def doLogo():
-    #         self.logo = render_template(
-    #             "logo.jinja"
-    #         )
+        def doLogo():
+            self.logo = render_template(
+                "logo.jinja"
+            )
 
-    #     doHeader()
-    #     doFooter()
-    #     doLogo()
-    #     # pass
+        doHeader()
+        doFooter()
+        doLogo()
+        # pass
 
     # def doDb(self):
 

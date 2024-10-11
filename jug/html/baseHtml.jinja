@@ -1,0 +1,49 @@
+{# -----------------------------------------------}
+
+{------------------------------------------------#}
+
+<!doctype html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=2"/>
+  <meta name="keywords" content="{{keywords}}" />
+  <title>{{title}}</title>
+
+  <link rel="shortcut icon" href="/static/img/favicon.ico"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Happy+Monkey&family=IM+Fell+DW+Pica:ital@0;1&family=Marmelad&family=Varela+Round&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script src="/static/js/script.js"></script>
+
+  <link rel="stylesheet" href="/static/css/style.min.css" type="text/css" />
+
+
+
+</head>
+<html>
+<body>
+    <div id="pageDiv">
+        {% block header %}{% endblock %}
+
+        <div id="mainDiv" class="flexBox">
+            <div class="flexCol_L"></div>
+            <div class="flexCol_C">
+                <section id="contentSection">
+                    {% block article %}{% endblock %}
+                </section>
+            </div>
+            <div class="flexCol_R"></div>
+        </div>
+        {% block footer %}{% endblock %}
+    </div>
+</body>
+</html>
+
+
+
+
+
