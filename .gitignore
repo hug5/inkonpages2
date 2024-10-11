@@ -1,4 +1,4 @@
-**/conf.d/*
-**/conf/*
+#**/conf.d/*
+#**/conf/*
   # the ** seems to denote any directory; just doing * doesn't work
 *.scss

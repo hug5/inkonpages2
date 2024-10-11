@@ -9,8 +9,8 @@ from flask import Flask, \
 import tomli
 # from jug.dbo import dbc
 # from jug.lib.f import F
-# from jug.lib.g import G
-# from pathlib  import Path
+from jug.lib.g import G
+from pathlib import Path
 # import re
 
 
@@ -81,6 +81,7 @@ class RouterCtl():
         finally:
             # logger.info(f'weatherAPI_key: {G["weatherAPI_key"]}')
             # logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
+            pass
 
 
 
@@ -116,10 +117,10 @@ class RouterCtl():
 
         pageHtml = render_template(
             "pageHtml.jinja",
-            title = "what",
-            header = "header",
+            title = site_title,
+            header = self.header,
             article = self.article,
-            footer = "footer",
+            footer = self.footer,
         )
 
         # return F.stripJinjaWhiteSpace(pageHtml)

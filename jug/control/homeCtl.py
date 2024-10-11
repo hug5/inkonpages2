@@ -5,7 +5,7 @@ from jug.lib.logger import logger
 from flask import render_template
 # from jug.lib.f import F
 # import random
-# from jug.lib.g import G
+from jug.lib.g import G
 
 
 class HomeCtl():
@@ -19,14 +19,14 @@ class HomeCtl():
 
     def doConfig(self):
 
-        # self.config = {
-        #     'site_title' : f"{G.site['name']} | {G.site['tagline']}"
-        # }
-        pass
+        self.config = {
+            # 'site_title' : f"{G.site['name']} | {G.site['tagline']}"
+            'site_title' : f"{G.site['name']}"
+        }
 
     def doHome(self):
 
-        # self.doConfig()
+        self.doConfig()
 
         return render_template(
             "homeHtml.jinja",
