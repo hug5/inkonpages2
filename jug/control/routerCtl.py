@@ -37,7 +37,6 @@ class RouterCtl():
         self.article = ''
         self.header = ''
         self.footer = ''
-        self.logo = ''
 
         # self.doConfig_toml()
 
@@ -81,29 +80,25 @@ class RouterCtl():
 
 
 
-    def doCommon(self):
-        from jug.control import headerCtl
-        from jug.control import footerCtl
+    # def doCommon(self):
+    #     from jug.control import headerCtl
+    #     from jug.control import footerCtl
 
-        logger.info('DoCommon')
+    #     logger.info('DoCommon')
 
-        def doHeader():
-            obj = headerCtl.HeaderCtl()
-            self.header = obj.doStart()
+    #     def doHeader():
+    #         obj = headerCtl.HeaderCtl()
+    #         self.header = obj.doStart()
 
-        def doFooter():
-            obj = footerCtl.FooterCtl()
-            self.footer = obj.doStart()
+    #     def doFooter():
+    #         obj = footerCtl.FooterCtl()
+    #         self.footer = obj.doStart()
 
-        def doLogo():
-            self.logo = render_template(
-                "logo.jinja"
-            )
+    #     doHeader()
+    #     doFooter()
 
-        doHeader()
-        doFooter()
-        doLogo()
-        # pass
+    #     # pass
+
 
     # def doDb(self):
 
@@ -140,31 +135,36 @@ class RouterCtl():
 
 
 
-    # def doHome(self):
-    #     from jug.control import homeCtl
+    def doHome(self):
+        from jug.control import homeCtl
 
-    #     logger.info('DoHome')
-    #     # F.uwsgi_log("doHome")
+        logger.info('DoHome')
+        # F.uwsgi_log("doHome")
 
-    #     # dbc = self.doDb()
-    #     # F.uwsgi_log("post-dbc")
+        # dbc = self.doDb()
+        # F.uwsgi_log("post-dbc")
 
-    #     self.doCommon()
+        # self.doCommon()
 
-    #     homeO = homeCtl.HomeCtl()
-    #     self.article = homeO.doStart()
-    #     site_title = homeO.getConfig()["site_title"]
+        homeO = homeCtl.HomeCtl()
+        self.article = homeO.doStart()
+        # site_title = homeO.getConfig()["site_title"]
 
-    #     pageHtml = render_template(
-    #         "pageHtml.jinja",
-    #         title = site_title,
-    #         header = self.header,
-    #         article = self.article,
-    #         footer = self.footer,
-    #         # db = dbc
-    #     )
+        pageHtml = render_template(
+            "pageHtml.jinja",
+            title = "what",
+            header = "header",
+            article = self.article,
+            footer = "footer",
+            # db = dbc
+        )
 
-    #     return F.stripJinjaWhiteSpace(pageHtml) + self.logo
+        return pageHtml
+        # return F.stripJinjaWhiteSpace(pageHtml)
+
+
+
+
 
 
     # def doSomePathUrl(self, url):
@@ -342,27 +342,22 @@ class RouterCtl():
     #     # logger.debug, logger.info, logger.warning, logger.error, logger.critical
 
 
-    # def checkTrailingQuestion(self):
+    def checkTrailingQuestion(self):
 
-    #     # check for /?/ and /??+ path (2 or more question marks);
-    #     ch_qmark = request.full_path
-    #     if ch_qmark == "/?/" or ch_qmark.find("/??") >= 0 :
-    #         return False # Not okay; redirect
+        # check for /?/ and /??+ path (2 or more question marks);
+        ch_qmark = request.full_path
+        if ch_qmark == "/?/" or ch_qmark.find("/??") >= 0 :
+            return False # Not okay; redirect
 
-    #     return True # okay
+        return True # okay
 
 
     def doRoute(self):
 
-        # # self.doCommon()
+        # self.doCommon()
         # @self.jug.before_request
         # def before_request_route():
-        #     # Shared logic to log the request before processing
-        #     # print(f"Request received: {request.method} {request.url}")
-        #     logger.info("---route_common Yay!")
-        #     # logger.error("---UH")
-        #     self.doRequestUrl()
-        #     # if self.checkTrailingQuestion() == False:
+        #     # logger.info("---route_common Yay!")
         #     if not self.checkTrailingQuestion():
         #         rpath = request.base_url
         #         return redirect(rpath, code=301)
@@ -370,10 +365,9 @@ class RouterCtl():
 
         @self.jug.route("/")
         def home():
-            logger.info("---in home")
-            return "hello flask"
-
-            # return self.doHome()
+            # logger.info("---in home")
+            # return "hello"
+            return self.doHome()
 
 
 

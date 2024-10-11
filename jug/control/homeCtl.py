@@ -4,11 +4,7 @@ from jug.lib.logger import logger
 
 from flask import render_template
 from jug.lib.f import F
-from jug.dbo import homeDb
-from jug.lib import news_scrape
-# from jug.start import jug
 import random
-from jug.lib import weather_api
 from jug.lib.g import G
 
 
