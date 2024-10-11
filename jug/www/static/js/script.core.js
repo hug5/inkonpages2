@@ -1,4 +1,4 @@
-//xxx@xxkoala-prepend "lib.pre.js"
+
 import { G, lib } from "./script.lib.js";
 // import "./script.lib.js";
 // import * as script_libx from "./script.lib.js";
@@ -90,7 +90,7 @@ function doDelayload() {
        var loadApngImg = setTimeout(function() {
            //after 1sec, preload the new apng into image object
            var newImg = new Image();
-           newImg.src = "/spub/images/victory-web-press.apng";
+           newImg.src = "/static/img/victory-web-press.apng";
 
            //#2 timed event
            var replaceWithApngImg = setTimeout(function() {

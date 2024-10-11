@@ -1,0 +1,75 @@
+
+@media screen and (min-width: 971px) {
+
+}
+
+
+
+@media screen and (max-width: 800px) {
+
+    #bookSection{
+        #bookIntroArticle{
+            figure#cover_btn{
+                max-width:unset;
+            }
+            #printParentSection{
+                // min-width:unset; //300px;
+            }
+        }
+    }
+
+
+}
+
+
+@media screen and (max-width: 450px) {
+
+    #pageDiv{
+        #mainDiv{
+            //display:inline;
+            #flexCol_L, #flexCol_R{
+                // flex-basis:0px;   //sets the initial main size of a flex item
+                // flex-shrink: 4;    //doesn't seem to make any difference
+                // border:1px solid;
+                // width:20px;
+                // background-color:#6C6C6C;
+                // width:0px;  //this doesn't work!!
+                display:none; //there should be a way to just make the columns very thin
+                // border:1px solid;
+            }
+
+        }
+    }//pageDiv
+
+    #greetingDiv{
+        display:none;
+    }
+
+    #homeSection{
+
+        padding:20px;
+        padding-top:50px;
+        overflow:hidden;
+        // $fontsize: 28px;
+
+
+        #homeArticle{
+            padding-left:5px;
+            padding-right:5px;
+
+            p{
+                font-size:32px;
+
+            }
+
+
+        }
+    }//homesection
+
+    #contactSection{
+        #contactArticle{
+            padding:5px;
+            padding-right:20px;
+        }
+    }
+}

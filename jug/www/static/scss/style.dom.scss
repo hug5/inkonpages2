@@ -1,0 +1,898 @@
+// @import url('https://fonts.googleapis.com/css?family=Marmelad|Varela+Round|Work+Sans:200|Happy+Monkey|IM+Fell+DW+Pica');
+
+// @import "style.common.scss";
+
+
+//https://developer.mozilla.org/en-US/docs/Web/CSS/transform
+// transform: rotate(0.5turn);
+
+body, #pageDiv{
+//this is for background image stuff; in order to do a smooth transition from jpg to apng, I'm using
+//the body bg first; then replacing with #pageDiv background over it; if I just try to replace the body gb,
+//there's a jerky effect; not sure how to fix that; the tricky thing here is to make sure the #pageDiv and body
+//overlap completely;
+
+    //home page gets the background only through js
+    // background-image: url("/spub/images/victory-web-press.jpg");
+    background-size: cover;
+    background-repeat: repeat-y;
+    // background-color: #F0F0F0;
+    background-position: 0 45px; //this leaves a gap on top; with repeat-y, the bottom image shows on top strangely;
+
+    height: 100vh;
+    width: 100%;
+    // overflow:auto; //strange that this "fixes" the background image
+}
+
+
+body{
+
+    // font-family: 'Varela Round', sans-serif;
+    // font-family: 'Marmelad', sans-serif;
+    // font-family: 'Happy Monkey', sans-serif;
+    // font-family: 'IM Fell DW Pica', serif;
+    font-family: 'Work Sans', sans-serif;
+
+    #pageDiv{
+        //background-image: none; //initially set to none; then js will put in apng image
+        // border:1px solid #ADADAD;
+        //NOTE##: pageDiv is not doing 100vh; shorter than body; why? Strange mystery!!
+        //height: 100vh;
+        // height:100%;
+
+        #header{
+            float:left;
+            overflow:hidden;
+            position:fixed;
+            width:100%;
+            // height:45px;
+            // border-bottom: 1px solid #EFEFEF;
+            z-index:9999; //not sure why the rank cells have higher z-index
+            // background-color:inherit;
+            background-color:#F9F4DD;
+            background-color:#373737;
+            background-color:rgba(5, 27, 50, .7);
+            // opacity:.8;
+
+            #logoDiv {
+                float:left;
+                margin-top:7px;
+                margin-left:20px;
+                margin-bottom: 4px;
+                overflow: auto;
+                cursor: pointer;
+
+                #site_logo, img {
+                    $dx: 30px;
+                    width:$dx;
+                    height:$dx;
+
+                    // Koala is not converting below to base64; just leaving css as is
+                    // background-image: url(/spub/images/siteLogo.png?base64);
+                    // background-repeat: no-repeat;
+                    // background: url(/spub/images/siteLogo.png?base64) no-repeat;
+
+                }
+
+            }
+
+            #greetingDiv{
+                //font-family: 'Work Sans', sans-serif;
+
+                font-family: 'Happy Monkey', sans-serif;
+                // font-weight:500;
+
+                // border:1px solid;
+                float:left;
+                // margin-left:8px;
+                // margin-top:12px;
+
+                margin-left:10px;
+                margin-top:10px;
+                // margin-bottom:5px;
+                span{
+                    color:#FFF;
+                    font-weight:500;
+                    font-size:18px;
+
+                }
+            }
+
+            #menuButtonDiv{
+                float:right;
+                margin-right:20px;
+                // text-align:center;
+                margin-top:5px;
+
+                div{
+                    float:left;
+                    margin-left:10px;
+                }
+
+                img {
+                    $dx: 35px;
+                    width:$dx;
+                    height:$dx;
+                }
+
+
+            }
+
+        } //header
+
+
+        #mainDiv.flexBox{
+
+            min-height:100%; //to make sure footer is at bottom
+
+            // border:1px solid #000;
+
+            // padding:20px;
+            // padding-bottom:0;
+            padding-top:40px;
+            padding-bottom:0;
+
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+
+
+                // #flexCol_L, #flexCol_R, #contentSection{
+                #flexCol_L, #flexCol_R, #flexCol_C{
+                    flex-grow: 1;
+                    flex-shrink: 1;
+                    flex-basis:50px; //sets the initial main size of a flex item
+                    flex-basis:5px;   //sets the initial main size of a flex item
+                    // border-right:1px solid #D8D7CF;
+                    // NOTE: will have to set this to 50px; then switch to 5px when smaller
+                    // border:1px solid #5B2020;
+
+                }
+
+                // #contentSection {
+                #flexCol_C {
+                    border:1px solid #FDD0E1;
+                    // background-color:#DEA929;
+                    flex-grow: 4;
+                    flex-basis:400px;
+                    flex-basis:650px;
+                    overflow:hidden;
+                    min-width:200px;
+
+                    //#sidebar, if any, would go here {}
+                    //#homeSection, #bookSection, etc.
+                }
+
+                .addthis_inline_share_toolbox{
+                    // border:1px solid #DBDBDB;
+                    float:right;
+                    width:100%;
+                    text-align: right;
+                    position:relative; top: 10px;
+
+
+                }
+
+                #contentSection {
+                    // border:1px solid #AC0250;
+                    clear:both;
+                    overflow:hidden;
+
+                }
+
+        } //mainDiv
+
+        #footer{
+            overflow:hidden;
+            width:100%;
+            // background-color:rgba(55, 55, 55, .95);
+
+            // border:1px solid #000;
+
+            #footerTagline{
+                font-size:15px;
+                float:left;
+                margin-left:20px;
+                padding-bottom:10px;
+
+                span {
+
+                    font-weight:500;
+                    margin-left:10px;
+                    float:left;
+                    font-family: 'Work Sans', sans-serif;
+                    font-weight:400;
+
+                    opacity: .7;
+                    // background-color: #E5E5E5;
+                    padding:5px 15px; //top/bottom, left/right
+
+                    a{
+                        color:#000;
+                    }
+
+                }
+            }
+
+        }
+
+    } //pageDiv
+
+} //end body
+
+
+
+// ------ Goes under #contentSection -----------
+
+
+#homeSection{
+
+    padding:20px;
+    padding-top:50px;
+    overflow:hidden;
+    // $fontsize: 28px;
+
+    #homeArticle{
+
+
+        //inkonpages Press title
+        h1{
+
+            font-family: 'IM Fell DW Pica', serif;
+
+            font-size: 52px;
+            font-weight: 700;
+            color: rgba(0, 0, 0, .7);
+
+            background-color: rgba(247, 247, 247, .6);
+            // box-shadow: 4px 4px 2px #292929;
+            box-shadow: 3px 3px 1px #9A9A9A;
+            // border:1px solid rgba(154, 154, 154, .8);
+
+            padding: 20px;
+
+            padding-left: 40px;
+            padding-right: 40px;
+
+            float: left;
+            clear: both;
+            border-radius: 5px;
+
+
+
+        }
+
+        #containerDiv{
+
+            overflow:hidden;
+            float:left;
+            clear:left;
+            margin-top:50px;
+            margin-bottom:200px;
+            width:100%;
+
+            #bestsellerSection{
+                float:left;
+                overflow:hidden;
+                // margin-left:30px;
+                // margin-top:250px;
+                font-size:30px;
+
+                // background-color: rgba(247, 247, 247, .9);
+                // background-color: rgba(41, 128, 214, .8);
+                background-color:rgba(5, 27, 50, .7);
+                font-weight:500;
+
+                font-family: 'Work Sans', sans-serif;
+
+                // box-shadow: 3px 3px 1px #9A9A9A;
+
+                padding: 10px;
+                padding-left: 40px;
+                padding-right: 40px;
+                border-radius: 5px;
+                // border-radius: 70px;
+
+
+                #bestsellerDiv a{
+                    color:#8E2F06;
+                    color:#002851;
+                    color:#FFF;
+
+                }
+                #dateDiv{
+                    font-size:24px;
+                    color:#FFF;
+
+                }
+            }
+
+            #swinesImgDiv{
+                padding: 0px;
+                float: left;
+                clear:left;
+                margin-top:30px;
+
+                // margin-left:100px;
+                // margin-bottom:20px;
+
+
+  // border:1px solid;
+
+                img{
+
+// position:relative;
+//   perspective: 1800px;
+//   backface-visibility: visible;
+//   perspective-origin: 150% 150%;
+//   transform-style: preserve-3d;
+//   transform: skew(-1deg, -1deg);
+
+                    width: 300px;
+                    max-width:100%;
+                    /* h-offset, v-offset, blur, spread, color */
+                    // box-shadow: 3px 3px 7px 5px #FBFBFB;
+                    box-shadow: 7px 7px 7px #292929;
+                    opacity:.8;
+
+
+                }
+            }
+
+
+
+        }//containerDiv
+
+        #inTheNewsSection{
+
+            // margin-top:200px; //not sure why this doesn't seem to work
+            background-color:rgba(5, 27, 50, .6);
+
+            // text-align:center;
+            overflow:hidden;
+            clear:both;
+            // border:1px solid;
+            width:100%;
+
+            #inTheNewsHeaderDiv{
+                font-family: 'IM Fell DW Pica', serif;
+                font-family: 'Work Sans', sans-serif;
+
+                background-color:rgba(5, 27, 50, .7);
+                background-color:rgba(5, 27, 50, .9);
+                color:#FFF;
+                text-align:center;
+                padding:20px;
+                padding-left: 40px;
+                padding-right: 40px;
+
+                width:100%;
+                font-size:32px;
+                // font-weight:700;
+                // border-bottom:1px solid #616161;
+
+            }
+
+            .inTheNewsItem{
+                margin-top:70px;
+                overflow:hidden;
+                // margin-left:auto;
+                // margin-right:auto;
+                padding:30px;
+                background-color:rgba(5, 27, 50, .9);
+                background-color:#E9E9E9;
+                background-color:rgba(233, 233, 233, .7);
+                // text-align:center;
+                // float:left;
+                // clear:left;
+                // width:500px;
+                // width:100%;
+            }
+        }//inTheNewsSection
+
+    }//homeArticle
+}//homeSection
+
+#rankSection{
+
+    overflow:hidden;
+    // $fontsize: 28px;
+    font-size:18px;
+
+
+    #rankArticle{
+        overflow:hidden;
+        padding-top:30px;
+        padding-bottom:100px;
+        //also need some padding when cells are moved randomly
+        padding-left:15px;
+        padding-right:10px;
+        // max-width:550px;
+        // background: linear-gradient(to bottom, rgba(255,255,255,.8) 80%, rgba(255,255,255,.4));
+
+        //page tite
+        h1{
+            text-align:center;
+            font-size:32px;
+            // margin-left:10px;
+        }
+
+        //date
+        h2{
+            text-align:center;
+            font-size:24px;
+            font-family: 'Work Sans', sans-serif;
+
+        }
+        //bestseller tagline
+        h3{
+            font-size:14px;
+            font-size:16px;
+            text-align:center;
+            // font-family: 'Work Sans', sans-serif;
+            font-family: 'IM Fell DW Pica', serif;
+            font-weight:500;
+            max-width:700px;
+            margin-left:auto;
+            margin-right:auto;
+            margin-bottom:20px;
+            margin-top:5px;
+            color:#676652;
+        }
+
+        #categoryTabDiv{
+            text-align:center;
+            margin-bottom:30px;
+            margin-top:20px;
+            padding-top:20px;
+            border-top:1px solid #E0E0DA;
+
+            #fictionTabDiv, #nonfictionTabDiv, #alltimeTabDiv{
+                border:1px solid #363636;
+                padding:8px;
+                margin-left:10px;
+                width:200px;
+                display:inline-block;
+                text-align:center;
+                margin-bottom:3px;
+                font-weight:700;
+
+            }
+
+            // toggle active/inactive or selected/notselected fiction/nonfictino tabs
+            // .inactivecattab{
+            // }
+            .selectedtab{
+                // background-color:#004F9D;
+                background-color:rgba(5, 27, 50, .85);
+                color:#FFF;
+            }
+
+        }
+
+        .bookcellDiv{
+            // position:relative;
+            float:left;
+            // width:220px;
+            height:390px;
+            // border:1px solid #EAEAEA;
+            // font-weight:700;
+            // border:1px solid #B7B7B7;
+            // margin-bottom:10px;
+            // margin-left:2px;
+
+            .bookcellInnerDiv:hover{
+                cursor:pointer;
+                transform: rotate(.5deg); //this makes the font go unbold, why??
+                // transform: rotate3d(2, 2, 1deg);
+
+            }
+
+            .bookcellInnerDiv{
+                // z-index:auto;
+                background-color:#FFF;
+                margin:5px;
+                border:1px solid #B7B7B7;
+                border-radius:10px;
+                padding:5px;
+                padding-bottom:10px;
+                width:180px;
+
+
+
+                .rankDiv{
+                    // float:left;
+                    // border:1px solid #000;
+                    margin-right:10px;
+                    padding:5px;
+                    padding-top:0px;
+                    border-radius:10px;
+                    // background-color:#FBFBFB;
+                    text-align:center;
+                    font-weight:700;
+                    font-family: 'Marmelad', sans-serif;
+                }
+
+
+                figure:hover{
+                    cursor:pointer;
+                }
+                figure{
+                    clear:left;
+                    // border:1px solid;
+                    text-align:center;
+                    margin-top:0px;
+                    margin-bottom:10px;
+
+                    a{
+
+                        img{
+                            width:150px;
+                            border:1px solid #B4B3A0;
+                        }
+                    }
+                }
+                .textboxDiv{
+                    text-align:center;
+                    .titleDiv{
+                        font-size:20px;
+                        font-size:18px;
+                        // margin-bottom:3px;
+                        a{
+
+                            // font-family: 'Work Sans', sans-serif;
+                            // font-family: 'Marmelad', sans-serif;
+                            font-family: 'Varela Round', sans-serif;
+                            color:#002953;
+                            font-weight:700; //important doesn't work when transform rotate!
+
+                        }
+                    }
+                    .authorDiv{
+                        //it seems to be the nature of the font that when it rotates, the bold disappears
+                        // font-family: sans-serif;
+                        font-size:15px;
+                        font-weight:700;//important doesn't work when transform rotat
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+
+#contactSection{
+
+    //TODO:: Need to set up a default size font and family;
+    font-family: 'Varela Round', sans-serif;
+    padding:20px;
+    padding-top:30px;
+    font-size:24px;
+
+    #contactArticle{
+        margin-left:auto;
+        margin-right:auto;
+        overflow:hidden;
+        max-width:600px;
+        h1 {
+            margin-top:40px;
+            margin-bottom:20px;
+        }
+
+        p{
+            background-color:rgba(255, 255, 255, .85);
+            float:left;
+            padding:5px;
+        }
+
+        #textSection{
+            margin-top:20px;
+            padding:30px;
+            padding-left:0px;
+
+            p{
+                clear:left;
+            }
+
+            p#emaillink{
+                margin-top:10px;
+                font-weight:700;
+                a{
+                    font-weight:500;
+                }
+            }
+
+            p:nth-child(3){
+                margin-top:20px;
+                //Or Message me using the form below:;
+            }
+        }
+
+        #formSection{
+            clear:left;
+            float:left;
+            margin-top:30px;
+            margin-bottom:50px;
+            max-width:100%;
+            overflow:hidden;
+
+            p{
+                //Your message was sent!
+                display:none;
+            }
+
+            #msgForm{
+                padding:5px;
+                overflow:hidden;
+                max-width:100%;
+                clear:left;
+
+                // margin-top:10px; //seems this screws up width because of p above?
+
+                input, #msgField{
+                    clear:left;
+                    float:left;
+                    width:500px;
+                }
+                #nameField{}
+                #emailField{}
+                #msgField{
+                    height:200px;
+                }
+
+                #sendBtn.fBtn{
+                    clear:left;
+                    // width:500px;
+                }
+
+
+            }
+        }
+
+    }
+
+
+
+
+} //contactSection
+
+
+#bookSection{
+    // background-color:#F2F2F2;
+    // width:100%;
+    // height: 100vh;
+    // border:1px solid;
+
+    //set transparancy for background only, but not children
+    background-color:rgba(255, 255, 255, .85);
+
+    // padding:30px;
+    // border-radius:10px;
+
+    /*
+    font-family: 'Nanum Gothic', sans-serif;
+    font-family: 'Marmelad', sans-serif;
+    font-family: 'Acme', sans-serif;
+    */
+
+    font-family: 'Varela Round', sans-serif;
+
+    font-size:18px;
+
+    /*height: 100vh;
+    width: 100;*/
+
+    padding-bottom:50px;
+
+    #bookChapterArticle{
+
+        background-color:rgba(255, 255, 255, .50);
+        padding:30px;
+        // border-radius:10px;
+        // border:1px solid;
+        //background: linear-gradient(to right, #FFF 95%, rgba(255,255,255,0));
+
+        #printParentSection{
+
+            //min-width:400px;
+            overflow:hidden;
+            // float:left;
+            // border:1px solid;
+
+
+            //book title
+            h4{
+                font-size:34px;
+                font-weight:500;
+                a{
+                    color:#000;
+                }
+            }
+
+            //book blurb
+            h5{
+                font-size:28px;
+                a{
+                    color:#000;
+                }
+            }
+
+            //author
+            h6{
+                font-size:22px;
+            }
+
+            nav{
+                text-align:center;
+                div{
+                    margin-right:15px;
+                    margin-left:15px;
+                    display:inline-block;
+                }
+            }
+
+            #printSection {
+                text-align: justify;
+                text-justify: inter-word;
+                // border:1px solid;
+
+                //chapter number
+                h2{
+                    text-align:center;
+                    font-size:28px;
+                }
+
+                //chapter title
+                h1{
+                    text-align:center;
+                    font-size:44px;
+                    font-weight:700;
+
+                }
+                //blurb
+                h3{
+                    text-align:right;
+                    font-style:italic;
+                    margin-right:10px;
+
+                }
+                figure{
+                    text-align:center;
+                    // max-width:100%;
+                    img{
+                        //width:500px;
+                        //max-height:333px;
+                        max-width:100%;
+                        //height: auto;
+
+                    }
+                }
+
+                .section_break{
+                    text-align:center;
+                    display:block;
+                    font-weight:700;
+                }
+            }
+        }
+    }
+
+    #bookIntroArticle{
+
+        figure#cover_btn{
+            overflow:hidden;
+            float:left;
+            margin-right:30px;
+            margin-top:20px;
+            max-width:40%;
+
+            #front_cover{
+                float:left;
+                margin-top:10px;
+                max-width:300px;
+                img{
+                    width:300px;
+                    max-width:100%;
+                }
+
+            }
+            #amzn_btn{
+                clear:left;
+                margin-top:10px;
+                // margin-left:40px;
+                margin-bottom:50px;
+                margin-left:auto;
+                margin-right:auto;
+                max-width:100%;
+                text-align:center;
+                img{
+                    max-width:100%;
+
+                }
+
+            }
+
+        }
+
+
+
+        #printParentSection{
+
+            min-width:300px;
+            overflow:hidden;
+            // float:left;
+            // border:1px solid;
+            padding-right:30px;
+            padding-top:20px;
+
+            //book title
+            h1 {
+                font-size:52px;
+                font-weight:700;
+            }
+            //blurb
+            h2 {
+                font-size:24px;
+                color:#004262;
+            }
+            //author
+            h3 {
+                font-size:24px;
+                color:#4F4F4F;
+            }
+
+
+            #printSection {
+                margin-top:20px;
+                // float:left;
+                // border:1px solid;
+
+                text-align: justify;
+                text-justify: inter-word;
+
+            }
+
+            #TOC_navigation{
+                margin-top:20px;
+                // border:1px solid;
+                overflow:hidden;
+
+                h3{
+                    font-size:22px;
+                    border:1px solid #C4E1FF;
+                    background-color:#C4E1FF;
+                    padding:5px;
+                    border-radius:5px;
+                    float:left;
+                    margin-bottom:20px;
+
+                }
+                h4{
+                    font-size:22px;
+                    margin-top:30px;
+                    font-size:20;
+                    clear:left;
+                    border-bottom:1px solid;
+                    float:left;
+
+                }
+
+                ul{
+                    margin-top:10px;
+                    float:left;
+                    clear:left;
+
+                    li{
+                        margin-bottom:5px;
+                    }
+                }
+
+            }
+        }
+
+    }
+
+
+
+} //booksection

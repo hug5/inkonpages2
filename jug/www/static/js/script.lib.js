@@ -670,5 +670,6 @@
     // export var G = {...
     // or this below:
     export { G, lib };
+    // export { G };
 
     // Variables and functions must be exported if it wants to be imported

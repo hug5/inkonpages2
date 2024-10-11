@@ -17,9 +17,9 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <script src="/static/js/script.core.js"></script>
+  <script type="module" src="/static/js/script.core.js"></script>
 
-  <link rel="stylesheet" href="/static/css/style.min.css" type="text/css" />
+  <link rel="stylesheet" href="/static/css/style.min2.css" type="text/css" />
 
 </head>
 <html>
@@ -28,13 +28,13 @@
         {% block header %}{% endblock %}
 
         <div id="mainDiv" class="flexBox">
-            <div class="flexCol_L"></div>
-            <div class="flexCol_C">
+            <div id="flexCol_L"></div>
+            <div id="flexCol_C">
                 <section id="contentSection">
                     {% block article %}{% endblock %}
                 </section>
             </div>
-            <div class="flexCol_R"></div>
+            <div id="flexCol_R"></div>
         </div>
         {% block footer %}{% endblock %}
     </div>

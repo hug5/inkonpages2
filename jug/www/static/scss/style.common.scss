@@ -1,0 +1,110 @@
+/* .............. Commons Area ............................. */
+*{
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    margin-top: 0em;
+    margin-bottom: 0em;
+}
+
+a{
+    color:#00486A;
+    text-decoration: none;
+    &:hover{
+
+    }
+}
+
+
+h1, h2, h3{
+    font-weight:700;
+    line-height: 1;
+    margin-top:10px;
+    margin-bottom:10px;
+
+}
+
+h1{
+    font-size:52px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+h2{
+    font-size:24px;
+    // margin-top:5px;
+    // margin-bottom:5px;
+}
+h3{
+    font-size:18px;
+    // margin-top:5px;
+    // margin-bottom:5px;
+}
+
+
+input,
+textarea {
+    resize: none;
+    border: 1px solid #B7B7B7;
+    font-family:inherit;
+    font-size:18px;
+    padding:10px;
+    padding-top:11px;
+    // background-color:#E9E9E9;
+    margin-bottom:5px;
+    max-width:100%;
+    box-sizing:border-box;
+
+    &:focus{
+        box-shadow: 0 0 2px 2px #F4F4D7;
+    }
+
+}
+
+
+.error {
+    // box-shadow: 0 0 1px 1px #EA0000;
+    // border:1px solid #B50904;
+    box-shadow: 0px 0px 2px 2px #B50904;
+}
+
+
+
+/* Common buttons */
+
+.fBtn {
+        text-align:center;
+        font-size:18px;
+        font-family:inherit;
+        padding:10px;
+        border-radius:0;
+
+        //blue theme
+        // color:rgba(255, 255, 151, .8); //yellow
+        color:rgba(255, 255, 255, 1); //white
+
+        border: 1px solid #003366;
+        background-color:#002D59;
+
+        max-width:100%;
+        clear:left;
+        box-sizing:border-box;
+
+        &:hover{
+            cursor:pointer;
+            background-color:rgba(0, 45, 89, .9);
+        }
+        &:focus{}
+        &:active{
+            background-color:rgba(0, 45, 89, .8);
+        }
+}
+
+
+.disabled{
+    opacity:.2;
+    &:hover{
+        cursor:not-allowed;
+    }
+}
