@@ -18,6 +18,8 @@ class G():
     api = {}
     site = {}
 
+    contact = {}
+
 
 # Problem with this format is that access is verbose;
 # Have to do: G["db]["un"]

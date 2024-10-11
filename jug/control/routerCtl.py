@@ -6,11 +6,11 @@ from flask import Flask, \
                   redirect, \
                   request
 
+import tomli
 # from jug.dbo import dbc
 # from jug.lib.f import F
 # from jug.lib.g import G
 # from pathlib  import Path
-# import tomli
 # import re
 
 
@@ -38,117 +38,81 @@ class RouterCtl():
         self.header = ''
         self.footer = ''
 
-        # self.doConfig_toml()
+        self.doConfig_toml()
 
-    # def doConfig_toml(self):
-    #     try:
+    def doConfig_toml(self):
+        try:
 
-    #         config_toml_path = Path("jug/conf/config.toml")
-    #         if not Path(config_toml_path).is_file():
-    #             raise FileNotFoundError(f"File Not Found: {config_toml_path}.")
+            config_toml_path = Path("jug/conf/config.toml")
+            if not Path(config_toml_path).is_file():
+                raise FileNotFoundError(f"File Not Found: {config_toml_path}.")
 
-    #         with config_toml_path.open(mode='rb') as file_toml:
-    #             config_toml = tomli.load(file_toml)
-    #             # If bad, should give FileNotFoundError
+            with config_toml_path.open(mode='rb') as file_toml:
+                config_toml = tomli.load(file_toml)
+                # If bad, should give FileNotFoundError
 
-    #         # G["weatherAPI_key"] = config_toml["weatherAPI"]["key"]
-    #         # G["db"]["un"] = config_toml["db"]["un"]
-    #         # G["db"]["pw"] = config_toml["db"]["pw"]
-    #         # G["db"]["host"] = config_toml["db"]["host"]
-    #         # G["db"]["port"] = config_toml["db"]["port"]
-    #         # G["db"]["database"] = config_toml["db"]["database"]
+            G.site["name"] = config_toml["site"]["name"]
+            G.site["tagline"] = config_toml["site"]["tagline"]
 
-    #         # G.weatherAPI_key = config_toml.get("weatherAPI", {}).get("key")
-    #         G.api["weatherAPI_key"] = config_toml.get("api", {}).get("weatherAPI_key")
+            G.site["logo_title"] = config_toml["site"]["logo_title"]
+            G.site["description"] = config_toml["site"]["description"]
+            G.site["keywords"] = config_toml["site"]["keywords"]
+            G.site["time_zone"] = config_toml["site"]["time_zone"]
+            G.site["time_zone_name"] = config_toml["site"]["time_zone_name"]
+            G.site["time_zone_mail"] = config_toml["site"]["time_zone_mail"]
+            G.site["time_zone_mail_name"] = config_toml["site"]["time_zone_mail_name"]
+            G.site["amazon_tag"] = config_toml["site"]["amazon_tag"]
 
-    #         G.db["un"] = config_toml["db"]["un"]
-    #         G.db["pw"] = config_toml["db"]["pw"]
-    #         G.db["host"] = config_toml["db"]["host"]
-    #         G.db["port"] = config_toml["db"]["port"]
-    #         G.db["database"] = config_toml["db"]["database"]
+            G.contact["email"] = config_toml["contact"]["email"]
+            G.contact["email_name"] = config_toml["contact"]["email_name"]
+            G.contact["bounce_email"] = config_toml["contact"]["bounce_email"]
 
-    #         G.site["name"] = config_toml["site"]["name"]
-    #         G.site["tagline"] = config_toml["site"]["tagline"]
-
-    #     except FileNotFoundError as e:
-    #         logger.exception(f"config.toml Load Error: {e}")
-    #     except Exception as e:
-    #         logger.exception(f"doConfig_toml Error: {e}")
-    #     finally:
-    #         # logger.info(f'weatherAPI_key: {G["weatherAPI_key"]}')
-    #         logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
+            G.db["un"] = config_toml["db"]["un"]
+            G.db["pw"] = config_toml["db"]["pw"]
+            G.db["host"] = config_toml["db"]["host"]
+            G.db["port"] = config_toml["db"]["port"]
+            G.db["database"] = config_toml["db"]["database"]
 
 
-
-    # def doCommon(self):
-    #     from jug.control import headerCtl
-    #     from jug.control import footerCtl
-
-    #     logger.info('DoCommon')
-
-    #     def doHeader():
-    #         obj = headerCtl.HeaderCtl()
-    #         self.header = obj.doStart()
-
-    #     def doFooter():
-    #         obj = footerCtl.FooterCtl()
-    #         self.footer = obj.doStart()
-
-    #     doHeader()
-    #     doFooter()
-
-    #     # pass
+        except FileNotFoundError as e:
+            logger.exception(f"config.toml Load Error: {e}")
+        except Exception as e:
+            logger.exception(f"doConfig_toml Error: {e}")
+        finally:
+            # logger.info(f'weatherAPI_key: {G["weatherAPI_key"]}')
+            # logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
 
 
-    # def doDb(self):
 
-        # try:
+    def doCommon(self):
+        from jug.control import headerCtl
+        from jug.control import footerCtl
 
-        #     # dbc = False
-        #     dbo = dbc.Dbc()
-        #     dbo.doConnect()
+        logger.info('DoCommon')
 
-        #     # result = dbo.doQuery()[0][4]
-        #     F.uwsgi_log("#1 query")
-        #     result = dbo.doQuery()
-        #     F.uwsgi_log("#2 query")
-        #     result = dbo.doQuery()
-        #     F.uwsgi_log("#3 query")
-        #     result = dbo.doQuery()
-        #     F.uwsgi_log("#4 query")
-        #     result = dbo.doQuery()
-        #     F.uwsgi_log("#5 query")
-        #     result = dbo.doQuery()
-        #     F.uwsgi_log("#6 query")
-        #     result = dbo.doQuery()
+        def doHeader():
+            obj = headerCtl.HeaderCtl()
+            self.header = obj.doStart()
 
+        def doFooter():
+            obj = footerCtl.FooterCtl()
+            self.footer = obj.doStart()
 
-        #     return result
+        doHeader()
+        doFooter()
 
-        #     # return F.hesc(dbc)
-        # except Exception as e:
-        #     # print(f"Error committing transaction: {e}")
-        #     return [["bad db connection", e]]
-        # finally:
-        #     dbo.doDisconnect()
-        #     pass
-
+        # pass
 
 
     def doHome(self):
         from jug.control import homeCtl
-
         logger.info('DoHome')
-        # F.uwsgi_log("doHome")
 
-        # dbc = self.doDb()
-        # F.uwsgi_log("post-dbc")
-
-        # self.doCommon()
+        self.doCommon()
 
         homeO = homeCtl.HomeCtl()
         self.article = homeO.doStart()
-        # site_title = homeO.getConfig()["site_title"]
+        site_title = homeO.getConfig()["site_title"]
 
         pageHtml = render_template(
             "pageHtml.jinja",
@@ -156,190 +120,186 @@ class RouterCtl():
             header = "header",
             article = self.article,
             footer = "footer",
-            # db = dbc
         )
 
-        return pageHtml
         # return F.stripJinjaWhiteSpace(pageHtml)
+        return pageHtml
 
 
 
 
+    ##
+        # def doSomePathUrl(self, url):
+        #     from jug.control import pathCtl
+
+        #     logger.info('DoSomePathUrl')
+
+        #     self.doCommon()
+
+        #     pathO = pathCtl.PathCtl(url)
+        #     self.article = pathO.doStart()
+        #     site_title = pathO.getConfig()["site_title"]
 
 
-    # def doSomePathUrl(self, url):
-    #     from jug.control import pathCtl
+        #     pageHtml = render_template(
+        #         "pageHtml.jinja",
+        #         title = site_title,
+        #         header = self.header,
+        #         article = self.article,
+        #         footer = self.footer,
+        #     )
 
-    #     logger.info('DoSomePathUrl')
+        #     return F.stripJinjaWhiteSpace(pageHtml) + self.logo
 
-    #     self.doCommon()
+        # def doCheckBadPath(self, url):
 
-    #     pathO = pathCtl.PathCtl(url)
-    #     self.article = pathO.doStart()
-    #     site_title = pathO.getConfig()["site_title"]
+        #     # Doing this for aesthetic; don't want a path that is /home, /paperdrift or /station paperdrift
+        #     # Also check that all paths end with trailing slash;
 
+        #     # checkPath = ''
+        #       # Dilemma: don't want to make this variable global;
+        #       # But also want to be able to use within local functions below;
+        #       # So declare here; and assign as nonlocal within local functions?
 
-    #     pageHtml = render_template(
-    #         "pageHtml.jinja",
-    #         title = site_title,
-    #         header = self.header,
-    #         article = self.article,
-    #         footer = self.footer,
-    #     )
+        #     def check_path_url():
+        #         # Check for certain paths we ant to avoid; assign to home if so;
 
-    #     return F.stripJinjaWhiteSpace(pageHtml) + self.logo
+        #         # nonlocal url  # avoid unbound variable error;
 
-    # def doCheckBadPath(self, url):
+        #         # If url path is any of these, then go home;
+        #         home_list = ["home", "paperdrift", "station paperdrift"]
+        #         url2 = url.lower()
 
-    #     # Doing this for aesthetic; don't want a path that is /home, /paperdrift or /station paperdrift
-    #     # Also check that all paths end with trailing slash;
-
-    #     # checkPath = ''
-    #       # Dilemma: don't want to make this variable global;
-    #       # But also want to be able to use within local functions below;
-    #       # So declare here; and assign as nonlocal within local functions?
-
-    #     def check_path_url():
-    #         # Check for certain paths we ant to avoid; assign to home if so;
-
-    #         # nonlocal url  # avoid unbound variable error;
-
-    #         # If url path is any of these, then go home;
-    #         home_list = ["home", "paperdrift", "station paperdrift"]
-    #         url2 = url.lower()
-
-    #         # check for home or paperdrift in url; if so, go to root url;
-    #         url3 = url2.rstrip('/')
-    #         # if url3 in home_list: return "/"
-    #         if url3 in home_list:
-    #             return "/"
-    #         else:
-    #             return False
-    #         # Should also return false implicitly
+        #         # check for home or paperdrift in url; if so, go to root url;
+        #         url3 = url2.rstrip('/')
+        #         # if url3 in home_list: return "/"
+        #         if url3 in home_list:
+        #             return "/"
+        #         else:
+        #             return False
+        #         # Should also return false implicitly
 
 
-    #     def check_trailing_slash():
-    #         # Check there is trailing slash in paths;
-    #         # nonlocal checkPath
-    #         # nonlocal url
+        #     def check_trailing_slash():
+        #         # Check there is trailing slash in paths;
+        #         # nonlocal checkPath
+        #         # nonlocal url
 
-    #         # check that url ends in /
-    #         checkPath = F.checkPathSlash(url)
-    #         # if checkPath != True: return checkPath
-    #         # if not checkPath:
-    #         if checkPath:
-    #             return checkPath
-    #         else:
-    #             return False
-    #         # Should also return false implicitly
+        #         # check that url ends in /
+        #         checkPath = F.checkPathSlash(url)
+        #         # if checkPath != True: return checkPath
+        #         # if not checkPath:
+        #         if checkPath:
+        #             return checkPath
+        #         else:
+        #             return False
+        #         # Should also return false implicitly
 
-    #     def cleanUrl():
-    #         # nonlocal url
-    #         url2 = url.rstrip('/')
+        #     def cleanUrl():
+        #         # nonlocal url
+        #         url2 = url.rstrip('/')
 
-    #         # remove non-alphanumeric characters, but allow for space
-    #         # all bad characters will be replaced with space;
-    #         # then later we'll remove redundant spaces;
-    #         new_url = re.sub(r'[^a-zA-Z0-9\- ]', ' ', url2)
-    #         # new_url2 = new_url.replace("  ", " ")
-    #         # new_url = new_url.replace("%20%%20", "x")
-    #         # new_url = new_url.replace("%20", "x")
-    #         # new_url = new_url.replace("20%", "x")
-    #         # new_url = new_url.replace("%", "x")
-    #           # This doesn't seem to work right... always some edge problem;
-    #           # When you ahve a weird url like this:
-    #           # https://station.paperdrift.com/busan%20%20%20%%20%20korea/
-    #           # I think the server crashes before it even gets here;
-    #           # Weird... not the %20 isn't showing up!
+        #         # remove non-alphanumeric characters, but allow for space
+        #         # all bad characters will be replaced with space;
+        #         # then later we'll remove redundant spaces;
+        #         new_url = re.sub(r'[^a-zA-Z0-9\- ]', ' ', url2)
+        #         # new_url2 = new_url.replace("  ", " ")
+        #         # new_url = new_url.replace("%20%%20", "x")
+        #         # new_url = new_url.replace("%20", "x")
+        #         # new_url = new_url.replace("20%", "x")
+        #         # new_url = new_url.replace("%", "x")
+        #           # This doesn't seem to work right... always some edge problem;
+        #           # When you ahve a weird url like this:
+        #           # https://station.paperdrift.com/busan%20%20%20%%20%20korea/
+        #           # I think the server crashes before it even gets here;
+        #           # Weird... not the %20 isn't showing up!
 
-    #         # remove redundant spaces
-    #         new_url2 = ' '.join(new_url.split())
+        #         # remove redundant spaces
+        #         new_url2 = ' '.join(new_url.split())
 
-    #         # Don't need to escape since we removed all bad characters;
-    #         # escaped_url = F.hesc(new_url)
+        #         # Don't need to escape since we removed all bad characters;
+        #         # escaped_url = F.hesc(new_url)
 
-    #         if new_url2 != url2:
-    #             logger.info(f'Cleaned url: {new_url2} : {url2}')
-    #             return "/" + new_url2 + "/"
-    #         else:
-    #             # logger.info(f'good url: {escaped_url}')
-    #             logger.info(f'Good url: {new_url2}')
-    #             return False
-
-
-    #         # clean_text = re.sub(r'[^a-zA-Z0-9 ]', '', text)
-    #         # print(clean_text)
+        #         if new_url2 != url2:
+        #             logger.info(f'Cleaned url: {new_url2} : {url2}')
+        #             return "/" + new_url2 + "/"
+        #         else:
+        #             # logger.info(f'good url: {escaped_url}')
+        #             logger.info(f'Good url: {new_url2}')
+        #             return False
 
 
-    #     # if check_trailing_slash():
-    #     checkPath = check_trailing_slash()
-    #     if checkPath: return checkPath
+        #         # clean_text = re.sub(r'[^a-zA-Z0-9 ]', '', text)
+        #         # print(clean_text)
 
-    #     # Check if url is clean
-    #     result = cleanUrl()
-    #     if result: return result
 
-    #     # Check that the city name is not home, paperdrift, station paperdrift
-    #     # if check_path_url(): return "/"
-    #     path = check_path_url()
-    #     if path: return path
+        #     # if check_trailing_slash():
+        #     checkPath = check_trailing_slash()
+        #     if checkPath: return checkPath
+
+        #     # Check if url is clean
+        #     result = cleanUrl()
+        #     if result: return result
+
+        #     # Check that the city name is not home, paperdrift, station paperdrift
+        #     # if check_path_url(): return "/"
+        #     path = check_path_url()
+        #     if path: return path
 
 
 
-    #     # If all good, return False; nothing to do;
-    #     return False
-
-    # def doRequestUrl(self):
+        #     # If all good, return False; nothing to do;
+        #     return False
 
 
-    #     # Assume this url:
-    #     # https://station.paperdrift.com/something/?a=b
+    def doRequestUrl(self):
+        # Assume this url:
+        # https://station.paperdrift.com/something/?a=b
+
+        rpath = request.url_root
+        logger.info("---URL url_root: " + rpath)
+          # https://station.paperdrift.com/
+
+        rpath = request.base_url
+        logger.info("---URL base_url: " + rpath)
+            # https://station.paperdrift.com/something/
+
+        rpath = request.url
+        logger.info("---URL url: " + rpath)
+          # https://station.paperdrift.com/something/?a=b
+
+        rpath = request.full_path
+        logger.info("---URL full_path: " + rpath)
+          # /something/?a=b
+          # /?   # will always have a ? on the index or other page ERRONESOUSLY;
+
+        rpath = request.environ['PATH_INFO']
+        logger.info("---URL PATH_INFO: " + rpath)
+            # /something/
+
+        rpath = request.environ['QUERY_STRING']
+        logger.info("---URL QUERY_STRING: " + rpath)
+          # a=b
+
+        # These below give me the same IP address
+        # rpath = request.remote_addr
+        # logger.info("---Remote Address: " + rpath)
+          # 84.239.5.141
+        rpath = request.environ['REMOTE_ADDR']
+        logger.info("---Remote Address2: " + rpath)
+          # 84.239.5.141
 
 
-    #     rpath = request.url_root
-    #     logger.info("---URL url_root: " + rpath)
-    #       # https://station.paperdrift.com/
+        # This gives us the TRUE RAW uri; ? and // are always shown
+        rpath = request.environ["REQUEST_URI"]
+        logger.info("---uri: " + rpath)
+          # /something/?a=b
 
-    #     rpath = request.base_url
-    #     logger.info("---URL base_url: " + rpath)
-    #         # https://station.paperdrift.com/something/
+        # print everything; check uwsgi_log
+        # print(request.environ)
 
-    #     rpath = request.url
-    #     logger.info("---URL url: " + rpath)
-    #       # https://station.paperdrift.com/something/?a=b
-
-    #     rpath = request.full_path
-    #     logger.info("---URL full_path: " + rpath)
-    #       # /something/?a=b
-    #       # /?   # will always have a ? on the index or other page ERRONESOUSLY;
-
-    #     rpath = request.environ['PATH_INFO']
-    #     logger.info("---URL PATH_INFO: " + rpath)
-    #         # /something/
-
-    #     rpath = request.environ['QUERY_STRING']
-    #     logger.info("---URL QUERY_STRING: " + rpath)
-    #       # a=b
-
-    #     # These below give me the same IP address
-    #     # rpath = request.remote_addr
-    #     # logger.info("---Remote Address: " + rpath)
-    #       # 84.239.5.141
-    #     rpath = request.environ['REMOTE_ADDR']
-    #     logger.info("---Remote Address2: " + rpath)
-    #       # 84.239.5.141
-
-
-    #     # This gives us the TRUE RAW uri; ? and // are always shown
-    #     rpath = request.environ["REQUEST_URI"]
-    #     logger.info("---uri: " + rpath)
-    #       # /something/?a=b
-
-    #     # print everything; check uwsgi_log
-    #     # print(request.environ)
-
-    #     # Also:
-    #     # logger.debug, logger.info, logger.warning, logger.error, logger.critical
+        # Also:
+        # logger.debug, logger.info, logger.warning, logger.error, logger.critical
 
 
     def checkTrailingQuestion(self):
@@ -354,18 +314,21 @@ class RouterCtl():
 
     def doRoute(self):
 
-        # self.doCommon()
-        # @self.jug.before_request
-        # def before_request_route():
-        #     # logger.info("---route_common Yay!")
-        #     if not self.checkTrailingQuestion():
-        #         rpath = request.base_url
-        #         return redirect(rpath, code=301)
+        @self.jug.before_request
+        def before_request_route():
+
+            logger.info("---before_request_route")
+
+            self.doRequestUrl()
+
+            if not self.checkTrailingQuestion():
+                rpath = request.base_url
+                return redirect(rpath, code=301)
 
 
         @self.jug.route("/")
         def home():
-            # logger.info("---in home")
+            logger.info("---home()")
             # return "hello"
             return self.doHome()
 
