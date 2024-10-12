@@ -32,6 +32,7 @@ body{
     // font-family: 'Happy Monkey', sans-serif;
     // font-family: 'IM Fell DW Pica', serif;
     font-family: 'Work Sans', sans-serif;
+    background-color:#F5F5F5;
 
     #pageDiv{
         //background-image: none; //initially set to none; then js will put in apng image
@@ -151,7 +152,7 @@ body{
 
                 // #contentSection {
                 #flexCol_C {
-                    border:1px solid #FDD0E1;
+                    // border:1px solid #FDD0E1;
                     // background-color:#DEA929;
                     flex-grow: 4;
                     flex-basis:400px;

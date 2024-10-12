@@ -12,7 +12,10 @@ class HomeCtl():
 
     def __init__(self):
         self.config = {}
-        pass
+        self.html = None
+
+    def getHtml(self):
+        return self.html
 
     def getConfig(self):
         # Called by router to set page title;
@@ -34,12 +37,17 @@ class HomeCtl():
 
         self.doConfig()
 
-        return render_template(
+        # return render_template(
+        #     "homeHtml.jinja",
+        #     today = today,
+        # )
+
+        self.html = render_template(
             "homeHtml.jinja",
             today = today,
         )
 
-
-    def doStart(self):
-        return self.doHome()
+    def start(self):
+        # return self.doHome()
+        self.doHome()
 

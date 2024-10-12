@@ -84,36 +84,46 @@ class RouterCtl():
             pass
 
 
-
     def doCommon(self):
-        from jug.control import headerCtl
-        from jug.control import footerCtl
+        from jug.control.headerCtl import HeaderCtl
+        from jug.control.footerCtl import FooterCtl
 
-        logger.info('DoCommon')
+        logger.info('doCommon')
 
-        def doHeader():
-            obj = headerCtl.HeaderCtl()
-            self.header = obj.doStart()
+        cfDict = {
+            "base_url" : request.url_root,
+            "bestseller_url" : "/rank/bestseller/fiction/",
+            "contact_url" : "/contact/",
+            "link" : "https://hmso.inkonpages.com/book/theswines/"
+        }
 
-        def doFooter():
-            obj = footerCtl.FooterCtl()
-            self.footer = obj.doStart()
+        # do Header
+        headerOb = HeaderCtl()
+        headerOb.start(cfDict)
+        self.header = headerOb.getHtml()
 
-        doHeader()
-        doFooter()
+        # do Footer
+        footerOb = FooterCtl()
+        footerOb.start(cfDict)
+        self.footer = footerOb.getHtml()
+
 
         # pass
 
 
     def doHome(self):
-        from jug.control import homeCtl
+        from jug.control.homeCtl import HomeCtl
         logger.info('DoHome')
 
         self.doCommon()
 
-        homeO = homeCtl.HomeCtl()
-        self.article = homeO.doStart()
-        site_title = homeO.getConfig()["site_title"]
+        homeOb = HomeCtl()
+        homeOb.start()
+        self.article = homeOb.getHtml()
+
+        site_title = homeOb.getConfig()["site_title"]
+
+        base_url = request.url_root
 
         pageHtml = render_template(
             "pageHtml.jinja",
@@ -121,6 +131,7 @@ class RouterCtl():
             header = self.header,
             article = self.article,
             footer = self.footer,
+            base_url = base_url
         )
 
         # return F.stripJinjaWhiteSpace(pageHtml)
@@ -253,6 +264,8 @@ class RouterCtl():
         #     return False
 
 
+
+
     def doRequestUrl(self):
         # Assume this url:
         # https://station.paperdrift.com/something/?a=b
@@ -327,7 +340,7 @@ class RouterCtl():
                 return redirect(rpath, code=301)
 
 
-        @self.jug.route("/")
+        @self.jug.route('/')
         def home():
             logger.info("---home()")
             # return "hello"
@@ -335,8 +348,37 @@ class RouterCtl():
 
 
 
+        @self.jug.route('/contact/')
+        @self.jug.route('/contact/<path:url>')
+        def contact(url=""):
+            if url:
+                return redirect("/contact/", code=301)
+
+            return "contact"
+
+
+        @self.jug.route('/rank/')
+        @self.jug.route('/rank/bestseller/')
+        def rank_bad():
+            return "rank bad"
+
+        @self.jug.route('/rank/bestseller/fiction/')
+        @self.jug.route('/rank/alltime/')
+        def rank_good():
+            return "rank good"
+
+
+        @self.jug.route('/<path:url>')
+        def bad_url(url):
+            return redirect("/", code=301)
+
+
+
+      # https://inkonpages.com/rank/bestseller/fiction/
+
+
         # @self.jug.route('/<path:url>')
-        # def somePathUrl(url):
+        # def contact(url):
 
         #     # If return some value, then go to that given url
         #     # If return False, then the url is fine;
@@ -348,6 +390,13 @@ class RouterCtl():
         #     # If path is good, then proceed normally;
         #     return self.doSomePathUrl(url)
 
+
+      # https://inkonpages.com/rank/bestseller/fiction/
+      # https://inkonpages.com/rank/bestseller/nonfiction/
+      # https://inkonpages.com/rank/alltime/
+      # https://inkonpages.com/contact/
+
+      # @self.jug.route('/<path:url>')
 
       # path             /foo/page.html
       # full_path        /foo/page.html?x=y

@@ -1,0 +1,34 @@
+{# --------------------------------------------------}
+    // $email = F::json("config", "contactEmail");
+    // $hemail = str_replace("@", " [@] ", $email);
+{---------------------------------------------------#}
+
+<section id="contactSection">
+
+    <article id="contactArticle">
+
+        <h1>Contact Us</h1>
+
+        <section id="textSection">
+            <p>Want to get in touch?</p>
+            <p id="emaillink">Email: <a href="mailto:{{email}}">{{h_email}}</a></p>
+            <p>Or use the form below:</p>
+        </section>
+
+        <section id="formSection">
+            <p></p> //our sent message goes he
+            <div id="msgForm">
+                //inside will slideup after message is sent
+                <input id="nameField" name="nameField" type="text" maxlength="100" value="" placeholder="YOUR NAME" spellcheck="false" autofocus required>
+                <input id="emailField" name="emailField" type="email" maxlength="100" value="" placeholder="YOUR EMAIL" spellcheck="false" required>
+                <textarea id="msgField" name="msgField" value="" placeholder="YOUR MESSAGE" spellcheck="true" required></textarea>
+                <div id="sendBtn" class="fBtn">SEND</div>
+            </div>
+        </section>
+
+    </article>
+
+</section>
+
+
+
