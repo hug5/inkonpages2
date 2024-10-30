@@ -11,10 +11,13 @@ from jug.lib import news_scrape
 class PathCtl:
 
     def __init__(self, url):
-        # self.url = url.rstrip('/').capitalize()
         self.url = url.rstrip('/').title()
 
         self.config = {}
+        self.html = None
+
+    def getHtml(self):
+        return self.html
 
     def getConfig(self):
         return self.config
@@ -111,7 +114,6 @@ class PathCtl:
 
         location_info = self.get_Britannica_Location(location)
 
-
         self.doConfig(location)
 
         country = weatherDict["country"]
@@ -119,13 +121,7 @@ class PathCtl:
 
         moon_phase = self.getMoon(weatherDict["moon_phase"])
 
-        # moon_phase = weatherDict["moon_phase"]
-        # t = type(moon_phase)
-        # logger.info(f'moonphase: {t}')
-        # logger.info(f'moonphase: {moon_phase[0][0]}')
-        # logger.info(f'moonphase: {moon_phase[0][1]}')
-
-        return render_template(
+        self.html render_template(
             "pathHtml.jinja",
             # city = self.url,
             city = location,

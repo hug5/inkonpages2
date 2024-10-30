@@ -31,16 +31,11 @@ class HomeCtl():
     def doHome(self):
         from datetime import date
         today = date.today().strftime("%A, %b. %d, %Y")
-        # there datetime.datetime, datetime.date, datetime.time, datetime.timedelta, tzinfo;
-        # datetime may be a combination of date/time;
-        # date is just date;
+          # there datetime.datetime, datetime.date, datetime.time, datetime.timedelta, tzinfo;
+          # datetime may be a combination of date/time;
+          # date is just date;
 
         self.doConfig()
-
-        # return render_template(
-        #     "homeHtml.jinja",
-        #     today = today,
-        # )
 
         self.html = render_template(
             "homeHtml.jinja",

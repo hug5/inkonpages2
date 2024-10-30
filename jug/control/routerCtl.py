@@ -1,71 +1,76 @@
 from jug.lib.logger import logger
-  # need to import the logger variable;
 
-from flask import Flask, \
-                  render_template, \
-                  redirect, \
-                  request
+from flask import redirect, request, jsonify, session
+#, make_response
 
-import tomli
-# from jug.dbo import dbc
-# from jug.lib.f import F
-from jug.lib.g import G
-from pathlib import Path
+from jug.lib.fLib import F
+from jug.lib.gLib import G
+# from pathlib import Path
+# import tomli
 # import re
-
-
-# import json
-# from json import dumps
-# from werkzeug.routing import Request
-# from werkzeug.wrappers import Request, Response
-# from werkzeug.test import create_environ
+from urllib import parse
+from jug.control.pageCtl import PageCtl
 
 
 class RouterCtl():
 
-    def __init__(self):
+    def __init__(self, jug):
+        self.jug = jug
+        logger.info('==== Begin RouterCtl __init__ ===')
 
-        dir_html = "../html"
 
-        self.jug = Flask(
-            __name__,
-            template_folder=dir_html,
-        )
+    def router_init(self):
+        logger.info('---router_init---')
 
-        # self.jug.debug = True
+        self.response_obj = None
+        self.redirect = [False, '']
+        logger.info(f'---In G BEFORE?: [{G.api}][{G.db}][{G.site}]')
+        G.reset()
+        logger.info(f'---In G AFTER?: [{G.api}][{G.db}][{G.site}]')
 
-        self.article = ''
-        self.header = ''
-        self.footer = ''
+        self.setConfig_toml()
 
-        self.doConfig_toml()
 
-    def doConfig_toml(self):
+        # This makes the session last as per PERMANENT_SESSION_LIFETIME
+        session.permanent = True
+
+        session["user"] = "Phoebe"
+
+        if not session.get("location"):
+            session["location"] = []
+
+
+
+        # session["location"] = ["los angeles", "fresno"]
+        # session.pop('username', None)
+        # if "user" in session:                         # user in session
+        # user = session["user"]
+        # session["user"] = user                      # init session
+
+        G.debug = False
+        if self.jug.debug:
+            logger.info('---RUNNING DEBUG MODE')
+            G.debug = True
+
+    def getResponse_obj(self):
+        return self.response_obj
+
+    def setConfig_toml(self):
+
         try:
+            # config_toml_path = Path("jug/conf/config.toml")
+            # if not Path(config_toml_path).is_file():
+            #     raise FileNotFoundError(f"File Not Found: {config_toml_path}.")
 
-            config_toml_path = Path("jug/conf/config.toml")
-            if not Path(config_toml_path).is_file():
-                raise FileNotFoundError(f"File Not Found: {config_toml_path}.")
+            # with config_toml_path.open(mode='rb') as file_toml:
+            #     config_toml = tomli.load(file_toml)
+            #     # If bad, should give FileNotFoundError
 
-            with config_toml_path.open(mode='rb') as file_toml:
-                config_toml = tomli.load(file_toml)
-                # If bad, should give FileNotFoundError
 
-            G.site["name"] = config_toml["site"]["name"]
-            G.site["tagline"] = config_toml["site"]["tagline"]
+            config_toml = F.load_config_toml()
 
-            G.site["logo_title"] = config_toml["site"]["logo_title"]
-            G.site["description"] = config_toml["site"]["description"]
-            G.site["keywords"] = config_toml["site"]["keywords"]
-            G.site["time_zone"] = config_toml["site"]["time_zone"]
-            G.site["time_zone_name"] = config_toml["site"]["time_zone_name"]
-            G.site["time_zone_mail"] = config_toml["site"]["time_zone_mail"]
-            G.site["time_zone_mail_name"] = config_toml["site"]["time_zone_mail_name"]
-            G.site["amazon_tag"] = config_toml["site"]["amazon_tag"]
-
-            G.contact["email"] = config_toml["contact"]["email"]
-            G.contact["email_name"] = config_toml["contact"]["email_name"]
-            G.contact["bounce_email"] = config_toml["contact"]["bounce_email"]
+            G.api["weatherAPI_key"] = config_toml.get("api", {}).get("weatherAPI_key")
+            G.api["weatherAPI_url"] = config_toml.get("api", {}).get("weatherAPI_url")
 
             G.db["un"] = config_toml["db"]["un"]
             G.db["pw"] = config_toml["db"]["pw"]
@@ -73,16 +78,19 @@ class RouterCtl():
             G.db["port"] = config_toml["db"]["port"]
             G.db["database"] = config_toml["db"]["database"]
 
+            G.site["secret_key"] = config_toml["site"]["secret_key"]
+            G.site["name"] = config_toml["site"]["name"]
+            G.site["tagline"] = config_toml["site"]["tagline"]
+            G.site["keywords"] = config_toml["site"]["keywords"]
+            G.site["baseUrl"] = config_toml["site"]["baseUrl"]
 
-        except FileNotFoundError as e:
-            logger.exception(f"config.toml Load Error: {e}")
         except Exception as e:
-            logger.exception(f"doConfig_toml Error: {e}")
+            logger.exception(f"setConfig_toml Error: {e}")
         finally:
+            pass
             # logger.info(f'weatherAPI_key: {G["weatherAPI_key"]}')
             # logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
-            pass
-
+            # logger.info(f'Anything in G AFTER?: [{G.api}][{G.db}][{G.site}]')
 
     def doCommon(self):
         from jug.control.headerCtl import HeaderCtl
@@ -138,134 +146,6 @@ class RouterCtl():
         return pageHtml
 
 
-
-
-    ##
-        # def doSomePathUrl(self, url):
-        #     from jug.control import pathCtl
-
-        #     logger.info('DoSomePathUrl')
-
-        #     self.doCommon()
-
-        #     pathO = pathCtl.PathCtl(url)
-        #     self.article = pathO.doStart()
-        #     site_title = pathO.getConfig()["site_title"]
-
-
-        #     pageHtml = render_template(
-        #         "pageHtml.jinja",
-        #         title = site_title,
-        #         header = self.header,
-        #         article = self.article,
-        #         footer = self.footer,
-        #     )
-
-        #     return F.stripJinjaWhiteSpace(pageHtml) + self.logo
-
-        # def doCheckBadPath(self, url):
-
-        #     # Doing this for aesthetic; don't want a path that is /home, /paperdrift or /station paperdrift
-        #     # Also check that all paths end with trailing slash;
-
-        #     # checkPath = ''
-        #       # Dilemma: don't want to make this variable global;
-        #       # But also want to be able to use within local functions below;
-        #       # So declare here; and assign as nonlocal within local functions?
-
-        #     def check_path_url():
-        #         # Check for certain paths we ant to avoid; assign to home if so;
-
-        #         # nonlocal url  # avoid unbound variable error;
-
-        #         # If url path is any of these, then go home;
-        #         home_list = ["home", "paperdrift", "station paperdrift"]
-        #         url2 = url.lower()
-
-        #         # check for home or paperdrift in url; if so, go to root url;
-        #         url3 = url2.rstrip('/')
-        #         # if url3 in home_list: return "/"
-        #         if url3 in home_list:
-        #             return "/"
-        #         else:
-        #             return False
-        #         # Should also return false implicitly
-
-
-        #     def check_trailing_slash():
-        #         # Check there is trailing slash in paths;
-        #         # nonlocal checkPath
-        #         # nonlocal url
-
-        #         # check that url ends in /
-        #         checkPath = F.checkPathSlash(url)
-        #         # if checkPath != True: return checkPath
-        #         # if not checkPath:
-        #         if checkPath:
-        #             return checkPath
-        #         else:
-        #             return False
-        #         # Should also return false implicitly
-
-        #     def cleanUrl():
-        #         # nonlocal url
-        #         url2 = url.rstrip('/')
-
-        #         # remove non-alphanumeric characters, but allow for space
-        #         # all bad characters will be replaced with space;
-        #         # then later we'll remove redundant spaces;
-        #         new_url = re.sub(r'[^a-zA-Z0-9\- ]', ' ', url2)
-        #         # new_url2 = new_url.replace("  ", " ")
-        #         # new_url = new_url.replace("%20%%20", "x")
-        #         # new_url = new_url.replace("%20", "x")
-        #         # new_url = new_url.replace("20%", "x")
-        #         # new_url = new_url.replace("%", "x")
-        #           # This doesn't seem to work right... always some edge problem;
-        #           # When you ahve a weird url like this:
-        #           # https://station.paperdrift.com/busan%20%20%20%%20%20korea/
-        #           # I think the server crashes before it even gets here;
-        #           # Weird... not the %20 isn't showing up!
-
-        #         # remove redundant spaces
-        #         new_url2 = ' '.join(new_url.split())
-
-        #         # Don't need to escape since we removed all bad characters;
-        #         # escaped_url = F.hesc(new_url)
-
-        #         if new_url2 != url2:
-        #             logger.info(f'Cleaned url: {new_url2} : {url2}')
-        #             return "/" + new_url2 + "/"
-        #         else:
-        #             # logger.info(f'good url: {escaped_url}')
-        #             logger.info(f'Good url: {new_url2}')
-        #             return False
-
-
-        #         # clean_text = re.sub(r'[^a-zA-Z0-9 ]', '', text)
-        #         # print(clean_text)
-
-
-        #     # if check_trailing_slash():
-        #     checkPath = check_trailing_slash()
-        #     if checkPath: return checkPath
-
-        #     # Check if url is clean
-        #     result = cleanUrl()
-        #     if result: return result
-
-        #     # Check that the city name is not home, paperdrift, station paperdrift
-        #     # if check_path_url(): return "/"
-        #     path = check_path_url()
-        #     if path: return path
-
-
-
-        #     # If all good, return False; nothing to do;
-        #     return False
-
-
-
-
     def doRequestUrl(self):
         # Assume this url:
         # https://station.paperdrift.com/something/?a=b
@@ -316,36 +196,52 @@ class RouterCtl():
         # logger.debug, logger.info, logger.warning, logger.error, logger.critical
 
 
-    def checkTrailingQuestion(self):
+    def doRoute(self, sender=True):
+        # Using True/False to denote whether we want to return a result to close out; or whether this is just an intermediary check;
 
-        # check for /?/ and /??+ path (2 or more question marks);
-        ch_qmark = request.full_path
-        if ch_qmark == "/?/" or ch_qmark.find("/??") >= 0 :
-            return False # Not okay; redirect
+        if self.redirect[0] is True:
+            logger.info(f'--redirecting: {self.redirect[1]}')
+            return redirect(self.redirect[1], code=301)
 
-        return True # okay
+        if sender is True:
+            # resp = make_response(self.response_obj)
+            # resp.set_cookie('paper', '1234', samesite='Lax', secure=True)
+            # resp.set_cookie('rock', '1234', samesite='Lax', secure=True, max_age=7776000)
+            # resp.set_cookie('scissor', '1234')
+            resp = self.response_obj
+            return resp
+
+            # return self.getResponse_obj()
+            # if here, then will implicitly return None
+
+            # const jsonData = { name: "John", age: 32 };
+            # document.cookie = "userData=" + encodeURIComponent(JSON.stringify(jsonData));
+            # const cookies = document.cookie.split('; ');
+            # const userDataCookie = cookies.find(row => row.startsWith('userData='));
+            # const userData = userDataCookie ? JSON.parse(decodeURIComponent(userDataCookie.split('=')[1])) : null;
 
 
-    def doRoute(self):
+    def doBeforeRequest(self):
+        logger.info("---doBeforeRequest: Start")
+
+        self.doRequestUrl()
+        self.router_init()
+        self.checkUrl()
+        logger.info("---doBeforeRequest: Finished")
+
+
+    def parseRoute(self):
 
         @self.jug.before_request
         def before_request_route():
-
-            logger.info("---before_request_route")
-
-            self.doRequestUrl()
-
-            if not self.checkTrailingQuestion():
-                rpath = request.base_url
-                return redirect(rpath, code=301)
-
+            logger.info("---parseRoute: before_request---")
+            self.doBeforeRequest()
 
         @self.jug.route('/')
         def home():
-            logger.info("---home()")
-            # return "hello"
-            return self.doHome()
-
+            logger.info("---in home")
+            self.doHome()
+            return self.doRoute()
 
 
         @self.jug.route('/contact/')
@@ -353,7 +249,6 @@ class RouterCtl():
         def contact(url=""):
             if url:
                 return redirect("/contact/", code=301)
-
             return "contact"
 
 
@@ -372,10 +267,34 @@ class RouterCtl():
         def bad_url(url):
             return redirect("/", code=301)
 
+         # @self.jug.route('/ajax/', methods=['GET', 'POST'])
+        @self.jug.route('/ajax/', methods=['POST'])
+        def ajaxPost():
+            logger.info("---in path: ajax")
+            self.doAjaxPost()
+            return self.doRoute()
+
+        @self.jug.after_request
+        def after_request_route(response_object):
+            # Reset this!
+            # self.redirect = ["False", '']
+            logger.info("---after_request")
+            # takes a response object and must return a response object; what is a response object?
+            return response_object
+
+
+        @self.jug.teardown_request
+        def show_teardown(exception):
+            logger.info("##################################")
+            logger.info("############ teardown ############")
+            logger.info("##################################")
+            # Not sure what teardown does;
+
+
+
 
 
       # https://inkonpages.com/rank/bestseller/fiction/
-
 
         # @self.jug.route('/<path:url>')
         # def contact(url):
@@ -390,26 +309,20 @@ class RouterCtl():
         #     # If path is good, then proceed normally;
         #     return self.doSomePathUrl(url)
 
+        # https://inkonpages.com/rank/bestseller/fiction/
+        # https://inkonpages.com/rank/bestseller/nonfiction/
+        # https://inkonpages.com/rank/alltime/
+        # https://inkonpages.com/contact/
 
-      # https://inkonpages.com/rank/bestseller/fiction/
-      # https://inkonpages.com/rank/bestseller/nonfiction/
-      # https://inkonpages.com/rank/alltime/
-      # https://inkonpages.com/contact/
+        # @self.jug.route('/<path:url>')
 
-      # @self.jug.route('/<path:url>')
+        # path             /foo/page.html
+        # full_path        /foo/page.html?x=y
+        # script_root      /myapplication
 
-      # path             /foo/page.html
-      # full_path        /foo/page.html?x=y
-      # script_root      /myapplication
-
-      # url_root         http://www.example.com/myapplication/
-      # base_url         http://www.example.com/myapplication/foo/page.html
-      # url              http://www.example.com/myapplication/foo/page.html?x=y
-
-
-    def start(self):
-        self.doRoute()
-        return self.jug
+        # url_root         http://www.example.com/myapplication/
+        # base_url         http://www.example.com/myapplication/foo/page.html
+        # url              http://www.example.com/myapplication/foo/page.html?x=y
 
 
 
