@@ -33,8 +33,10 @@ class ContactCtl():
         #     [ G.site['tagline'] != "" ]
 
         self.config = {
-            'site_title' : f"Contact | {G.site['name']}"
+            'site_title' : f"Contact | {G.site['name']}",
+            'site_keywords' : "contact us, email, " + G.site["keywords"],
         }
+
 
     def checkUrl(self):
 
@@ -113,11 +115,10 @@ class ContactCtl():
 
 
     def doContact(self):
+        logger.info('---doContact')
 
-        # self.checkUrl()
-
+        self.checkUrl()
         self.doConfig()
-
         self.html = render_template(
             "contactHtml.jinja",
         )

@@ -5,7 +5,6 @@ from jug.control.headerCtl import HeaderCtl
 from jug.control.footerCtl import FooterCtl
 from jug.lib.gLib import G
 
-
 class PageCtl():
 
     def __init__(self):
@@ -15,119 +14,74 @@ class PageCtl():
         self.footer = ''
         self.ascii_art = ''
         self.html = ''
+        self.site_title = ''
+        self.site_keywords = ''
 
     def getHtml(self):
         return self.html
 
     def doHeader(self):
-        header_ob = HeaderCtl()
-        header_ob.doHeader(G.site)
-        self.header = header_ob.getHtml()
+        Header = HeaderCtl()
+        Header.doHeader()
+        self.header = Header.getHtml()
 
     def doFooter(self):
-        footer_ob = FooterCtl()
-        footer_ob.doFooter()
-        self.footer = footer_ob.getHtml()
+        Footer = FooterCtl()
+        Footer.doFooter()
+        self.footer = Footer.getHtml()
 
     def doAscii_art(self):
-        # self.ascii_art = render_template(
-        #     "ascii_art.jinja"
-        # )
-
-        # Have to wrap with () to use multiple lines, it seems:
-
+        # Wrap with  () to do multiple lines
         self.ascii_art = ("<!-- \n" +
         "// [==]  👹 " + G.site["name"] + "  <o=o> //-->")
 
-
-    def doCommon(self):
-        # logger.info('DoCommon')
-        self.doHeader()
-        self.doFooter()
-        self.doAscii_art()
-        # pass
-
     def doHome(self):
         from jug.control.homeCtl import HomeCtl
-
-        logger.info('DoHome')
         # F.uwsgi_log("doHome")
-        self.doCommon()
+        logger.info('DoHome')
 
-        home_ob = HomeCtl()
-        home_ob.doHome()
-
-        self.article = home_ob.getHtml()
-
-        site_title = home_ob.getConfig()["site_title"]
-
-        site_keywords = G.site["keywords"]
-
-        html = render_template(
-            "pageHtml.jinja",
-            title = site_title,
-            header = self.header,
-            article = self.article,
-            footer = self.footer,
-            site_keywords = site_keywords
-        )
-
-        logger.info(f'---type info: {type(html)}')
-
-        self.html = F.stripJinja(html) + self.ascii_art
+        Home = HomeCtl()
+        Home.doHome()
+        self.article = Home.getHtml()
+        self.site_title = Home.getConfig()["site_title"]
+        self.site_keywords = Home.getConfig()["site_keywords"]
+        # logger.info(f'---type info: {type(html)}')
 
     def doContact(self):
         from jug.control.contactCtl import ContactCtl
-
         logger.info('DoContact')
-        self.doCommon()
 
-        contact_ob = ContactCtl()
-        contact_ob.doContact()
+        Contact = ContactCtl()
+        Contact.doContact()
+        self.article = Contact.getHtml()
+        self.site_title = Contact.getConfig()["site_title"]
+        self.site_keywords = Contact.getConfig()["site_keywords"]
+        # logger.info(f'---type info: {type(html)}')
 
-        self.article = contact_ob.getHtml()
 
-        site_title = contact_ob.getConfig()["site_title"]
+    def doPage(self, page):
+        self.doHeader()
+        self.doFooter()
+        self.doAscii_art()
+        logger.info('################# DoContact')
 
-        site_keywords = G.site["keywords"]
+
+        if page == "home":
+            self.doHome()
+        elif page == "contact":
+            self.doContact()
+        else:
+            pass
 
         html = render_template(
             "pageHtml.jinja",
-            title = site_title,
+            title = self.site_title,
+            site_keywords = self.site_keywords,
             header = self.header,
             article = self.article,
             footer = self.footer,
-            site_keywords = site_keywords
         )
 
         logger.info(f'---type info: {type(html)}')
-
         self.html = F.stripJinja(html) + self.ascii_art
 
-
-
-    def doLocationUrl(self, url):
-        from jug.control.locationCtl import LocationCtl
-
-        logger.info('DoLocationUrl')
-
-        self.doCommon()
-
-        location_ob = LocationCtl(url)
-        # self.article = location_ob.start()
-        location_ob.doLocation()
-        self.article = location_ob.getHtml()
-        site_title = location_ob.getConfig()["site_title"]
-
-        site_keywords = G.site["keywords"]
-
-        html = render_template(
-            "pageHtml.jinja",
-            title = site_title,
-            header = self.header,
-            article = self.article,
-            footer = self.footer,
-            site_keywords = site_keywords
-        )
-
-        self.html = F.stripJinja(html) + self.ascii_art

@@ -24,18 +24,19 @@ class HomeCtl():
 
     def doConfig(self):
 
+
+
+
         # A tuple ternary operator;
+        # x = (False, True)[condition]
         # If there is a tagline, then combine name with tagline; otherwise, just stie name;
-        self.config = (
-            {'site_title' : f"{G.site['name']}"},
-            {'site_title' : f"{G.site['name']} | {G.site['tagline']}"}) \
-            [ G.site['tagline'] != "" ]
+        # site_title = ({'site_title' : f"{G.site['name']}"}, {'site_keywords' : f"{G.site['keyname']} | {G.site['tagline']}"}) [ G.site['tagline'] != "" ]
+        site_title = (f"{G.site['name']}", f"{G.site['name']} | {G.site['tagline']}") [ G.site['tagline'] != "" ]
 
-        # self.config = {
-        #     # 'site_title' : f"{G.site['name']} | {G.site['tagline']}"
-        #     'site_title' : f"{G.site['name']}"
-        # }
-
+        self.config = {
+            'site_title' : site_title,
+            'site_keywords' : "contact us, email, " + G.site["keywords"],
+        }
 
     def doHome(self):
         from datetime import date

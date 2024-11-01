@@ -257,20 +257,9 @@ class RouterCtl():
 
         # logger.info(f'---response object (2): {self.response_obj}')
 
-
-    def doHome(self):
+    def doPage(self, page):
         page_obj = PageCtl()
-        page_obj.doHome()
-
-        self.response_obj = page_obj.getHtml()
-
-
-    def doContact(self):
-        # self.response_obj = "hello"
-
-        page_obj = PageCtl()
-        page_obj.doContact()
-        logger.info("---doContact: after")
+        page_obj.doPage(page)
         self.response_obj = page_obj.getHtml()
 
 
@@ -316,14 +305,16 @@ class RouterCtl():
         @self.jug.route("/")
         def home():
             logger.info("---in home")
-            self.doHome()
+            self.doPage("home")
+            # self.doHome()
             return self.doRoute()
 
-        # @self.jug.route('/contact/<path:url>')
         @self.jug.route('/contact/')
-        def contact():
+        @self.jug.route('/contact/<path:url>')
+        def contact(url=''):
             logger.info("---in contact")
-            self.doContact()
+            self.doPage("contact")
+            # self.doContact()
             return self.doRoute()
 
 

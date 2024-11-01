@@ -1,5 +1,5 @@
 from flask import render_template
-                  # request
+# from jug.lib.gLib import G
 
 
 class HeaderCtl():
@@ -12,11 +12,11 @@ class HeaderCtl():
         return self.html
 
 
-    def doHeader(self, site):
+    def doHeader(self):
 
         self.html = render_template(
             "headerHtml.jinja",
-            site = site
+            # site = G.site
             # base_url = base_url,
             # bestseller_url = bestseller_url,
             # contact_url = contact_url
