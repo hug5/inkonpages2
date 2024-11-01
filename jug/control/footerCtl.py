@@ -9,11 +9,10 @@ class FooterCtl():
     def getHtml(self):
         return self.html
 
-    def doFooter(self, cfDict):
+    def doFooter(self):
 
         self.html = render_template(
             "footerHtml.jinja",
-            cfDict = cfDict
         )
 
 

@@ -1,6 +1,3 @@
-# from jug.control import routerCtl
-# jug = routerCtl.RouterCtl().start()
-
 from jug.lib.logger import logger
 from flask import Flask
 # , session
@@ -72,9 +69,10 @@ class JugCtl():
         # $ flask -A jug.jugCtl:jug run --debug
 
     def doJug(self):
+        # print('hello')
+
         ro = RouterCtl(self.jug)
         ro.parseRoute()
-        # self.parseRoute()
         return self.jug
 
 # ---------------------------------------------------

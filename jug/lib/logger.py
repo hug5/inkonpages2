@@ -87,7 +87,10 @@ dictConfig({
         },
         "logger2": {
             "level": "DEBUG",
-            "handlers": ["console2"],
+            "handlers": [
+                "console2",
+                "file"
+            ],
             "propagate": False,
         }
 

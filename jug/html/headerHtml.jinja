@@ -2,25 +2,30 @@
   $contactus = "/contact/";
   $bestseller = "/rank/bestseller/fiction/";
           <span>{{site_logo_title}}</span>
+
+  <div id="menuButtonDiv">
+      <div><a href="{{site["bestseller_url"]}}"><img src="/static/img/star.png" title="IP Bestsellers Book Rank" alt="⭐" /></a></div>
+      <div><a href="{{site["contact_url"]}}"><img src="/static/img/contactus.png" title="Contact Us" alt="📧" /></a></div>
+  </div>
 {-------------------------------------------------#}
 
 <header id=header>
 
   <div id="logoDiv">
-      <a href="{{cfDict["base_url"]}}">
+      <a href="/">
         <img src="/static/img/sitelogo.png" title="Inkonpages Press" alt="🏠" />
       </a>
   </div>
 
   <div id=greetingDiv>
-      <a href="{{cfDict["base_url"]}}">
+      <a href="/">
           <span>Inkonpages Press</span>
       </a>
   </div>
 
   <div id="menuButtonDiv">
-      <div><a href="{{cfDict["bestseller_url"]}}"><img src="/static/img/star.png" title="IP Bestsellers Book Rank" alt="⭐" /></a></div>
-      <div><a href="{{cfDict["contact_url"]}}"><img src="/static/img/contactus.png" title="Contact Us" alt="📧" /></a></div>
+      <div><a href="/rank/bestseller/fiction/"><img src="/static/img/star.png" title="IP Bestsellers Book Rank" alt="⭐" /></a></div>
+      <div><a href="/contact/"><img src="/static/img/contactus.png" title="Contact Us" alt="📧" /></a></div>
   </div>
 
 </header>

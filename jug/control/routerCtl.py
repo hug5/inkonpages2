@@ -5,6 +5,7 @@ from flask import redirect, request, jsonify, session
 
 from jug.lib.fLib import F
 from jug.lib.gLib import G
+
 # from pathlib import Path
 # import tomli
 # import re
@@ -24,21 +25,19 @@ class RouterCtl():
 
         self.response_obj = None
         self.redirect = [False, '']
-        logger.info(f'---In G BEFORE?: [{G.api}][{G.db}][{G.site}]')
+        logger.info(f'---In G BEFORE?: [{G.db}][{G.site}]')
         G.reset()
-        logger.info(f'---In G AFTER?: [{G.api}][{G.db}][{G.site}]')
+        logger.info(f'---In G AFTER?: [{G.db}][{G.site}]')
 
         self.setConfig_toml()
-
 
         # This makes the session last as per PERMANENT_SESSION_LIFETIME
         session.permanent = True
 
-        session["user"] = "Phoebe"
+        session["user"] = "Phoebe"  # Some misc user
 
         if not session.get("location"):
             session["location"] = []
-
 
 
         # session["location"] = ["los angeles", "fresno"]
@@ -47,10 +46,10 @@ class RouterCtl():
         # user = session["user"]
         # session["user"] = user                      # init session
 
-        G.debug = False
+        G.sys["debug"] = False
         if self.jug.debug:
             logger.info('---RUNNING DEBUG MODE')
-            G.debug = True
+            G.sys["debug"] = True
 
     def getResponse_obj(self):
         return self.response_obj
@@ -69,8 +68,24 @@ class RouterCtl():
 
             config_toml = F.load_config_toml()
 
-            G.api["weatherAPI_key"] = config_toml.get("api", {}).get("weatherAPI_key")
-            G.api["weatherAPI_url"] = config_toml.get("api", {}).get("weatherAPI_url")
+            G.site["baseUrl"] = config_toml["site"]["baseUrl"]
+            G.site["name"] = config_toml["site"]["name"]
+            G.site["tagline"] = config_toml["site"]["tagline"]
+            G.site["logo_title"] = config_toml["site"]["logo_title"]
+            G.site["description"] = config_toml["site"]["description"]
+            G.site["keywords"] = config_toml["site"]["keywords"]
+            G.site["secret_key"] = config_toml["site"]["secret_key"]
+
+            G.site["time_zone"] = config_toml["site"]["time_zone"]
+            G.site["time_zone_name"] = config_toml["site"]["time_zone_name"]
+            G.site["time_zone_mail"] = config_toml["site"]["time_zone_mail"]
+            G.site["time_zone_mail_name"] = config_toml["site"]["time_zone_mail_name"]
+            # G.site["book_url"] = config_toml["site"]["book_url"]
+
+
+            G.contact["email"] = config_toml["contact"]["email"]
+            G.contact["email_name"] = config_toml["contact"]["email_name"]
+            G.contact["bounce_email"] = config_toml["contact"]["bounce_email"]
 
             G.db["un"] = config_toml["db"]["un"]
             G.db["pw"] = config_toml["db"]["pw"]
@@ -78,11 +93,7 @@ class RouterCtl():
             G.db["port"] = config_toml["db"]["port"]
             G.db["database"] = config_toml["db"]["database"]
 
-            G.site["secret_key"] = config_toml["site"]["secret_key"]
-            G.site["name"] = config_toml["site"]["name"]
-            G.site["tagline"] = config_toml["site"]["tagline"]
-            G.site["keywords"] = config_toml["site"]["keywords"]
-            G.site["baseUrl"] = config_toml["site"]["baseUrl"]
+
 
         except Exception as e:
             logger.exception(f"setConfig_toml Error: {e}")
@@ -92,58 +103,85 @@ class RouterCtl():
             # logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
             # logger.info(f'Anything in G AFTER?: [{G.api}][{G.db}][{G.site}]')
 
-    def doCommon(self):
-        from jug.control.headerCtl import HeaderCtl
-        from jug.control.footerCtl import FooterCtl
+    def cleanUrl(self, url):
 
-        logger.info('doCommon')
+        url2 = parse.unquote_plus(url)
+        url3 = (url2.replace('[', '').replace(']', '').replace('{', '')
+                .replace('}', '').replace('', '').replace('<', '').replace('>', '')
+                .replace('?', '').replace('@', '').replace('*', '').replace('~', '')
+                .replace('!', '').replace('#', '').replace('$', '').replace('%', '')
+                .replace('^', '').replace('&', '').replace('(', '').replace(')', '')
+                .replace(',', '').replace(';', '').replace('+', '').replace('.', ''))
+                # Wrap with parenthesis to break up lines;
 
-        cfDict = {
-            "base_url" : request.url_root,
-            "bestseller_url" : "/rank/bestseller/fiction/",
-            "contact_url" : "/contact/",
-            "link" : "https://hmso.inkonpages.com/book/theswines/"
-        }
+        url4 = ' '.join(url3.split())
 
-        # do Header
-        headerOb = HeaderCtl()
-        headerOb.start(cfDict)
-        self.header = headerOb.getHtml()
+        url5 = parse.quote_plus(url4, safe="/", encoding="utf-8", errors='replace')
 
-        # do Footer
-        footerOb = FooterCtl()
-        footerOb.start(cfDict)
-        self.footer = footerOb.getHtml()
+        # Return clean url with slashes
+        return f'/{url5}/'
+
+    def checkUrl(self):
+
+        logger.info('---checkUrl')
+        logger.info(f'---Beginning state self.redirect variable: {self.redirect}')
+
+        req_url = request.environ["REQUEST_URI"]
+        url_list = req_url.split("/")
+
+        # Home: ['', '']
+        # Home: ['', '?asdf']
+        # some path: ['', 'san%20diego', '?']
+        # url1 = url_list[1]
+
+        # Was trying to catch any suffix beginning with #, but can't seem to do it;
+        # There doesn't seem to be a way to grab that value or its existence;
+        # parsed_url = parse.urlparse(req_url)
+        # fragment = parsed_url[5]
+        # logger.info(f'***url_fragment: {parsed_url}')
+        ##:: ParseResult(scheme='https', netloc='station.paperdrift.com', path='/first second/third fourth/', params='', query='hello=goodbye&ciao=buenes', fragmenurlurlt='marker')
 
 
-        # pass
+        url_list_len = len(url_list)
+        logger.info(f'***checkUrl: {url_list} : {url_list_len}')
+
+        # We're at home page
+        if url_list_len == 2 and url_list[1] != '':
+            # r_url = "/"
+            r_url = G.site["baseUrl"]
+            logger.info(f'***checkUrl, badurl: "{r_url}"')
+            self.redirect = [True, r_url]
+
+        # If like this: ['', 'san%20diego', 'asdf', ''], or more;
+        # Then too many paths; redirect to index 1
+        if url_list_len >= 4:
+            url = url_list[1]
+            r_url = self.cleanUrl(url)
+            logger.info(f'***checkUrl, badurl: "{r_url}"')
+            self.redirect = [True, r_url]
+
+        # if like this: ['', 'san%20diego', '?',]
+        # Then check index 1 and 2
+        if url_list_len == 3:
+            if url_list[2] != '':
+                url = url_list[1]
+                r_url = self.cleanUrl(url)
+                logger.info(f'***checkUrl, badurl: "{r_url}"')
+                self.redirect = [True, r_url]
+
+            else:
+                r_url = self.cleanUrl(url_list[1])
+                url = f'/{url_list[1]}/'
+                if r_url != url:
+                    logger.info(f'***checkUrl, badurl: "{r_url}"')
+                    self.redirect = [True, r_url]
+
+        #/favicon.ico
 
 
-    def doHome(self):
-        from jug.control.homeCtl import HomeCtl
-        logger.info('DoHome')
+        logger.info(f'End. state self.redirect: {self.redirect}')
 
-        self.doCommon()
-
-        homeOb = HomeCtl()
-        homeOb.start()
-        self.article = homeOb.getHtml()
-
-        site_title = homeOb.getConfig()["site_title"]
-
-        base_url = request.url_root
-
-        pageHtml = render_template(
-            "pageHtml.jinja",
-            title = site_title,
-            header = self.header,
-            article = self.article,
-            footer = self.footer,
-            base_url = base_url
-        )
-
-        # return F.stripJinjaWhiteSpace(pageHtml)
-        return pageHtml
+        # self.redirect = [False, '']
 
 
     def doRequestUrl(self):
@@ -152,41 +190,48 @@ class RouterCtl():
 
         rpath = request.url_root
         logger.info("---URL url_root: " + rpath)
+        # root.info("---URL url_root: " + rpath)
           # https://station.paperdrift.com/
 
         rpath = request.base_url
         logger.info("---URL base_url: " + rpath)
+        # root.info("---URL base_url: " + rpath)
             # https://station.paperdrift.com/something/
 
         rpath = request.url
         logger.info("---URL url: " + rpath)
+        # root.info("---URL url: " + rpath)
           # https://station.paperdrift.com/something/?a=b
 
         rpath = request.full_path
         logger.info("---URL full_path: " + rpath)
+        # root.info("---URL full_path: " + rpath)
           # /something/?a=b
           # /?   # will always have a ? on the index or other page ERRONESOUSLY;
 
         rpath = request.environ['PATH_INFO']
         logger.info("---URL PATH_INFO: " + rpath)
+        # root.info("---URL PATH_INFO: " + rpath)
             # /something/
 
         rpath = request.environ['QUERY_STRING']
         logger.info("---URL QUERY_STRING: " + rpath)
+        # root.info("---URL QUERY_STRING: " + rpath)
           # a=b
 
         # These below give me the same IP address
         # rpath = request.remote_addr
-        # logger.info("---Remote Address: " + rpath)
-          # 84.239.5.141
         rpath = request.environ['REMOTE_ADDR']
         logger.info("---Remote Address2: " + rpath)
+        # root.info("---Remote Address2: " + rpath)
           # 84.239.5.141
 
 
         # This gives us the TRUE RAW uri; ? and // are always shown
         rpath = request.environ["REQUEST_URI"]
+        G.sys["req_uri"] = rpath
         logger.info("---uri: " + rpath)
+        # root.info("---uri: " + rpath)
           # /something/?a=b
 
         # print everything; check uwsgi_log
@@ -194,6 +239,39 @@ class RouterCtl():
 
         # Also:
         # logger.debug, logger.info, logger.warning, logger.error, logger.critical
+
+    # def doAjax(self, param):
+    def doAjaxPost(self):
+        from jug.control.ajaxCtl import AjaxCtl
+        logger.info("---ajax POST")
+        request_data = request.get_json()
+
+        ajax_obj = AjaxCtl(request_data)
+        ajax_obj.doAjax()
+        result = ajax_obj.getResult()
+
+        try:
+            self.response_obj = jsonify(result)
+        except Exception as e:
+            logger.info(f'---jsonify sexception: {e}')
+
+        # logger.info(f'---response object (2): {self.response_obj}')
+
+
+    def doHome(self):
+        page_obj = PageCtl()
+        page_obj.doHome()
+
+        self.response_obj = page_obj.getHtml()
+
+
+    def doContact(self):
+        # self.response_obj = "hello"
+
+        page_obj = PageCtl()
+        page_obj.doContact()
+        logger.info("---doContact: after")
+        self.response_obj = page_obj.getHtml()
 
 
     def doRoute(self, sender=True):
@@ -223,14 +301,73 @@ class RouterCtl():
 
     def doBeforeRequest(self):
         logger.info("---doBeforeRequest: Start")
-
-        self.doRequestUrl()
         self.router_init()
-        self.checkUrl()
+        self.doRequestUrl()
+        # self.checkUrl()
         logger.info("---doBeforeRequest: Finished")
 
-
     def parseRoute(self):
+
+        @self.jug.before_request
+        def before_request_route():
+            logger.info("---parseRoute: before_request---")
+            self.doBeforeRequest()
+
+        @self.jug.route("/")
+        def home():
+            logger.info("---in home")
+            self.doHome()
+            return self.doRoute()
+
+        # @self.jug.route('/contact/<path:url>')
+        @self.jug.route('/contact/')
+        def contact():
+            logger.info("---in contact")
+            self.doContact()
+            return self.doRoute()
+
+
+        # @self.jug.route('/<path:url>/')
+        # def locationUrl(url):
+        #     logger.info(f"---in path: {url}")
+        #     self.doLocationUrl(url)
+        #     return self.doRoute()
+
+        # # @self.jug.route('/<path:url>/<path:url2>/')
+        # # def locationUrl2(url, url2):
+        # #     logger.info("---in path url2")
+        # #     self.redirect = [True, f"/{url}/"]
+        # #     return self.doRoute()
+
+
+        # # @self.jug.route('/ajax/', methods=['GET', 'POST'])
+        # @self.jug.route('/ajax/', methods=['POST'])
+        # def ajaxPost():
+        #     logger.info("---in path: ajax")
+        #     # self.doAjax(request.method)
+        #     self.doAjaxPost()
+        #     return self.doRoute()
+
+
+        # @self.jug.after_request
+        # def after_request_route(response_object):
+        #     # Reset this!
+        #     # self.redirect = ["False", '']
+        #     logger.info("---after_request")
+        #     # takes a response object and must return a response object; what is a response object?
+        #     return response_object
+
+        # @self.jug.teardown_request
+        # def show_teardown(exception):
+        #     logger.info("##################################")
+        #     logger.info("############ teardown ############")
+        #     logger.info("##################################")
+        #     # Not sure what teardown does;
+
+
+
+
+    def parseRoutexx(self):
 
         @self.jug.before_request
         def before_request_route():

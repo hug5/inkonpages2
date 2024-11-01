@@ -14,21 +14,20 @@ class PageCtl():
         self.header = ''
         self.footer = ''
         self.ascii_art = ''
-
         self.html = ''
 
     def getHtml(self):
         return self.html
 
     def doHeader(self):
-        ob = HeaderCtl()
-        ob.start()
-        self.header = ob.getHtml()
+        header_ob = HeaderCtl()
+        header_ob.doHeader(G.site)
+        self.header = header_ob.getHtml()
 
     def doFooter(self):
-        ob = FooterCtl()
-        ob.start()
-        self.footer = ob.getHtml()
+        footer_ob = FooterCtl()
+        footer_ob.doFooter()
+        self.footer = footer_ob.getHtml()
 
     def doAscii_art(self):
         # self.ascii_art = render_template(
@@ -38,7 +37,7 @@ class PageCtl():
         # Have to wrap with () to use multiple lines, it seems:
 
         self.ascii_art = ("<!-- \n" +
-        "// [==]  👹 paperdrift  <o=o> //-->")
+        "// [==]  👹 " + G.site["name"] + "  <o=o> //-->")
 
 
     def doCommon(self):
@@ -58,8 +57,8 @@ class PageCtl():
         home_ob = HomeCtl()
         home_ob.doHome()
 
-
         self.article = home_ob.getHtml()
+
         site_title = home_ob.getConfig()["site_title"]
 
         site_keywords = G.site["keywords"]
@@ -76,6 +75,35 @@ class PageCtl():
         logger.info(f'---type info: {type(html)}')
 
         self.html = F.stripJinja(html) + self.ascii_art
+
+    def doContact(self):
+        from jug.control.contactCtl import ContactCtl
+
+        logger.info('DoContact')
+        self.doCommon()
+
+        contact_ob = ContactCtl()
+        contact_ob.doContact()
+
+        self.article = contact_ob.getHtml()
+
+        site_title = contact_ob.getConfig()["site_title"]
+
+        site_keywords = G.site["keywords"]
+
+        html = render_template(
+            "pageHtml.jinja",
+            title = site_title,
+            header = self.header,
+            article = self.article,
+            footer = self.footer,
+            site_keywords = site_keywords
+        )
+
+        logger.info(f'---type info: {type(html)}')
+
+        self.html = F.stripJinja(html) + self.ascii_art
+
 
 
     def doLocationUrl(self, url):

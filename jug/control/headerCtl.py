@@ -12,17 +12,13 @@ class HeaderCtl():
         return self.html
 
 
-    def doHeader(self, cfDict):
+    def doHeader(self, site):
 
         self.html = render_template(
             "headerHtml.jinja",
-            cfDict = cfDict
+            site = site
             # base_url = base_url,
             # bestseller_url = bestseller_url,
             # contact_url = contact_url
         )
-
-
-    def start(self, cfDict):
-        self.doHeader(cfDict)
 

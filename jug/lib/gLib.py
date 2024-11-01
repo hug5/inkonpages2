@@ -1,29 +1,33 @@
 class G():
 
-    db = {}
+    site = dict()
+        # name
+        # tagline
+        # baseUrl
+        # keywords
+
+    contact = dict()
+
+    db = dict()
         # un
         # pw
         # host
         # port
         # database
 
-    api = {}
+    api = dict()
         # weatherAPI_key
 
-    site = {}
-        # name
-        # tagline
-        # baseUrl
-        # keywords
+    sys = dict()
+        # "debug": False,
+        # req_uri = request.environ["REQUEST_URI"]
 
-    contact = {}
-
-    debug = False
 
     # Call at start to reset varables;
     @staticmethod
     def reset():
+        G.site.clear()
+        G.contact.clear()
         G.db.clear()
         G.api.clear()
-        G.site.clear()
-        G.debug = False
+        G.sys.clear()

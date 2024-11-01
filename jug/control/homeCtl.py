@@ -5,7 +5,8 @@ from jug.lib.logger import logger
 from flask import render_template
 # from jug.lib.f import F
 # import random
-from jug.lib.g import G
+from jug.lib.gLib import G
+
 
 
 class HomeCtl():
@@ -23,10 +24,18 @@ class HomeCtl():
 
     def doConfig(self):
 
-        self.config = {
-            # 'site_title' : f"{G.site['name']} | {G.site['tagline']}"
-            'site_title' : f"{G.site['name']}"
-        }
+        # A tuple ternary operator;
+        # If there is a tagline, then combine name with tagline; otherwise, just stie name;
+        self.config = (
+            {'site_title' : f"{G.site['name']}"},
+            {'site_title' : f"{G.site['name']} | {G.site['tagline']}"}) \
+            [ G.site['tagline'] != "" ]
+
+        # self.config = {
+        #     # 'site_title' : f"{G.site['name']} | {G.site['tagline']}"
+        #     'site_title' : f"{G.site['name']}"
+        # }
+
 
     def doHome(self):
         from datetime import date
@@ -41,8 +50,4 @@ class HomeCtl():
             "homeHtml.jinja",
             today = today,
         )
-
-    def start(self):
-        # return self.doHome()
-        self.doHome()
 
