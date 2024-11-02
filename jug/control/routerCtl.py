@@ -283,7 +283,7 @@ class RouterCtl():
             self.doRequestUrl()
 
 
-        @self.jug.route('/<path:url>')  # Catchall for anything else
+        @self.jug.route('/<path:url>/')  # Catchall for anything else
         @self.jug.route("/")
         def home(url=''):
             logger.info("---in home")
@@ -291,17 +291,17 @@ class RouterCtl():
             return self.doRoute()
 
         @self.jug.route('/contact/')
-        @self.jug.route('/contact/<path:url>')
+        @self.jug.route('/contact/<path:url>/') # The slash seems to always add a slash to the end, regardless
         def contact(url=''):
             logger.info("---in contact")
             self.doPage("contact")
             return self.doRoute()
 
-        @self.jug.route('/rank/<path:url>')
-        def rank(url=''):
-            logger.info("---in rank")
-            self.doPage("rank")
-            return self.doRoute()
+        # @self.jug.route('/rank/<path:url>/')
+        # def rank(url=''):
+        #     logger.info("---in rank")
+        #     self.doPage("rank")
+        #     return self.doRoute()
 
 
         # @self.jug.route('/<path:url>/')

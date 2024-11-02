@@ -43,7 +43,7 @@ class ContactCtl():
 
         # Currently, the url should only be /contact/
         # Anything else is wrong;
-        if uri_list[2] != '' or len(uri_list) > 3:
+        if len(uri_list) > 3 or uri_list[2] != '':
             G.sys["error"] = "redirect"
             G.sys["redirect"] = "/" + uri_list[1] + "/"
             return False

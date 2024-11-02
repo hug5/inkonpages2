@@ -1,0 +1,63 @@
+{# --------------------------------------------- }
+
+## Fiction and NonFiction IPBRank
+
+$category = strtoupper($arr[0]["CATEGORY"]);
+
+$tabArr["fiction"] = $category === "FICTION" ? "selectedtab" : "";
+$tabArr["nonfiction"] = $category === "NONFICTION" ? "selectedtab" : "";
+
+$today = F::dateToStdL( time() );
+
+{ --------------------------------------------- #}
+
+<h1>Most Popular Books of ALL TIME</h1>
+
+{#
+
+<section id="rankSection">
+    <article id="rankArticle">
+
+
+        <h1>IP Bestsellers for $category</h1> ******** DIFFERENT TITLE
+        <h1>Most Popular Books of ALL TIME</h1>
+
+
+        <h2>$today</h2>  XXX SAME
+
+
+        <h3>Ranked lists of books sold in the U.S. smartly compiled from multiple sources, he NY Times, Amazon, USA Today, Barnes &#38; Noble, and independent booksellers. Updated daily.</h3> ******** DIFFERENT TEXT
+        <h3>A dubious and questionable list of the most read books. Ever.</h3>
+
+
+        ## $this->doRankTabs($tabArr)
+        ## {% include 'RankTabs.jinja' %}    XXX SAME
+        <div id="categoryTabDiv">
+            <a href="$fictionUrl" class="$fictiontabstatus" id="fictionTabDiv">Fiction</a>
+            <a href="$nonfictionUrl"  class="$nonfictiontabstatus" id="nonfictionTabDiv">NonFiction</a>
+            <a href="$alltimeUrl" class="$alltimetabstatus" id="alltimeTabDiv">All Time</a>
+        </div>
+
+
+
+        ## $this->doBookCell($arr)
+        ## {% include 'bookCell.jinja' %}   ***** DIFFERENT DATA
+        ## Repeat this cell!!
+        <div class="bookcellDiv">
+            <div class="bookcellInnerDiv">
+                <div class="rankDiv"># $rankXX</div>
+                <figure><a href="$amazonurlXX" target="_blank" rel="nofollow"><img src="$imgurlXX" alt="$titleXX"></a></figure>
+                <div class="textboxDiv">
+                    <div class="titleDiv"><a href="$amazonurlXX" target="_blank" rel="nofollow">$titleXX</a></div>
+                    $author ? "<div class="authorDiv">By $authorXX</div>" : "";
+                </div>
+            </div>
+        </div>
+        ## Repeast
+
+
+
+    </article>
+</section>
+
+#}

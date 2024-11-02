@@ -46,7 +46,7 @@ class HomeCtl():
         logger.info(f"---REQUEST_URL: {uri_list}")
 
         # The url should be / only
-        if uri_list[1] != '' or len(uri_list) > 2:
+        if len(uri_list) > 2 or uri_list[1] != '':
             G.sys["error"] = "redirect"
             G.sys["redirect"] = "/"
             return False

@@ -1,0 +1,200 @@
+<?php
+namespace mooHtml\inkonpages;
+
+class RankHtml implements SectionInterface {
+
+    private $html;
+
+    public function getHtml()
+    {
+        return $this->html;
+    }
+
+
+    # ---------------------------------------------
+
+
+
+    private function doWrapHtml($h)
+    { //wrap in "contactSection"
+
+        $html = "<section id="rankSection">";
+            $html .= $h;
+        $html .= "</section>";
+        $this->html = $html;
+    }
+
+
+    # ---------------------------------------------
+
+
+
+    private function doBookCell($arr)
+    {   //puts book data into html cells
+
+        //check for error in db result
+        if ($arr === false) {
+            return "Ooops. There was an error.";
+        }
+
+        $amazon_tag = F::json("config", "amazon_tag"); //get our amazon tag to build our affiliate link
+
+        $h = "";
+
+        for ($i = 0; $i < count($arr); $i++) {
+
+            $rank       = $i + 1;
+            $title      = $arr[$i]["TITLE"] ?? "";
+            $author     = $arr[$i]["AUTHOR"] ?? "";
+            $imgurl     = $arr[$i]["IMGURL"] ?? "/upub/media/book.jpg";
+
+            if (isset($arr[$i]["AMAZONURL"])){
+                $amazonurl  = $arr[$i]["AMAZONURL"];
+                $amazonurl  = F::checkTrailingSlash($amazonurl, "check") ? $amazonurl . $amazon_tag : $amazonurl . "&" . $amazon_tag;
+            }
+            //make amazon search url on the fly if it's blank and add our affiliate code
+            else {
+                $amazonurl = Rank::makeAmazonSearchUrl($title . " " . $author);
+                $amazonurl  = F::checkTrailingSlash($amazonurl, "check") ? $amazonurl . $amazon_tag : $amazonurl . "&" . $amazon_tag;
+
+            }
+
+
+            $h .= "<div class="bookcellDiv">";
+                $h .= "<div class="bookcellInnerDiv">";
+
+                    $h .= "<div class="rankDiv"># $rank</div>";
+                    $h .= "<figure><a href="$amazonurl" target="_blank" rel="nofollow"><img src="$imgurl" alt="$title"></a></figure>";
+                    $h .= "<div class="textboxDiv">";
+                        $h .= "<div class="titleDiv"><a href="$amazonurl" target="_blank" rel="nofollow">$title</a></div>";
+                        $h .= $author ? "<div class="authorDiv">By $author</div>" : "";
+                    $h .= "</div>";
+                $h .= "</div>";
+
+            $h .= "</div>";
+        }
+
+        return $h;
+    }
+
+
+    # ---------------------------------------------
+
+
+    public function doRankTabs($tabArr)
+    {
+
+        $fictionUrl = "/rank/bestseller/fiction/";
+        $nonfictionUrl = "/rank/bestseller/nonfiction/";
+        $alltimeUrl = "/rank/alltime/";
+
+        $fictiontabstatus = $tabArr["fiction"] ?? "";
+        $nonfictiontabstatus = $tabArr["nonfiction"] ?? "";
+        $alltimetabstatus = $tabArr["alltime"] ?? "";
+
+        $html = "<div id="categoryTabDiv">";
+            $html .= "<a href="$fictionUrl" class="$fictiontabstatus" id="fictionTabDiv">Fiction</a>";
+            $html .= "<a href="$nonfictionUrl"  class="$nonfictiontabstatus" id="nonfictionTabDiv">NonFiction</a>";
+            $html .= "<a href="$alltimeUrl" class="$alltimetabstatus" id="alltimeTabDiv">All Time</a>";
+        $html .= "</div>";
+        return $html;
+    }
+
+
+
+
+{% extends "baseHtml.jinja" %}
+  {% include 'searchBox.jinja' %}
+
+{% block header %} {{ header }} {% endblock %}
+{% block article %} {{ article }} {% endblock %}
+{% block footer %} {{ footer }} {% endblock %}
+
+
+
+    # ---------------------------------------------
+
+    ## All Time
+
+    $today = F::dateToStdL( time() );
+
+
+
+    <section id="rankSection">
+
+        <article id="rankArticle">
+
+            <h1>Most Popular Books of ALL TIME</h1>
+            <h2>$today</h2>
+            <h3>A dubious and questionable list of the most read books. Ever.</h3>
+
+            $tabArr["alltime"] = "selectedtab"; //only set the tab you want to be selected;
+
+            include doRankTabs($tabArr)
+            include doBookCell($arr)
+
+        </article>
+
+    </section>
+
+
+
+
+    # ---------------------------------------------
+
+    ## Fiction and NonFiction IPBRank
+
+    $category = strtoupper($arr[0]["CATEGORY"]);
+
+    $tabArr["fiction"] = $category === "FICTION" ? "selectedtab" : "";
+    $tabArr["nonfiction"] = $category === "NONFICTION" ? "selectedtab" : "";
+
+    $today = F::dateToStdL( time() );
+
+
+
+    <section id="rankSection">
+        <article id="rankArticle">
+
+
+            <h1>IP Bestsellers for $category</h1> ******** DIFFERENT TITLE
+            <h1>Most Popular Books of ALL TIME</h1>
+
+
+            <h2>$today</h2>  XXX SAME
+
+
+            <h3>Ranked lists of books sold in the U.S. smartly compiled from multiple sources, he NY Times, Amazon, USA Today, Barnes &#38; Noble, and independent booksellers. Updated daily.</h3> ******** DIFFERENT TEXT
+            <h3>A dubious and questionable list of the most read books. Ever.</h3>
+
+
+            ## $this->doRankTabs($tabArr)
+            {% include 'RankTabs.jinja' %}    XXX SAME
+            <div id="categoryTabDiv">
+                <a href="$fictionUrl" class="$fictiontabstatus" id="fictionTabDiv">Fiction</a>
+                <a href="$nonfictionUrl"  class="$nonfictiontabstatus" id="nonfictionTabDiv">NonFiction</a>
+                <a href="$alltimeUrl" class="$alltimetabstatus" id="alltimeTabDiv">All Time</a>
+            </div>
+
+
+
+            ## $this->doBookCell($arr)
+            {% include 'bookCell.jinja' %}   ***** DIFFERENT DATA
+            ## Repeat this cell!!
+            <div class="bookcellDiv">
+                <div class="bookcellInnerDiv">
+                    <div class="rankDiv"># $rankXX</div>
+                    <figure><a href="$amazonurlXX" target="_blank" rel="nofollow"><img src="$imgurlXX" alt="$titleXX"></a></figure>
+                    <div class="textboxDiv">
+                        <div class="titleDiv"><a href="$amazonurlXX" target="_blank" rel="nofollow">$titleXX</a></div>
+                        $author ? "<div class="authorDiv">By $authorXX</div>" : "";
+                    </div>
+                </div>
+            </div>
+            ## Repeast
+
+
+
+        </article>
+    </section>
+

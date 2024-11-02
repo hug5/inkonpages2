@@ -3,6 +3,7 @@ from flask import render_template
 from jug.lib.fLib import F
 from jug.control.headerCtl import HeaderCtl
 from jug.control.footerCtl import FooterCtl
+from jug.control.rankCtl import RankCtl
 from jug.lib.gLib import G
 
 class PageCtl():
@@ -60,20 +61,39 @@ class PageCtl():
         self.site_keywords = Contact.getConfig().get("site_keywords")
 
 
+    def doRank(self):
+        from jug.control.rankCtl import RankCtl
+        logger.info('DoRank')
+
+        Rank = RankCtl()
+        Rank.doRank()
+        self.article = Rank.getHtml()
+        self.site_title = Rank.getConfig().get("site_title")
+        self.site_keywords = Rank.getConfig().get("site_keywords")
+
+
     def doPage(self, page):
-        self.doHeader()
-        self.doFooter()
-        self.doAscii_art()
+        # # To call a function based on a string variable
+        # def dohome():
+        #     print("Home function is called!")
+        # function_name = "dohome"
+        # globals()[function_name]()  # This will output: Home function is called!
 
         if page == "home":
             self.doHome()
         elif page == "contact":
             self.doContact()
+        elif page == "rank":
+            self.doRank()
         else:
             G.sys["error"] = "redirect"
             G.sys["redirect"] = "/"
 
         if G.sys.get("error"): return
+
+        self.doHeader()
+        self.doFooter()
+        self.doAscii_art()
 
         html = render_template(
             "pageHtml.jinja",
