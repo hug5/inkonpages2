@@ -21,24 +21,18 @@ class RouterCtl():
 
 
     def router_init(self):
+
         logger.info('---router_init---')
+
+        # init variables:
 
         self.response_obj = None
         self.redirect = [False, '']
-        logger.info(f'---In G BEFORE?: [{G.db}][{G.site}]')
-        G.reset()
-        logger.info(f'---In G AFTER?: [{G.db}][{G.site}]')
-
         self.setConfig_toml()
 
         # This makes the session last as per PERMANENT_SESSION_LIFETIME
         session.permanent = True
-
         session["user"] = "Phoebe"  # Some misc user
-
-        if not session.get("location"):
-            session["location"] = []
-
 
         # session["location"] = ["los angeles", "fresno"]
         # session.pop('username', None)
@@ -46,10 +40,12 @@ class RouterCtl():
         # user = session["user"]
         # session["user"] = user                      # init session
 
+
         G.sys["debug"] = False
         if self.jug.debug:
             logger.info('---RUNNING DEBUG MODE')
             G.sys["debug"] = True
+
 
     def getResponse_obj(self):
         return self.response_obj
@@ -121,67 +117,66 @@ class RouterCtl():
         # Return clean url with slashes
         return f'/{url5}/'
 
-    def checkUrl(self):
+    # def checkUrl(self):
+        # logger.info('---checkUrl')
+        # logger.info(f'---Beginning state self.redirect variable: {self.redirect}')
 
-        logger.info('---checkUrl')
-        logger.info(f'---Beginning state self.redirect variable: {self.redirect}')
+        # req_url = request.environ["REQUEST_URI"]
+        # url_list = req_url.split("/")
 
-        req_url = request.environ["REQUEST_URI"]
-        url_list = req_url.split("/")
+        # # Home: ['', '']
+        # # Home: ['', '?asdf']
+        # # some path: ['', 'san%20diego', '?']
+        # # url1 = url_list[1]
 
-        # Home: ['', '']
-        # Home: ['', '?asdf']
-        # some path: ['', 'san%20diego', '?']
-        # url1 = url_list[1]
-
-        # Was trying to catch any suffix beginning with #, but can't seem to do it;
-        # There doesn't seem to be a way to grab that value or its existence;
-        # parsed_url = parse.urlparse(req_url)
-        # fragment = parsed_url[5]
-        # logger.info(f'***url_fragment: {parsed_url}')
-        ##:: ParseResult(scheme='https', netloc='station.paperdrift.com', path='/first second/third fourth/', params='', query='hello=goodbye&ciao=buenes', fragmenurlurlt='marker')
-
-
-        url_list_len = len(url_list)
-        logger.info(f'***checkUrl: {url_list} : {url_list_len}')
-
-        # We're at home page
-        if url_list_len == 2 and url_list[1] != '':
-            # r_url = "/"
-            r_url = G.site["baseUrl"]
-            logger.info(f'***checkUrl, badurl: "{r_url}"')
-            self.redirect = [True, r_url]
-
-        # If like this: ['', 'san%20diego', 'asdf', ''], or more;
-        # Then too many paths; redirect to index 1
-        if url_list_len >= 4:
-            url = url_list[1]
-            r_url = self.cleanUrl(url)
-            logger.info(f'***checkUrl, badurl: "{r_url}"')
-            self.redirect = [True, r_url]
-
-        # if like this: ['', 'san%20diego', '?',]
-        # Then check index 1 and 2
-        if url_list_len == 3:
-            if url_list[2] != '':
-                url = url_list[1]
-                r_url = self.cleanUrl(url)
-                logger.info(f'***checkUrl, badurl: "{r_url}"')
-                self.redirect = [True, r_url]
-
-            else:
-                r_url = self.cleanUrl(url_list[1])
-                url = f'/{url_list[1]}/'
-                if r_url != url:
-                    logger.info(f'***checkUrl, badurl: "{r_url}"')
-                    self.redirect = [True, r_url]
-
-        #/favicon.ico
+        # # Was trying to catch any suffix beginning with #, but can't seem to do it;
+        # # There doesn't seem to be a way to grab that value or its existence;
+        # # parsed_url = parse.urlparse(req_url)
+        # # fragment = parsed_url[5]
+        # # logger.info(f'***url_fragment: {parsed_url}')
+        # ##:: ParseResult(scheme='https', netloc='station.paperdrift.com', path='/first second/third fourth/', params='', query='hello=goodbye&ciao=buenes', fragmenurlurlt='marker')
 
 
-        logger.info(f'End. state self.redirect: {self.redirect}')
+        # url_list_len = len(url_list)
+        # logger.info(f'***checkUrl: {url_list} : {url_list_len}')
 
-        # self.redirect = [False, '']
+        # # We're at home page
+        # if url_list_len == 2 and url_list[1] != '':
+        #     # r_url = "/"
+        #     r_url = G.site["baseUrl"]
+        #     logger.info(f'***checkUrl, badurl: "{r_url}"')
+        #     self.redirect = [True, r_url]
+
+        # # If like this: ['', 'san%20diego', 'asdf', ''], or more;
+        # # Then too many paths; redirect to index 1
+        # if url_list_len >= 4:
+        #     url = url_list[1]
+        #     r_url = self.cleanUrl(url)
+        #     logger.info(f'***checkUrl, badurl: "{r_url}"')
+        #     self.redirect = [True, r_url]
+
+        # # if like this: ['', 'san%20diego', '?',]
+        # # Then check index 1 and 2
+        # if url_list_len == 3:
+        #     if url_list[2] != '':
+        #         url = url_list[1]
+        #         r_url = self.cleanUrl(url)
+        #         logger.info(f'***checkUrl, badurl: "{r_url}"')
+        #         self.redirect = [True, r_url]
+
+        #     else:
+        #         r_url = self.cleanUrl(url_list[1])
+        #         url = f'/{url_list[1]}/'
+        #         if r_url != url:
+        #             logger.info(f'***checkUrl, badurl: "{r_url}"')
+        #             self.redirect = [True, r_url]
+
+        # #/favicon.ico
+
+
+        # logger.info(f'End. state self.redirect: {self.redirect}')
+
+        # # self.redirect = [False, '']
 
 
     def doRequestUrl(self):
@@ -263,50 +258,36 @@ class RouterCtl():
         self.response_obj = page_obj.getHtml()
 
 
-    def doRoute(self, sender=True):
-        # Using True/False to denote whether we want to return a result to close out; or whether this is just an intermediary check;
+    def doRoute(self):
 
-        if self.redirect[0] is True:
-            logger.info(f'--redirecting: {self.redirect[1]}')
-            return redirect(self.redirect[1], code=301)
+        if not G.sys.get("error"):
+            return self.response_obj
+        elif G.sys.get("error") == "redirect":
+            logger.info(f'--redirecting: {G.sys["redirect"]}')
+            return redirect(G.sys["redirect"], code=301)
+        elif G.sys.get("error") == "404":
+            # do 404 page
+            return "404"
+        else:
+            return "404X"
 
-        if sender is True:
-            # resp = make_response(self.response_obj)
-            # resp.set_cookie('paper', '1234', samesite='Lax', secure=True)
-            # resp.set_cookie('rock', '1234', samesite='Lax', secure=True, max_age=7776000)
-            # resp.set_cookie('scissor', '1234')
-            resp = self.response_obj
-            return resp
-
-            # return self.getResponse_obj()
-            # if here, then will implicitly return None
-
-            # const jsonData = { name: "John", age: 32 };
-            # document.cookie = "userData=" + encodeURIComponent(JSON.stringify(jsonData));
-            # const cookies = document.cookie.split('; ');
-            # const userDataCookie = cookies.find(row => row.startsWith('userData='));
-            # const userData = userDataCookie ? JSON.parse(decodeURIComponent(userDataCookie.split('=')[1])) : null;
-
-
-    def doBeforeRequest(self):
-        logger.info("---doBeforeRequest: Start")
-        self.router_init()
-        self.doRequestUrl()
-        # self.checkUrl()
-        logger.info("---doBeforeRequest: Finished")
 
     def parseRoute(self):
 
         @self.jug.before_request
         def before_request_route():
-            logger.info("---parseRoute: before_request---")
-            self.doBeforeRequest()
+            # logger.info("---parseRoute: before_request---")
+            G.init()
+            # self.doBeforeRequest()
+            self.router_init()
+            self.doRequestUrl()
 
+
+        @self.jug.route('/<path:url>')  # Catchall for anything else
         @self.jug.route("/")
-        def home():
+        def home(url=''):
             logger.info("---in home")
             self.doPage("home")
-            # self.doHome()
             return self.doRoute()
 
         @self.jug.route('/contact/')
@@ -314,7 +295,12 @@ class RouterCtl():
         def contact(url=''):
             logger.info("---in contact")
             self.doPage("contact")
-            # self.doContact()
+            return self.doRoute()
+
+        @self.jug.route('/rank/<path:url>')
+        def rank(url=''):
+            logger.info("---in rank")
+            self.doPage("rank")
             return self.doRoute()
 
 
@@ -348,75 +334,76 @@ class RouterCtl():
         #     # takes a response object and must return a response object; what is a response object?
         #     return response_object
 
+        @self.jug.teardown_request
+        def show_teardown(exception):
+            G.init()
+            logger.info(f'---G Global Vars: [{G.sys}] [{G.db}] [{G.site}] [{G.contact}]')
+            logger.info("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+            logger.info("░░░░░░░░░░  teardown  ░░░░░░░░░░░")
+            logger.info("░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+
+
+
+
+    # def parseRoutexx(self):
+
+        # @self.jug.before_request
+        # def before_request_route():
+        #     logger.info("---parseRoute: before_request---")
+        #     self.doBeforeRequest()
+
+        # @self.jug.route('/')
+        # def home():
+        #     logger.info("---in home")
+        #     self.doHome()
+        #     return self.doRoute()
+
+
+        # @self.jug.route('/contact/')
+        # @self.jug.route('/contact/<path:url>')
+        # def contact(url=""):
+        #     if url:
+        #         return redirect("/contact/", code=301)
+        #     return "contact"
+
+
+        # @self.jug.route('/rank/')
+        # @self.jug.route('/rank/bestseller/')
+        # def rank_bad():
+        #     return "rank bad"
+
+        # @self.jug.route('/rank/bestseller/fiction/')
+        # @self.jug.route('/rank/alltime/')
+        # def rank_good():
+        #     return "rank good"
+
+
+        # @self.jug.route('/<path:url>')
+        # def bad_url(url):
+        #     return redirect("/", code=301)
+
+        #  # @self.jug.route('/ajax/', methods=['GET', 'POST'])
+        # @self.jug.route('/ajax/', methods=['POST'])
+        # def ajaxPost():
+        #     logger.info("---in path: ajax")
+        #     self.doAjaxPost()
+        #     return self.doRoute()
+
+        # @self.jug.after_request
+        # def after_request_route(response_object):
+        #     # Reset this!
+        #     # self.redirect = ["False", '']
+        #     logger.info("---after_request")
+        #     # takes a response object and must return a response object; what is a response object?
+        #     return response_object
+
+
         # @self.jug.teardown_request
         # def show_teardown(exception):
         #     logger.info("##################################")
         #     logger.info("############ teardown ############")
         #     logger.info("##################################")
         #     # Not sure what teardown does;
-
-
-
-
-    def parseRoutexx(self):
-
-        @self.jug.before_request
-        def before_request_route():
-            logger.info("---parseRoute: before_request---")
-            self.doBeforeRequest()
-
-        @self.jug.route('/')
-        def home():
-            logger.info("---in home")
-            self.doHome()
-            return self.doRoute()
-
-
-        @self.jug.route('/contact/')
-        @self.jug.route('/contact/<path:url>')
-        def contact(url=""):
-            if url:
-                return redirect("/contact/", code=301)
-            return "contact"
-
-
-        @self.jug.route('/rank/')
-        @self.jug.route('/rank/bestseller/')
-        def rank_bad():
-            return "rank bad"
-
-        @self.jug.route('/rank/bestseller/fiction/')
-        @self.jug.route('/rank/alltime/')
-        def rank_good():
-            return "rank good"
-
-
-        @self.jug.route('/<path:url>')
-        def bad_url(url):
-            return redirect("/", code=301)
-
-         # @self.jug.route('/ajax/', methods=['GET', 'POST'])
-        @self.jug.route('/ajax/', methods=['POST'])
-        def ajaxPost():
-            logger.info("---in path: ajax")
-            self.doAjaxPost()
-            return self.doRoute()
-
-        @self.jug.after_request
-        def after_request_route(response_object):
-            # Reset this!
-            # self.redirect = ["False", '']
-            logger.info("---after_request")
-            # takes a response object and must return a response object; what is a response object?
-            return response_object
-
-
-        @self.jug.teardown_request
-        def show_teardown(exception):
-            logger.info("##################################")
-            logger.info("############ teardown ############")
-            logger.info("##################################")
-            # Not sure what teardown does;
 
 
 

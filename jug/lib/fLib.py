@@ -11,9 +11,16 @@ import os
 import tomli
 from pathlib import Path
 from datetime import datetime
+from jug.lib.gLib import G
 
 
 class F():
+
+    @staticmethod
+    def getUriList():
+    # return the page url
+        req_uri = G.sys["req_uri"]
+        return req_uri.split("/")
 
     @staticmethod
     def getDateTime(param="basic"):

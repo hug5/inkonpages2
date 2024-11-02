@@ -5,6 +5,8 @@ from jug.control.routerCtl import RouterCtl
 # from datetime import timedelta
 import datetime
 from jug.lib.fLib import F
+from jug.lib.gLib import G
+
 
 
 class JugCtl():
@@ -70,9 +72,10 @@ class JugCtl():
 
     def doJug(self):
         # print('hello')
-
-        ro = RouterCtl(self.jug)
-        ro.parseRoute()
+        # G.init() ## doesn't always run
+        Router = RouterCtl(self.jug)
+        # Router.router_init()
+        Router.parseRoute()
         return self.jug
 
 # ---------------------------------------------------

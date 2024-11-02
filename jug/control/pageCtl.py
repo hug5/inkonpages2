@@ -42,9 +42,11 @@ class PageCtl():
 
         Home = HomeCtl()
         Home.doHome()
+        # Don't check for error; just proceed; catch it later;
+        # if not G.sys.get("error"):
         self.article = Home.getHtml()
-        self.site_title = Home.getConfig()["site_title"]
-        self.site_keywords = Home.getConfig()["site_keywords"]
+        self.site_title = Home.getConfig().get("site_title")
+        self.site_keywords = Home.getConfig().get("site_keywords")
         # logger.info(f'---type info: {type(html)}')
 
     def doContact(self):
@@ -54,24 +56,24 @@ class PageCtl():
         Contact = ContactCtl()
         Contact.doContact()
         self.article = Contact.getHtml()
-        self.site_title = Contact.getConfig()["site_title"]
-        self.site_keywords = Contact.getConfig()["site_keywords"]
-        # logger.info(f'---type info: {type(html)}')
+        self.site_title = Contact.getConfig().get("site_title")
+        self.site_keywords = Contact.getConfig().get("site_keywords")
 
 
     def doPage(self, page):
         self.doHeader()
         self.doFooter()
         self.doAscii_art()
-        logger.info('################# DoContact')
-
 
         if page == "home":
             self.doHome()
         elif page == "contact":
             self.doContact()
         else:
-            pass
+            G.sys["error"] = "redirect"
+            G.sys["redirect"] = "/"
+
+        if G.sys.get("error"): return
 
         html = render_template(
             "pageHtml.jinja",
