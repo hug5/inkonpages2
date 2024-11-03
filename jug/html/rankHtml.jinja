@@ -32,16 +32,34 @@ db_result = self.db_result,
             <a href="/rank/alltime/" class="{{alltimetabstatus}}" id="alltimeTabDiv">All Time</a>
         </div>
 
+{#
+  0       1     2          3
+TITLE, AUTHOR, IMGURL, AMAZONURL
+
+{% if "error" in RepoOutput[RepoName.index(repo)] %}
+    <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
+{% elif "Already" in RepoOutput[RepoName.index(repo)] %}
+    <td id="good"> {{ RepoOutput[RepoName.index(repo)] }} </td>
+{% else %}
+    <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
+{% endif %}
+
+#}
+
 
         {% for i in range(db_result|length) %}
 
             <div class="bookcellDiv">
                 <div class="bookcellInnerDiv">
                     <div class="rankDiv">{{i+1}}</div>
-                    <figure><a href="amazonurlXX" target="_blank" rel="nofollow"><img src="imgurlXX" alt="titleXX"></a></figure>
+                    <figure><a href="{{ db_result[i][3] }}" target="_blank" rel="nofollow"><img src="{{ db_result[i][2] }}" alt="{{ db_result[i][0] }}"></a></figure>
                     <div class="textboxDiv">
-                        <div class="titleDiv"><a href="amazonurlXX" target="_blank" rel="nofollow">$titleXX</a></div>
-                        $author ? "<div class="authorDiv">By $authorXX</div>" : "";
+                        <div class="titleDiv"><a href="{{ db_result[i][3] }}" target="_blank" rel="nofollow">{{ db_result[i][0] }}</a></div>
+
+                        {% if db_result[i][1] %}
+                            <div class="authorDiv">By {{ db_result[i][1] }}</div>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>

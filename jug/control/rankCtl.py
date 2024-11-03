@@ -135,7 +135,7 @@ class RankCtl():
 
         category = self.url_page
 
-        query = f"SELECT TITLE, AUTHOR, IMGURL, AMAZONURL FROM IPBRANK WHERE CATEGORY = '{category}' ORDER BY DATETIME DESC, RANK ASC LIMIT 100"
+        query = f"SELECT TITLE, AUTHOR, IMGURL, AMAZONURL, DATETIME FROM IPBRANK WHERE CATEGORY = '{category}' ORDER BY DATETIME DESC, RANK ASC LIMIT 100"
 
         #$result = dbo::doQuery($query);
         #if (!$result) return false;
@@ -154,7 +154,7 @@ class RankCtl():
 
             # Do the first row; get the datetime
             f_row = curs.fetchone()
-            date_str1 = f_row[1].strftime("%Y-%m-%d %H:%M:%S")
+            date_str1 = f_row[4].strftime("%Y-%m-%d %H:%M:%S")
             result_list.append(f_row)
 
             logger.info(f"db_result: {type(date_str1)}")
@@ -165,7 +165,7 @@ class RankCtl():
                 # date_str = row[1].datetime()
 
                 # Get the datetime as string; if the next date is different, then stop
-                date_str = row[1].strftime("%Y-%m-%d %H:%M:%S")
+                date_str = row[4].strftime("%Y-%m-%d %H:%M:%S")
 
                 if date_str != date_str1:
                     # logger.info(f"db_result: {date_str} not equal")
