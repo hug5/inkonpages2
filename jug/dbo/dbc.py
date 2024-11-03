@@ -17,6 +17,7 @@ class Dbc():
         # self.db.commit()
         pass
 
+    # Public
     def doDisconnect(self):
 
         # if self.db:
