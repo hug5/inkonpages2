@@ -2,7 +2,7 @@ from jug.lib.logger import logger
 
 import mariadb
 # from jug.lib.f import F
-from jug.lib.g import G
+from jug.lib.gLib import G
 
 
 class Dbc():

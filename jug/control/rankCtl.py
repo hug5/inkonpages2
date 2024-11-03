@@ -1,15 +1,15 @@
-# import logging
-# logger = logging.getLogger(__name__)
-
 # from jug.lib.logger import logger, root
 from jug.lib.logger import logger
 from flask import render_template
-# from jug.lib.f import F
-# import random
 from jug.lib.gLib import G
 from jug.lib.fLib import F
+
 from jug.dbo.dbc import Dbc
 
+# try:
+#     from jug.dbo.dbc import Dbc
+# except Exception as e:
+#     logger.info(f"XXX error: {e}")
 
 
 class RankCtl():
@@ -86,65 +86,81 @@ class RankCtl():
             self.url_page = uri_list[3]
             # fiction or nonfiction page
 
-    def getDb(self):
+    # def getDb(self):
 
-        try:
-            dbo = Dbc()
-            dbo.doConnect()
+    #     try:
+    #         dbo = Dbc()
+    #         dbo.doConnect()
 
-            # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
-            query  = "SELECT HEADLINE FROM ARTICLES WHERE STATUS='N' AND TAGS='paperdrift'"
+    #         # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
+    #         query  = "SELECT HEADLINE FROM ARTICLES WHERE STATUS='N' AND TAGS='paperdrift'"
 
-            # get back cursor
-            curs = dbo.doQuery(query)
-            # logger.info(f"curs: {curs}")  # this gives me a binary value;
+    #         # get back cursor
+    #         curs = dbo.doQuery(query)
+    #         # logger.info(f"curs: {curs}")  # this gives me a binary value;
 
-            result_list = []
+    #         result_list = []
 
-            # If single field, do this way:
-            for row in curs:
-                result_list.append(row[0])
+    #         # If single field, do this way:
+    #         for row in curs:
+    #             result_list.append(row[0])
 
-            logger.info(f"db_result: {result_list}")
+    #         logger.info(f"db_result: {result_list}")
 
 
-            db_result = result_list[ random.randrange( len(result_list) ) ]
-            logger.info(f"db_result: {db_result}")
+    #         db_result = result_list[ random.randrange( len(result_list) ) ]
+    #         logger.info(f"db_result: {db_result}")
 
-        except Exception as e:
-            # print(f"Error committing transaction: {e}")
-            return [["bad db connection", e]]
-        finally:
-            dbo.doDisconnect()
-            pass
+    #     except Exception as e:
+    #         # print(f"Error committing transaction: {e}")
+    #         # return [["bad db connection", e]]
+    #         logger.info(f"exception: {e}")
 
-        # logger.info('return result')
-        return [db_result]
-            # return as list, not string; will combine with other news list later;
+    #     finally:
+    #         dbo.doDisconnect()
+    #         pass
+
+    #     # logger.info('return result')
+    #     return [db_result]
+    #         # return as list, not string; will combine with other news list later;
 
     def getBSListDb(self, category):
+
+        logger.info("---begin getBSListDb")
 
         dbo = Dbc()
         dbo.doConnect()
 
-        query  = "SELECT * FROM IPBRANK WHERE CATEGORY = f'{category}' ORDER BY DATETIME DESC, RANK ASC LIMIT 100"
+        query  = f"SELECT * FROM IPBRANK WHERE CATEGORY = '{category}' ORDER BY DATETIME DESC, RANK ASC LIMIT 100"
 
         #$result = dbo::doQuery($query);
         #if (!$result) return false;
 
         try:
             curs = dbo.doQuery(query)
+
             result_list = []
 
             for row in curs:
-                result_list.append(row[0])
+                result_list.append(row[1])  # date
+                # result_list.append(row)
 
             logger.info(f"db_result: {result_list}")
 
+            '''
+            # db_result: [
+            (52104, datetime.datetime(2021, 8, 3, 6, 0, 7), 'fiction', 1, 'The Last Thing He Told Me', ' Laura Dave', 'https://www.amazon.com/dp/B08LDY1MKW/', 'https://m.media-amazon.com/images/I/81BdMSuI5ZS.jpg'),
+            (52105, datetime.datetime(2021, 8, 3, 6, 0, 7), 'fiction', 2, 'Black Ice', 'Brad Thor', 'https://www.amazon.com/ dp/B08LDWSKZT/', 'https://m.media-amazon.com/images/I/81JFwwMELdL.jpg'),
+            (52106, datetime.datetime(2021, 8, 3, 6, 0, 7), 'fiction', 3, 'The Paper Palace', 'Miranda Cowley Heller', 'https://www.amazon.com/dp/B08R96D5FF/', ' https://m.media-amazon.com/images/I/81XXxS1L4iS.jpg'),
+            (52107, datetime.datetime(2021, 8, 3, 6, 0, 7), 'fiction ', 4, 'The Cellist', 'Daniel Silva', 'https://www.amazon.com/dp/B08L3NB7FL/', 'https://m.media-amazon.com/image s/I/71LfMuoD+7S.jpg'),
+            (52108, datetime.datetime(2021, 8, 3, 6, 0, 7), 'fiction', 5, 'False Witness', 'Karin Sl aughter', 'https://www.amazon.com/dp/B09239CX27/', 'https://m.media-amazon.com/images/I/81-fM8bLdNS.jpg'),
+            (521 09, datetime.datetime(2021, 8, 3, 6, 0, 7), 'fiction', 6, 'People We Meet On Vacation', 'Emily Henry', 'https:/ /www.amazon.com/dp/B08FZNYQJC/', 'https://m.media-amazon.com/images/I/81yUZUVyOcS.jpg'),
+            '''
 
         except Exception as e:
             # print(f"Error committing transaction: {e}")
-            return [["bad db connection", e]]
+            logger.info(f"XXXXXXX db exception: {e}")
+
         finally:
             dbo.doDisconnect()
             pass

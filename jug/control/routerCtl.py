@@ -297,11 +297,11 @@ class RouterCtl():
             self.doPage("contact")
             return self.doRoute()
 
-        # @self.jug.route('/rank/<path:url>/')
-        # def rank(url=''):
-        #     logger.info("---in rank")
-        #     self.doPage("rank")
-        #     return self.doRoute()
+        @self.jug.route('/rank/<path:url>/')
+        def rank(url=''):
+            logger.info("---in rank")
+            self.doPage("rank")
+            return self.doRoute()
 
 
         # @self.jug.route('/<path:url>/')

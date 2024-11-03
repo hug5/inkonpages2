@@ -3,8 +3,8 @@ from flask import render_template
 from jug.lib.fLib import F
 from jug.control.headerCtl import HeaderCtl
 from jug.control.footerCtl import FooterCtl
-from jug.control.rankCtl import RankCtl
 from jug.lib.gLib import G
+from jug.control.rankCtl import RankCtl
 
 class PageCtl():
 
