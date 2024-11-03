@@ -276,7 +276,7 @@ class RankCtl():
 
 
         # Saturday, Nov 2, 2024
-        today = datetime.today().strftime("%A, %b %-d, %Y")
+        today = datetime.today().strftime("%b %-d, %Y. %A")
 
         self.html = render_template(
             "rankHtml.jinja",

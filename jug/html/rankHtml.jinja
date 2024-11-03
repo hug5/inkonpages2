@@ -32,19 +32,19 @@ db_result = self.db_result,
             <a href="/rank/alltime/" class="{{alltimetabstatus}}" id="alltimeTabDiv">All Time</a>
         </div>
 
-{#
-  0       1     2          3
-TITLE, AUTHOR, IMGURL, AMAZONURL
+        {#
+          0       1     2          3
+        TITLE, AUTHOR, IMGURL, AMAZONURL
 
-{% if "error" in RepoOutput[RepoName.index(repo)] %}
-    <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
-{% elif "Already" in RepoOutput[RepoName.index(repo)] %}
-    <td id="good"> {{ RepoOutput[RepoName.index(repo)] }} </td>
-{% else %}
-    <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
-{% endif %}
+        {% if "error" in RepoOutput[RepoName.index(repo)] %}
+            <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
+        {% elif "Already" in RepoOutput[RepoName.index(repo)] %}
+            <td id="good"> {{ RepoOutput[RepoName.index(repo)] }} </td>
+        {% else %}
+            <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
+        {% endif %}
 
-#}
+        #}
 
 
         {% for i in range(db_result|length) %}
