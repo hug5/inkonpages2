@@ -57,5 +57,7 @@ class ContactCtl():
         self.doConfig()
         self.html = render_template(
             "contactHtml.jinja",
+            email = G.contact.get("email"),
+            email_name = G.contact.get("email_name")
         )
 

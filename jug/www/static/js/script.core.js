@@ -25,28 +25,32 @@ function setContactSection() {
 
     var doAjax = function(name, email, msg) {
 
-        var p_action  = "contactUsMsg",
-            p_name    = lib.ajaxencode(name),
-            p_email   = lib.ajaxencode(email),
-            p_msg     = lib.ajaxencode(msg),
+        // var p_action  = "contactUsMsg",
+        //     p_name    = lib.ajaxencode(name),
+        //     p_email   = lib.ajaxencode(email),
+        //     p_msg     = lib.ajaxencode(msg),
 
-            param     = "action=" + p_action +
-                        "&name=" + p_name +
-                        "&email=" + p_email +
-                        "&msg=" + p_msg;
-// alert(param);
-        $.post(G.ajaxUrl, param, function(result) {
+        //     param     = "action=" + p_action +
+        //                 "&name=" + p_name +
+        //                 "&email=" + p_email +
+        //                 "&msg=" + p_msg;
+
+        let data = {
+            "action" : "contact_us",
+            "name" : lib.ajaxencode(name),
+            "email" : lib.ajaxencode(email),
+            "msg" : lib.ajaxencode(msg),
+        }
+
+        $.post(G.ajaxUrl, data, function(result) {
 
             $(this_btn).removeClass("disabled");
-
-            // alert(result)
 
             if (result == "ok") {
                 $("#msgForm").slideUp(400, function() {
                     $("#formSection p").fadeIn(300).html("YOUR MESSAGE WAS SENT!");
                 });
             }
-
             else {
                 $("#formSection p").fadeIn(300).html("Oops! There was an error.");
             }

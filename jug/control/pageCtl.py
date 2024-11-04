@@ -81,7 +81,7 @@ class PageCtl():
         html = render_template(
             "pageHtml.jinja",
             title = self.site_title,
-            site_keywords = self.site_keywords,
+            keywords = self.site_keywords,
             header = self.header,
             article = self.article,
             footer = self.footer,
