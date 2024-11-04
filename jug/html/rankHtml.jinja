@@ -22,18 +22,18 @@ db_result = self.db_result,
 
         <h1>{{title}}</h1>
         <h2>{{today}}</h2>
-        <h3>{{ tagline }}</h3>
+        <h3>{{tagline}}</h3>
 
         {## $this->doRankTabs($tabArr)
         ## {% include 'RankTabs.jinja' %}    XXX SAME #}
-        <div id="categoryTabDiv">
+        <div id="categoryTabDiv" category="{{category}}">
             <a href="/rank/bestseller/fiction/" class="{{fictiontabstatus}}" id="fictionTabDiv">Fiction</a>
             <a href="/rank/bestseller/nonfiction/"  class="{{nonfictiontabstatus}}" id="nonfictionTabDiv">NonFiction</a>
             <a href="/rank/alltime/" class="{{alltimetabstatus}}" id="alltimeTabDiv">All Time</a>
         </div>
 
         <section id="bookCellContainer">
-            {% include 'rankBookCellHtml.jinja' %}
+            {#{% include 'rankBookCellHtml.jinja' %}#}
         </section>
 
 

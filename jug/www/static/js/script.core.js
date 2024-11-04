@@ -125,7 +125,6 @@ function doDelayload() {
 function setRankSection() {
     if ( $("#rankSection").length < 1 ) return false;
 
-    lib.imgRowCellRndMove(); //randomize position of our cells;
 
     //We want to change the z-index of the parent of the element we hover over
     (function setCellHoverEffect() {
@@ -142,7 +141,7 @@ function setRankSection() {
 
     })();
 
-
+    // lib.imgRowCellRndMove(); //randomize position of our cells;
     // put the ajax call into a self-calling function;
     (function() {
 
@@ -152,6 +151,8 @@ function setRankSection() {
 
         let data = {
             "action" : "get_rank",
+            "category" : $("#categoryTabDiv").attr("category")
+              // fiction, nonfiction, alltime
         }
 
         $.ajax({
@@ -182,9 +183,20 @@ function setRankSection() {
             }
 
             // alert(data["rank_result"]);
-            $("#bookCellContainer").html(data["rank_result"]);
+            $("#bookCellContainer")
+                .html(data["rank_result"])
+                .fadeTo(700, 1,
+                // move the cells after finish fadeTo;
+                function(){
+                    lib.imgRowCellRndMove();
+                });
 
-            lib.imgRowCellRndMove();
+            // $("#bookCellContainer").fadeIn(450);
+
+            // create an effect of movement post fadein;
+            // let move = setTimeout(function() {
+                // lib.imgRowCellRndMove();
+            // }, 700);
 
             ////
               // let location = data["title"];

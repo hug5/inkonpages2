@@ -5,7 +5,6 @@ from jug.lib.logger import logger
 # from jug.lib.gLib import G
 # import random
 # import random
-from jug.lib.fLib import F
 
 
 
@@ -56,27 +55,22 @@ class AjaxCtl:
     def get_rank(self):
 
         from jug.dbo.rankDb import RankDb
+        from jug.control.rankCtl import RankCtl
 
-        uri_list = F.getUriList()
-        if uri_list[2] != "bestseller":
-            url_page = "alltime"
-        else:
-            url_page = uri_list[3]
-            # fiction or nonfiction page
+        category = self.data['category']
+
 
 
         # Get news item from Yahoo News with request
         rankDb = RankDb()
 
-        if url_page == "alltime":
+        if category == "alltime":
             rankDb.getAlltimeRankDb()
         else:
-            rankDb.getBSListDb(url_page)
+            rankDb.getBSListDb(category)
 
         db_result = rankDb.get_db_result()
 
-
-        from jug.control.rankCtl import RankCtl
 
         Rank = RankCtl()
         Rank.do_rankBookCell(db_result)
