@@ -99,84 +99,23 @@ class RouterCtl():
             # logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
             # logger.info(f'Anything in G AFTER?: [{G.api}][{G.db}][{G.site}]')
 
-    def cleanUrl(self, url):
+    # def cleanUrl(self, url):
+        # url2 = parse.unquote_plus(url)
+        # url3 = (url2.replace('[', '').replace(']', '').replace('{', '')
+        #         .replace('}', '').replace('', '').replace('<', '').replace('>', '')
+        #         .replace('?', '').replace('@', '').replace('*', '').replace('~', '')
+        #         .replace('!', '').replace('#', '').replace('$', '').replace('%', '')
+        #         .replace('^', '').replace('&', '').replace('(', '').replace(')', '')
+        #         .replace(',', '').replace(';', '').replace('+', '').replace('.', ''))
+        #         # Wrap with parenthesis to break up lines;
 
-        url2 = parse.unquote_plus(url)
-        url3 = (url2.replace('[', '').replace(']', '').replace('{', '')
-                .replace('}', '').replace('', '').replace('<', '').replace('>', '')
-                .replace('?', '').replace('@', '').replace('*', '').replace('~', '')
-                .replace('!', '').replace('#', '').replace('$', '').replace('%', '')
-                .replace('^', '').replace('&', '').replace('(', '').replace(')', '')
-                .replace(',', '').replace(';', '').replace('+', '').replace('.', ''))
-                # Wrap with parenthesis to break up lines;
+        # url4 = ' '.join(url3.split())
 
-        url4 = ' '.join(url3.split())
+        # url5 = parse.quote_plus(url4, safe="/", encoding="utf-8", errors='replace')
 
-        url5 = parse.quote_plus(url4, safe="/", encoding="utf-8", errors='replace')
+        # # Return clean url with slashes
+        # return f'/{url5}/'
 
-        # Return clean url with slashes
-        return f'/{url5}/'
-
-    # def checkUrl(self):
-        # logger.info('---checkUrl')
-        # logger.info(f'---Beginning state self.redirect variable: {self.redirect}')
-
-        # req_url = request.environ["REQUEST_URI"]
-        # url_list = req_url.split("/")
-
-        # # Home: ['', '']
-        # # Home: ['', '?asdf']
-        # # some path: ['', 'san%20diego', '?']
-        # # url1 = url_list[1]
-
-        # # Was trying to catch any suffix beginning with #, but can't seem to do it;
-        # # There doesn't seem to be a way to grab that value or its existence;
-        # # parsed_url = parse.urlparse(req_url)
-        # # fragment = parsed_url[5]
-        # # logger.info(f'***url_fragment: {parsed_url}')
-        # ##:: ParseResult(scheme='https', netloc='station.paperdrift.com', path='/first second/third fourth/', params='', query='hello=goodbye&ciao=buenes', fragmenurlurlt='marker')
-
-
-        # url_list_len = len(url_list)
-        # logger.info(f'***checkUrl: {url_list} : {url_list_len}')
-
-        # # We're at home page
-        # if url_list_len == 2 and url_list[1] != '':
-        #     # r_url = "/"
-        #     r_url = G.site["baseUrl"]
-        #     logger.info(f'***checkUrl, badurl: "{r_url}"')
-        #     self.redirect = [True, r_url]
-
-        # # If like this: ['', 'san%20diego', 'asdf', ''], or more;
-        # # Then too many paths; redirect to index 1
-        # if url_list_len >= 4:
-        #     url = url_list[1]
-        #     r_url = self.cleanUrl(url)
-        #     logger.info(f'***checkUrl, badurl: "{r_url}"')
-        #     self.redirect = [True, r_url]
-
-        # # if like this: ['', 'san%20diego', '?',]
-        # # Then check index 1 and 2
-        # if url_list_len == 3:
-        #     if url_list[2] != '':
-        #         url = url_list[1]
-        #         r_url = self.cleanUrl(url)
-        #         logger.info(f'***checkUrl, badurl: "{r_url}"')
-        #         self.redirect = [True, r_url]
-
-        #     else:
-        #         r_url = self.cleanUrl(url_list[1])
-        #         url = f'/{url_list[1]}/'
-        #         if r_url != url:
-        #             logger.info(f'***checkUrl, badurl: "{r_url}"')
-        #             self.redirect = [True, r_url]
-
-        # #/favicon.ico
-
-
-        # logger.info(f'End. state self.redirect: {self.redirect}')
-
-        # # self.redirect = [False, '']
 
 
     def doRequestUrl(self):
@@ -249,7 +188,7 @@ class RouterCtl():
         try:
             self.response_obj = jsonify(result)
         except Exception as e:
-            logger.info(f'---jsonify sexception: {e}')
+            logger.info(f'---jsonify exception: {e}')
 
         # logger.info(f'---response object (2): {self.response_obj}')
 

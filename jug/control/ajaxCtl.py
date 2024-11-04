@@ -4,8 +4,8 @@ from jug.lib.logger import logger
 # from jug.lib.weather_api import Weather_api
 # from jug.lib.gLib import G
 # import random
-from jug.lib.news_scrape import News_Scrape
-import random
+# import random
+from jug.lib.fLib import F
 
 
 
@@ -53,88 +53,42 @@ class AjaxCtl:
 
         self.result = json_result
 
-    def get_news_db(self):
-        # Get news items from MariaDB
-        # F.uwsgi_log("Call HomeDb")
-        try:
-            from jug.dbo.homeDb import HomeDb
-            home_obj = HomeDb()
-            result_list = home_obj.doHomeDb()
-            logger.info(f'reqs: {result_list}')
+    def get_rank(self):
 
-        except Exception as e:
-            logger.info(f'HomeDb exception: {e}')
+        from jug.dbo.rankDb import RankDb
 
-            result_list = ["Walking After Eating Is a Science-Backed Way To Lose Weight, but Experts Say Timing Is Crucial."]
-
-        logger.info(f'HomeDb result list: {result_list}')
-
-        return result_list
+        uri_list = F.getUriList()
+        if uri_list[2] != "bestseller":
+            url_page = "alltime"
+        else:
+            url_page = uri_list[3]
+            # fiction or nonfiction page
 
 
-    def get_news_scrape(self):
+        # Get news item from Yahoo News with request
+        rankDb = RankDb()
 
-        try:
-            # Get news item from Yahoo News with request
-            news_scrapeO = News_Scrape()
-            # result_list = news_scrapeO.get_news()[0]
-            news_scrapeO.get_news()
-            result_list = news_scrapeO.getResult()
-            # returning multiarray;
-            # first is the headline; 2nd the link;
-            # [0]: get back just the headlines
-        except Exception as e:
-            logger.info(f'News_Scrape exception: {e}')
-            result_list = []
+        if url_page == "alltime":
+            rankDb.getAlltimeRankDb()
+        else:
+            rankDb.getBSListDb(url_page)
 
-        return result_list
-
-
-    def get_news_result(self):
-
-        result_list = self.get_news_scrape()
-        # result_list2 = self.get_news_db
-
-        # logger.info(f'99999999999 -- News_Scrape result list: {result_list}')
-
-        # Combine 2 lists:
-        # result_list.extend(result_list2)
-
-        # If no news, then make up fake ones:
-        if len(result_list) < 1:
-            link = "https://news.yahoo.com/"
-            result_list = [
-                ["Walking After Eating Is a Science-Backed Way To Lose Weight, but Experts Say Timing Is Crucial.", link],
-                ["Citrus fruits are considered a superfood. But can they also help you sleep or avoid motion sickness?", link],
-                ["Could fungi actually cause a zombie apocalypse?", link]
-            ]
-
-        # randomize list
-        random.shuffle(result_list)
+        db_result = rankDb.get_db_result()
 
         json_result = {}
         json_result["status"] = "ok"
-        json_result["news_result"] = result_list
-
-        # logger.info(f'json reqs: {json_result}')
+        json_result["rank_result"] = db_result
 
         self.result = json_result
 
 
     def doAjax(self):
 
-        if self.action == "get_location":
-            city = self.data.get("city", False)
-            if not city:
-                self.result = {
-                    "status" : "bad",
-                    "error_message" : "No location."
-                }
-                return
+        if self.action == "get_rank":
+            self.get_rank()
 
-            self.get_Britannica_Location(city)
-
-        elif self.action == "get_news_result":
-            self.get_news_result()
-
-
+            # if some problem:
+                # self.result = {
+                #     "status" : "bad",
+                #     "error_message" : "No location."
+                # }

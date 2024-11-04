@@ -271,12 +271,12 @@ class RankCtl():
         fictiontabstatus = ""
         nonfictiontabstatus = ""
         if self.url_page == "alltime":
-            self.doAlltimeRankDb()
+            # self.doAlltimeRankDb()
             tagline = "A dubious and questionable list of the most read books. Ever."
             title = "Most Popular Books of ALL TIME"
             alltimetabstatus = "selectedtab"
         else:
-            self.doBSListDb()
+            # self.doBSListDb()
             tagline = "Ranked lists of books sold in the U.S. smartly compiled from multiple sources, he NY Times, Amazon, USA Today, Barnes & Noble, and independent booksellers. Updated daily."
             category = self.url_page # fiction, nonfiction, alltime
             title = f"IP Bestsellers for {category}"

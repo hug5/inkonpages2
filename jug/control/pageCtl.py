@@ -87,8 +87,9 @@ class PageCtl():
             footer = self.footer,
         )
 
-        logger.info(f'---type info: {type(html)}')
-        self.html = F.stripJinja(html) + self.ascii_art
+        # logger.info(f'---type info: {type(html)}')
+        # self.html = F.stripJinja(html) + self.ascii_art
+        self.html = html
 
     def doPage_route(self, page):
         # # To call a function based on a string variable

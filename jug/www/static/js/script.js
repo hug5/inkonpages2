@@ -20,6 +20,9 @@ let ajaxUrl = "https://ww2.inkonpages.com/ajax/";
 function set_rank() {
     if ( $("#rankSection").length < 1 ) return false;
 
+    alert("here");
+
+
     let data = {
         "action" : "get_rank",
     }
@@ -50,18 +53,22 @@ function set_rank() {
             return
         }
 
-        // let location = data["title"];
-        // let url = data["url"];
-        // let description = data["description"];
-        // let imageUrl = data["imageUrl"];
 
-        // $("#location_img").attr("src", imageUrl);
-        // $("#location_description_box a").each(function(){
-        //     $(this).attr("href", url);
-        // })
-        // $("#location_description span:first-child").html(description);
+        $("#bookCellContainer").html() = data["rank_result"];
 
-        // $("#location_box").fadeIn(500)
+        ////
+          // let location = data["title"];
+          // let url = data["url"];
+          // let description = data["description"];
+          // let imageUrl = data["imageUrl"];
+
+          // $("#location_img").attr("src", imageUrl);
+          // $("#location_description_box a").each(function(){
+          //     $(this).attr("href", url);
+          // })
+          // $("#location_description span:first-child").html(description);
+
+          // $("#location_box").fadeIn(500)
 
     })
 
