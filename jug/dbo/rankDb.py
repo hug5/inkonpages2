@@ -17,6 +17,8 @@ class RankDb():
     # public
     def getBSListDb(self, category):
 
+        # category: fiction, nonfiction, alltime
+
         logger.info("---begin getBSListDb")
 
         dbo = Dbc()

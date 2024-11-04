@@ -238,6 +238,7 @@ class RouterCtl():
     # def doAjax(self, param):
     def doAjaxPost(self):
         from jug.control.ajaxCtl import AjaxCtl
+
         logger.info("---ajax POST")
         request_data = request.get_json()
 
@@ -301,6 +302,14 @@ class RouterCtl():
         def rank(url=''):
             logger.info("---in rank")
             self.doPage("rank")
+            return self.doRoute()
+
+        # @self.jug.route('/ajax/', methods=['GET', 'POST'])
+        @self.jug.route('/ajax/', methods=['POST'])
+        def ajaxPost():
+            logger.info("---in ajaxPost")
+            # self.doAjax(request.method)
+            self.doAjaxPost()
             return self.doRoute()
 
 
