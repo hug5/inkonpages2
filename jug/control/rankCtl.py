@@ -129,7 +129,7 @@ class RankCtl():
     def doBSListDb(self):
 
         rankDb = RankDb()
-        rankDb.getBSListDb()
+        rankDb.getBSListDb(self.url_page)
         self.db_result = rankDb.get_db_result()
 
         #####

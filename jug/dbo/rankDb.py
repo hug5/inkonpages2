@@ -15,14 +15,14 @@ class RankDb():
         return self.db_result
 
     # public
-    def getBSListDb(self):
+    def getBSListDb(self, category):
 
         logger.info("---begin getBSListDb")
 
         dbo = Dbc()
         dbo.doConnect()
 
-        category = self.url_page
+        # category = self.url_page
 
         query = f"SELECT TITLE, AUTHOR, IMGURL, AMAZONURL, DATETIME FROM IPBRANK WHERE CATEGORY = '{category}' ORDER BY DATETIME DESC, RANK ASC LIMIT 100"
 
