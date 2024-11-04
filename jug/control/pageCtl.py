@@ -72,6 +72,24 @@ class PageCtl():
         self.site_keywords = Rank.getConfig().get("site_keywords")
 
 
+    def doPage_render_template(self):
+
+        self.doHeader()
+        self.doFooter()
+        self.doAscii_art()
+
+        html = render_template(
+            "pageHtml.jinja",
+            title = self.site_title,
+            site_keywords = self.site_keywords,
+            header = self.header,
+            article = self.article,
+            footer = self.footer,
+        )
+
+        logger.info(f'---type info: {type(html)}')
+        self.html = F.stripJinja(html) + self.ascii_art
+
     def doPage(self, page):
         # # To call a function based on a string variable
         # def dohome():
@@ -91,19 +109,6 @@ class PageCtl():
 
         if G.sys.get("error"): return
 
-        self.doHeader()
-        self.doFooter()
-        self.doAscii_art()
 
-        html = render_template(
-            "pageHtml.jinja",
-            title = self.site_title,
-            site_keywords = self.site_keywords,
-            header = self.header,
-            article = self.article,
-            footer = self.footer,
-        )
-
-        logger.info(f'---type info: {type(html)}')
-        self.html = F.stripJinja(html) + self.ascii_art
+        self.doPage_render_template()
 
