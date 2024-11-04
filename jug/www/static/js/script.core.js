@@ -153,15 +153,16 @@ function setRankSection() {
         "action" : "get_rank",
     }
 
+
     $.ajax({
         type: "POST",
-        url: ajaxUrl,
+        // url: ajaxUrl,
         url: G.ajaxUrl,
         async: true,
         data: JSON.stringify(data),
         cache: true,
         processData: false,
-        contentType: "application/json; charset=UTF-8",
+        contentType: "application/json; charset=UTF-8"
         // most settings above are the default;
     })
 
@@ -170,6 +171,7 @@ function setRankSection() {
         // textStatus: A string describing the status of the response (e.g., "success").
         // jqXHR: The jQuery XMLHttpRequest (jqXHR) object, which contains
         // information about the request and response.
+
 
         console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus);
 
@@ -180,8 +182,8 @@ function setRankSection() {
             return
         }
 
-
-        $("#bookCellContainer").html() = data["rank_result"];
+        // alert(data["rank_result"]);
+        $("#bookCellContainer").html(data["rank_result"]);
 
         ////
           // let location = data["title"];
@@ -200,7 +202,9 @@ function setRankSection() {
     })
 
     .fail(function(jqXHR, textStatus, errorThrown) {
+        alert("error");
         console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
+
         // jqXHR: The jqXHR object representing the failed request.
         // textStatus: A string categorizing the type of error that occurred
         // (e.g., "timeout", "error", "abort", or "parsererror").
