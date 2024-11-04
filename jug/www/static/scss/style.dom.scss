@@ -610,6 +610,7 @@ body{
             background-color:rgba(255, 255, 255, .85);
             float:left;
             padding:5px;
+            clear:left
         }
 
         #textSection{
@@ -617,8 +618,10 @@ body{
             padding:30px;
             padding-left:0px;
 
-            p{
-                clear:left;
+            p:first-of-type{
+                font-size:1.2em;
+                font-weight:700;
+                color:#585858;
             }
 
             p#emaillink{
@@ -627,10 +630,11 @@ body{
 
                 a{
                     font-weight:500;
-                    // background-color: #E9E9E9;
-                    border-color: #484848;
-                    border-radius: 20px;
-                    padding:0 10px 0 10px;
+                    // background-color: #D0E0DF;
+                    // border: 1px solid #484848;
+                    // border-radius: 7px;
+                    // padding:0 10px 0 10px;
+                    border-bottom:1px solid
                 }
             }
 
