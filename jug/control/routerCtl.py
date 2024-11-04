@@ -180,6 +180,7 @@ class RouterCtl():
 
         logger.info("---ajax POST")
         request_data = request.get_json()
+        logger.info("---ajax POST22")
 
         ajax_obj = AjaxCtl(request_data)
         ajax_obj.doAjax()

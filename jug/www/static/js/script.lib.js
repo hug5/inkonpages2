@@ -11,11 +11,13 @@
     var lib = {
 
         hasAttr: function(ths, name) {
+            // alert(ths);
+            // alert(name);
             //pass in $(this) and attr name (eg, required)
+            // if attr exists, then typeof should be "string"; if not exist, then "undefined"
+            let result = typeof( $(ths).attr(name) ) != "undefined" ? true : false;
+            return result;
 
-            //if attr exists, then typeof should be "string"; if not exist, then "undefined"
-            $result = typeof( $(ths).attr(name)) != "undefined" ? true : false;
-            return $result;
         },
 
         formInputCheck : function(domParent) {
@@ -25,14 +27,14 @@
             //domParent should be an ID; tried passing in #formSection, but passing in #
             //doesn't seem to work
 
-            var allGood = true,
+            let allGood = true,
                 password = false;
 
             $("#" + domParent + " input, #" + domParent + " textarea").each(function() {
 
                 if ( $(this).css("display") != "none" && lib.hasAttr($(this), "required") ) {
 
-                    //note: this method doesn't check for spaces before and after text
+                    // //note: this method doesn't check for spaces before and after text
 
                     //check for blank
                     if (!$(this).val().trim()) {
@@ -42,8 +44,11 @@
 
                     //do email checks on input type email
                     if ($(this).attr("type") == "email") {
-                        var result = lib.checkEmail($(this).val());
-                        if (!result) allGood = false;
+                        let result = lib.checkEmail( $(this).val() );
+                        if (!result) {
+                            allGood = false;
+                            $(this).addClass("error");
+                        }
                     }
 
                     if ($(this).attr("type") == "password" && !password) {
@@ -53,7 +58,7 @@
                     }
                     //if we already have a prior stored password
                     else if ($(this).attr("type") == "password" && password)  {
-                        var password2 = $(this).val(); //this is our 2nd password
+                        let password2 = $(this).val(); //this is our 2nd password
                         if (password !== password2) {
                             $(this).addClass("error");
                             allGood = false;
@@ -61,7 +66,6 @@
                     }
                 }
             });
-
             return allGood;
         },
 

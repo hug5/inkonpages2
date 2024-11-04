@@ -25,45 +25,60 @@ function setContactSection() {
 
     var doAjax = function(name, email, msg) {
 
-        // var p_action  = "contactUsMsg",
-        //     p_name    = lib.ajaxencode(name),
-        //     p_email   = lib.ajaxencode(email),
-        //     p_msg     = lib.ajaxencode(msg),
-
-        //     param     = "action=" + p_action +
-        //                 "&name=" + p_name +
-        //                 "&email=" + p_email +
-        //                 "&msg=" + p_msg;
-
         let data = {
             "action" : "contact_us",
             "name" : lib.ajaxencode(name),
             "email" : lib.ajaxencode(email),
             "msg" : lib.ajaxencode(msg),
         }
+        let settings = {
+            type: "POST",
+            url: G.ajaxUrl,
+            // async: true,
+            // cache: true,
+            processData: false,
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=UTF-8",
+        }
 
-        $.post(G.ajaxUrl, data, function(result) {
+        $.ajax(settings)
+        .done(function(data, textStatus, jqXHR) {
 
-            $(this_btn).removeClass("disabled");
+            console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus);
 
-            if (result == "ok") {
-                $("#msgForm").slideUp(400, function() {
-                    $("#formSection p").fadeIn(300).html("YOUR MESSAGE WAS SENT!");
-                });
+            let status = data["status"];
+            if (status != "ok") {
+                msg = data["message"]
+                console.log("200, but failed request: " + msg);
+                return
             }
-            else {
-                $("#formSection p").fadeIn(300).html("Oops! There was an error.");
-            }
+
+            $("#msgForm").slideUp(400, function() {
+                $("#formSection p").fadeIn(300).html("YOUR MESSAGE WAS SENT!");
+            });
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            $("#formSection p").fadeIn(300).html("Oops! There was an error.");
+            console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
         });
+
+        $(this_btn).removeClass("disabled");
+
+
     };
+
+
+
+
 
     //init events
     $("#sendBtn").on("click", function() {
 
-        if ( !lib.formInputCheck("msgForm") || $(this).hasClass("disabled") ) return false;
+        // if ( $(this).hasClass("disabled") )
+        if ( !lib.formInputCheck("msgForm") || $(this).hasClass("disabled") )
+            return false;
 
-
-        var name  = $("#nameField").val(),
+        let name  = $("#nameField").val(),
             email = $("#emailField").val(),
             msg   = $("#msgField").val();
         this_btn = $(this); //not part of var inititialization above
@@ -159,18 +174,24 @@ function setRankSection() {
               // fiction, nonfiction, alltime
         }
 
-        $.ajax({
+        let settings = {
             type: "POST",
             // url: ajaxUrl,
             url: G.ajaxUrl,
-            async: true,
+            // async: true,  //default
+            // cache: true,  //default
             data: JSON.stringify(data),
-            cache: true,
             processData: false,
+              // default true; don't urlencode;
+              // true: raw data, eg. json
+              // false: 'name=John+Doe&age=30&hobby=reading'
             contentType: "application/json; charset=UTF-8"
-            // most settings above are the default;
-        })
+              // default: 'application/x-www-form-urlencoded; charset=UTF-8')
+            // dataType: Intelligent guess
+              // expected return type: xml, json, script, text, html.
+        }
 
+        $.ajax(settings)
         .done(function(data, textStatus, jqXHR) {
             // data: This is the data returned from the server
             // textStatus: A string describing the status of the response (e.g., "success").
@@ -219,7 +240,6 @@ function setRankSection() {
         })
 
         .fail(function(jqXHR, textStatus, errorThrown) {
-            alert("error");
             console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
 
             // jqXHR: The jqXHR object representing the failed request.
@@ -227,8 +247,25 @@ function setRankSection() {
             // (e.g., "timeout", "error", "abort", or "parsererror").
             // errorThrown: An optional exception object, if one occurred.
         });
+        // .always(function() {
+        //     alert( "finished" );
+        // });
+
     })();
 
+    // post( url [, data ] [, success ] [, dataType ] )
+    // $.post( "example.php",, data, function() {
+    //     alert( "success" );
+    // })
+    // .done(function() {
+    //     alert( "second success" ); #<--- redundant
+    // })
+    // .fail(function() {
+    //     alert( "error" );
+    // })
+    // .always(function() {
+    //     alert( "finished" );
+    // });
 
 
 }

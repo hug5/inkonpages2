@@ -15,9 +15,15 @@ class AjaxCtl:
         # logger.info('LocationCtl __init__')
         # self.url = url.rstrip('/').capitalize()
 
+        logger.info('--- xxxxxxxx init')
+
         self.action = request_data['action']
+
+        logger.info(f'--- {self.action}')
+
         self.data = request_data
         self.result = {}
+        logger.info(f'--- {self.data}')
 
     def getResult(self):
         return self.result
@@ -52,38 +58,50 @@ class AjaxCtl:
 
     #     self.result = json_result
 
-    def get_rank(self):
 
-        from jug.dbo.rankDb import RankDb
-        from jug.control.rankCtl import RankCtl
+    def do_contact_us(self):
 
-        category = self.data['category']
-
-
-
-        # Get news item from Yahoo News with request
-        rankDb = RankDb()
-
-        if category == "alltime":
-            rankDb.getAlltimeRankDb()
-        else:
-            rankDb.getBSListDb(category)
-
-        db_result = rankDb.get_db_result()
-
-
-        Rank = RankCtl()
-        Rank.do_rankBookCell(db_result)
-        rankBookCell = Rank.getHtml()
-
-
+        logger.info("---doing contact_us")
         json_result = {}
         json_result["status"] = "ok"
         # json_result["rank_result"] = db_result
-        json_result["rank_result"] = rankBookCell
+        # json_result["rank_result"] = rankBookCell
         # json_result["rank_result"] = "<h2>hello</h2><p>bye</p>"
 
         self.result = json_result
+
+
+    def get_rank(self):
+
+        def get_rankDb(category):
+            from jug.dbo.rankDb import RankDb
+            # Get news item from Yahoo News with request
+            rankDb = RankDb()
+            if category == "alltime":
+                rankDb.getAlltimeRankDb()
+            else:
+                rankDb.getBSListDb(category)
+            return rankDb.get_db_result()
+
+
+        def do_rankBookCell(db_result):
+            from jug.control.rankCtl import RankCtl
+            Rank = RankCtl()
+            Rank.do_rankBookCell(db_result)
+            return Rank.getHtml()
+
+        def do_json(rankBookCell):
+            json_result = {}
+            json_result["status"] = "ok"
+            # json_result["rank_result"] = db_result
+            json_result["rank_result"] = rankBookCell
+            # json_result["rank_result"] = "<h2>hello</h2><p>bye</p>"
+            self.result = json_result
+
+
+        db_result = get_rankDb(self.data['category'])
+        rankBookCell = do_rankBookCell(db_result)
+        do_json(rankBookCell)
 
 
     def doAjax(self):
@@ -96,3 +114,5 @@ class AjaxCtl:
                 #     "status" : "bad",
                 #     "error_message" : "No location."
                 # }
+        elif self.action == "contact_us":
+            self.do_contact_us()

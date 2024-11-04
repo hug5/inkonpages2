@@ -624,8 +624,13 @@ body{
             p#emaillink{
                 margin-top:10px;
                 font-weight:700;
+
                 a{
                     font-weight:500;
+                    // background-color: #E9E9E9;
+                    border-color: #484848;
+                    border-radius: 20px;
+                    padding:0 10px 0 10px;
                 }
             }
 
