@@ -487,94 +487,102 @@ body{
 
         }
 
-        .bookcellDiv{
-            // position:relative;
-            float:left;
-            // width:220px;
-            height:390px;
-            // border:1px solid #EAEAEA;
-            // font-weight:700;
-            // border:1px solid #B7B7B7;
-            // margin-bottom:10px;
-            // margin-left:2px;
+        #bookCellContainer{
+            border:1px solid;
+            overflow:hidden;
 
-            .bookcellInnerDiv:hover{
-                cursor:pointer;
-                transform: rotate(.5deg); //this makes the font go unbold, why??
-                // transform: rotate3d(2, 2, 1deg);
+            .bookcellDiv{
+              // position:relative;
+              float:left;
+              // width:220px;
+              height:390px;
+              // border:1px solid #EAEAEA;
+              // font-weight:700;
+              // border:1px solid #B7B7B7;
+              // margin-bottom:10px;
+              // margin-left:2px;
 
-            }
+              .bookcellInnerDiv:hover{
+                  cursor:pointer;
+                  transform: rotate(.5deg); //this makes the font go unbold, why??
+                  // transform: rotate3d(2, 2, 1deg);
 
-            .bookcellInnerDiv{
-                // z-index:auto;
-                background-color:#FFF;
-                margin:5px;
-                border:1px solid #B7B7B7;
-                border-radius:10px;
-                padding:5px;
-                padding-bottom:10px;
-                width:180px;
+              }
 
-
-
-                .rankDiv{
-                    // float:left;
-                    // border:1px solid #000;
-                    margin-right:10px;
-                    padding:5px;
-                    padding-top:0px;
-                    border-radius:10px;
-                    // background-color:#FBFBFB;
-                    text-align:center;
-                    font-weight:700;
-                    font-family: 'Marmelad', sans-serif;
-                }
+              .bookcellInnerDiv{
+                  // z-index:auto;
+                  background-color:#FFF;
+                  margin:5px;
+                  border:1px solid #B7B7B7;
+                  border-radius:10px;
+                  padding:5px;
+                  padding-bottom:10px;
+                  width:180px;
 
 
-                figure:hover{
-                    cursor:pointer;
-                }
-                figure{
-                    clear:left;
-                    // border:1px solid;
-                    text-align:center;
-                    margin-top:0px;
-                    margin-bottom:10px;
 
-                    a{
+                  .rankDiv{
+                      // float:left;
+                      // border:1px solid #000;
+                      margin-right:10px;
+                      padding:5px;
+                      padding-top:0px;
+                      border-radius:10px;
+                      // background-color:#FBFBFB;
+                      text-align:center;
+                      font-weight:700;
+                      font-family: 'Marmelad', sans-serif;
+                  }
 
-                        img{
-                            width:150px;
-                            border:1px solid #B4B3A0;
-                        }
-                    }
-                }
-                .textboxDiv{
-                    text-align:center;
-                    .titleDiv{
-                        font-size:20px;
-                        font-size:18px;
-                        // margin-bottom:3px;
-                        a{
 
-                            // font-family: 'Work Sans', sans-serif;
-                            // font-family: 'Marmelad', sans-serif;
-                            font-family: 'Varela Round', sans-serif;
-                            color:#002953;
-                            font-weight:700; //important doesn't work when transform rotate!
+                  figure:hover{
+                      cursor:pointer;
+                  }
+                  figure{
+                      clear:left;
+                      // border:1px solid;
+                      text-align:center;
+                      margin-top:0px;
+                      margin-bottom:10px;
 
-                        }
-                    }
-                    .authorDiv{
-                        //it seems to be the nature of the font that when it rotates, the bold disappears
-                        // font-family: sans-serif;
-                        font-size:15px;
-                        font-weight:700;//important doesn't work when transform rotat
-                    }
-                }
-            }
+                      a{
+
+                          img{
+                              width:150px;
+                              border:1px solid #B4B3A0;
+                          }
+                      }
+                  }
+                  .textboxDiv{
+                      text-align:center;
+                      .titleDiv{
+                          font-size:20px;
+                          font-size:18px;
+                          // margin-bottom:3px;
+                          a{
+
+                              // font-family: 'Work Sans', sans-serif;
+                              // font-family: 'Marmelad', sans-serif;
+                              font-family: 'Varela Round', sans-serif;
+                              color:#002953;
+                              font-weight:700; //important doesn't work when transform rotate!
+
+                          }
+                      }
+                      .authorDiv{
+                          //it seems to be the nature of the font that when it rotates, the bold disappears
+                          // font-family: sans-serif;
+                          font-size:15px;
+                          font-weight:700;//important doesn't work when transform rotat
+                      }
+                  }
+              }
+
+          }
 
         }
+
+
     }
 }
 

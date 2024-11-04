@@ -274,9 +274,9 @@ class RankCtl():
             fictiontabstatus = ("", "selectedtab")[category == "fiction"]
             nonfictiontabstatus  = ("", "selectedtab")[category == "nonfiction"]
 
-
         # Saturday, Nov 2, 2024
         today = datetime.today().strftime("%b %-d, %Y. %A")
+        self.doConfig()
 
         self.html = render_template(
             "rankHtml.jinja",
@@ -288,7 +288,8 @@ class RankCtl():
             fictiontabstatus = fictiontabstatus,
             nonfictiontabstatus = nonfictiontabstatus,
         )
-        self.doConfig()
+
+
 
 
 # https://inkonpages.com/rank/bestseller/fiction/

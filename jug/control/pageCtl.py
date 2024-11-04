@@ -90,7 +90,7 @@ class PageCtl():
         logger.info(f'---type info: {type(html)}')
         self.html = F.stripJinja(html) + self.ascii_art
 
-    def doPage(self, page):
+    def doPage_route(self, page):
         # # To call a function based on a string variable
         # def dohome():
         #     print("Home function is called!")
@@ -107,8 +107,9 @@ class PageCtl():
             G.sys["error"] = "redirect"
             G.sys["redirect"] = "/"
 
+    def doPage(self, page):
+
+        self.doPage_route(page)
         if G.sys.get("error"): return
-
-
         self.doPage_render_template()
 
