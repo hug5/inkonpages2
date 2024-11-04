@@ -261,6 +261,13 @@ class RankCtl():
             #     curs.close()
             #     dbo.doDisconnect()
 
+    # called by Ajax
+    def do_rankBookCell(self, db_result):
+        self.html = render_template(
+            "rankBookCellHtml.jinja",
+            db_result = db_result,
+        )
+
 
     def doRank(self):
         logger.info('---doRank')

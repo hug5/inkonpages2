@@ -142,75 +142,76 @@ function setRankSection() {
 
     })();
 
-    // ----------------------------------
 
-    // let ajaxencode = (str) => encodeURIComponent(str);
-    // let ajaxdecode = (str) => decodeURIComponent(str);
-    // let ajaxUrl = "https://ww2.inkonpages.com/ajax/";
+    // put the ajax call into a self-calling function;
+    (function() {
 
+        // let ajaxencode = (str) => encodeURIComponent(str);
+        // let ajaxdecode = (str) => decodeURIComponent(str);
+        // let ajaxUrl = "https://ww2.inkonpages.com/ajax/";
 
-    let data = {
-        "action" : "get_rank",
-    }
-
-
-    $.ajax({
-        type: "POST",
-        // url: ajaxUrl,
-        url: G.ajaxUrl,
-        async: true,
-        data: JSON.stringify(data),
-        cache: true,
-        processData: false,
-        contentType: "application/json; charset=UTF-8"
-        // most settings above are the default;
-    })
-
-    .done(function(data, textStatus, jqXHR) {
-        // data: This is the data returned from the server
-        // textStatus: A string describing the status of the response (e.g., "success").
-        // jqXHR: The jQuery XMLHttpRequest (jqXHR) object, which contains
-        // information about the request and response.
-
-
-        console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus);
-
-        let status = data["status"];
-        if (status != "ok") {
-            msg = data["message"]
-            console.log("200, but failed request: " + msg);
-            return
+        let data = {
+            "action" : "get_rank",
         }
 
-        // alert(data["rank_result"]);
-        $("#bookCellContainer").html(data["rank_result"]);
+        $.ajax({
+            type: "POST",
+            // url: ajaxUrl,
+            url: G.ajaxUrl,
+            async: true,
+            data: JSON.stringify(data),
+            cache: true,
+            processData: false,
+            contentType: "application/json; charset=UTF-8"
+            // most settings above are the default;
+        })
 
-        ////
-          // let location = data["title"];
-          // let url = data["url"];
-          // let description = data["description"];
-          // let imageUrl = data["imageUrl"];
+        .done(function(data, textStatus, jqXHR) {
+            // data: This is the data returned from the server
+            // textStatus: A string describing the status of the response (e.g., "success").
+            // jqXHR: The jQuery XMLHttpRequest (jqXHR) object, which contains
+            // information about the request and response.
 
-          // $("#location_img").attr("src", imageUrl);
-          // $("#location_description_box a").each(function(){
-          //     $(this).attr("href", url);
-          // })
-          // $("#location_description span:first-child").html(description);
+            console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus);
 
-          // $("#location_box").fadeIn(500)
+            let status = data["status"];
+            if (status != "ok") {
+                msg = data["message"]
+                console.log("200, but failed request: " + msg);
+                return
+            }
 
-    })
+            // alert(data["rank_result"]);
+            $("#bookCellContainer").html(data["rank_result"]);
 
-    .fail(function(jqXHR, textStatus, errorThrown) {
-        alert("error");
-        console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
+            lib.imgRowCellRndMove();
 
-        // jqXHR: The jqXHR object representing the failed request.
-        // textStatus: A string categorizing the type of error that occurred
-        // (e.g., "timeout", "error", "abort", or "parsererror").
-        // errorThrown: An optional exception object, if one occurred.
-    });
+            ////
+              // let location = data["title"];
+              // let url = data["url"];
+              // let description = data["description"];
+              // let imageUrl = data["imageUrl"];
 
+              // $("#location_img").attr("src", imageUrl);
+              // $("#location_description_box a").each(function(){
+              //     $(this).attr("href", url);
+              // })
+              // $("#location_description span:first-child").html(description);
+
+              // $("#location_box").fadeIn(500)
+
+        })
+
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            alert("error");
+            console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
+
+            // jqXHR: The jqXHR object representing the failed request.
+            // textStatus: A string categorizing the type of error that occurred
+            // (e.g., "timeout", "error", "abort", or "parsererror").
+            // errorThrown: An optional exception object, if one occurred.
+        });
+    })();
 
 
 

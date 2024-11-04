@@ -75,10 +75,19 @@ class AjaxCtl:
 
         db_result = rankDb.get_db_result()
 
+
+        from jug.control.rankCtl import RankCtl
+
+        Rank = RankCtl()
+        Rank.do_rankBookCell(db_result)
+        rankBookCell = Rank.getHtml()
+
+
         json_result = {}
         json_result["status"] = "ok"
         # json_result["rank_result"] = db_result
-        json_result["rank_result"] = "<h2>hello</h2><p>bye</p>"
+        json_result["rank_result"] = rankBookCell
+        # json_result["rank_result"] = "<h2>hello</h2><p>bye</p>"
 
         self.result = json_result
 
