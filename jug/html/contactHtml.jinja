@@ -2,6 +2,9 @@
     // $email = F::json("config", "contactEmail");
     // $hemail = str_replace("@", " [@] ", $email);
     <p>Or use the form below:</p>
+
+                <div id="sendBtn" class="fBtn" taxindex="3">SEND</div>
+
 {---------------------------------------------------#}
 
 <section id="contactSection">
@@ -12,7 +15,7 @@
 
         <section id="textSection">
             <p>Say hello.</p>
-            <p id="emaillink">Email: <a href="mailto:{{email}}">{{email_name}}</a></p>
+            <p id="emaillink">Email: <a tabindex="-1" href="mailto:{{email}}">{{email_name}}</a></p>
         </section>
 
         <section id="formSection">
@@ -21,10 +24,10 @@
 
             <div id="msgForm">
                 {# inside will slideup after message is sent #}
-                <input id="nameField" name="nameField" type="text" maxlength="100" value="" placeholder="YOUR NAME" spellcheck="false" autofocus required>
-                <input id="emailField" name="emailField" type="email" maxlength="100" value="" placeholder="YOUR EMAIL" spellcheck="false" required>
-                <textarea id="msgField" name="msgField" value="" placeholder="YOUR MESSAGE" spellcheck="true" required></textarea>
-                <div id="sendBtn" class="fBtn">SEND</div>
+                <input id="nameField" name="nameField" type="text" maxlength="100" value="" placeholder="YOUR NAME" spellcheck="false" autofocus required taxindex="0">
+                <input id="emailField" name="emailField" type="email" maxlength="100" value="" placeholder="YOUR EMAIL" spellcheck="false" required taxindex="1">
+                <textarea id="msgField" name="msgField" value="" placeholder="YOUR MESSAGE" spellcheck="true" required taxindex="2"></textarea>
+                <button type="button" id="sendBtn" class="fBtn" taxindex="3">SEND</button>
             </div>
         </section>
 

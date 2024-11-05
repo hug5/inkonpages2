@@ -635,7 +635,7 @@ body{
                     // border: 1px solid #484848;
                     // border-radius: 7px;
                     // padding:0 10px 0 10px;
-                    border-bottom:1px solid
+                    // border-bottom:1px solid
                 }
             }
 
@@ -679,6 +679,7 @@ body{
 
                 #sendBtn.fBtn{
                     clear:left;
+                    float:left;
                     // width:500px;
                 }
 
