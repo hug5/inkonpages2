@@ -41,6 +41,19 @@ function setContactSection() {
             contentType: "application/json; charset=UTF-8",
         }
 
+        let do_message = function(return_type) {
+            if (return_type == "ok") {
+                let message = "YOUR MESSAGE WAS SENT!";
+                $("#msgForm").slideUp(400, function() {
+                    $("#formSection p").fadeIn(300).html(message);
+                });
+            }
+            else {
+                let message = "Oops! There was an error."
+                $("#formSection p").fadeIn(300).html(message);
+            }
+        }
+
         $.ajax(settings)
         .done(function(data, textStatus, jqXHR) {
 
@@ -50,15 +63,18 @@ function setContactSection() {
             if (status != "ok") {
                 msg = data["message"]
                 console.log("200, but failed request: " + msg);
+                do_message("bad")
                 return
             }
 
-            $("#msgForm").slideUp(400, function() {
-                $("#formSection p").fadeIn(300).html("YOUR MESSAGE WAS SENT!");
-            });
+            do_message("ok");
+            // $("#msgForm").slideUp(400, function() {
+            //     $("#formSection p").fadeIn(300).html("YOUR MESSAGE WAS SENT!");
+            // });
         })
         .fail(function(jqXHR, textStatus, errorThrown) {
-            $("#formSection p").fadeIn(300).html("Oops! There was an error.");
+            // $("#formSection p").fadeIn(300).html("Oops! There was an error.");
+            do_message("bad")
             console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
         });
 

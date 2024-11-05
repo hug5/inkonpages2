@@ -10,12 +10,14 @@ from jug.lib.logger import logger
 
 class AjaxCtl:
 
-    def __init__(self, request_data):
+    def __init__(self, jug, request_data):
 
         # logger.info('LocationCtl __init__')
         # self.url = url.rstrip('/').capitalize()
 
-        logger.info('--- xxxxxxxx init')
+        self.jug = jug
+
+        logger.info('--- Ajax init')
 
         self.action = request_data['action']
 
@@ -60,14 +62,18 @@ class AjaxCtl:
 
 
     def do_contact_us(self):
+        from jug.control.mailCtl import MailCtl
 
         logger.info("---doing contact_us")
-        json_result = {}
-        json_result["status"] = "ok"
-        # json_result["rank_result"] = db_result
-        # json_result["rank_result"] = rankBookCell
-        # json_result["rank_result"] = "<h2>hello</h2><p>bye</p>"
 
+
+        mail = MailCtl(self.jug)
+        result = mail.do_contact_us(self.data)
+
+        logger.info(f'--- mail contact_us result: {result}')
+
+        json_result = {}
+        json_result["status"] = result
         self.result = json_result
 
 

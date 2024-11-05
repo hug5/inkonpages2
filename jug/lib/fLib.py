@@ -8,7 +8,6 @@ from jug.lib.logger import logger
 from markupsafe import escape
 import random
 import os
-import tomli
 from pathlib import Path
 from datetime import datetime
 from jug.lib.gLib import G
@@ -51,8 +50,10 @@ class F():
         # dt_string = x.strftime("%Y-%m-%d %I:%M %p, %a")
 
 
+
     @staticmethod
     def load_config_toml():
+        import tomli
 
         try:
             config_toml_path = Path("jug/conf/config.toml")
@@ -75,8 +76,69 @@ class F():
 
 
     @staticmethod
+    def load_file(file):
+        # Generic load file
+        import tomli
+        import pathlib
+        # Load a toml file
+
+        try:
+            # if file has no path, then assume it's a
+            # conf file in the conf folder
+            if file.find("/") < 0:
+                file = f"jug/conf/{file}"
+
+            # check if file exists;
+            file_path = Path(file)
+            if not Path(file_path).is_file():
+                raise FileNotFoundError(f"File Not Found: {file_path}.")
+
+            open_file = {}
+            # get file extension
+            file_extension = pathlib.Path(file_path).suffix
+            if file_extension == ".toml":
+                with file_path.open(mode='rb') as file_toml:
+                    open_file = tomli.load(file_toml)
+            else:
+                pass
+
+            return open_file
+
+        except FileNotFoundError as e:
+            logger.exception(f"{file} Load Error: {e}")
+        except Exception as e:
+            logger.exception(f"load_file Error: {e}")
+        finally:
+            pass
+
+        # if error, return empty dict
+        return {}
+
+        # import pathlib
+        # # function to return the file extension
+        # file_extension = pathlib.Path('my_file.txt').suffix
+        # print("File Extension: ", file_extension)
+
+        # import pathlib
+        # print(pathlib.Path('yourPath.example').suffix) # '.example'
+        # print(pathlib.Path("hello/foo.bar.tar.gz").suffixes) # ['.bar', '.tar', '.gz']
+        # print(pathlib.Path('/foo/bar.txt').stem) # 'bar'
+
+
+        # >>> import os
+        # >>> filename, file_extension = os.path.splitext('/path/to/somefile.ext')
+        # >>> filename
+        # '/path/to/somefile'
+        # >>> file_extension
+        # '.ext'
+
+
+
+    @staticmethod
     def uwsgi_log(msg):
-        # To use, you'd do:
+        # Write to the uwsgi log;
+        # Can use, but not used anymore since using the logger module;
+        # To use, do:
         # F.uwsgi_log("Call HomeDb")
 
         # log_path = os.getcwd() + "/etc/log/uwsgi.log"

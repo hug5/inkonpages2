@@ -61,8 +61,8 @@ class RouterCtl():
             #     config_toml = tomli.load(file_toml)
             #     # If bad, should give FileNotFoundError
 
-
-            config_toml = F.load_config_toml()
+            # config_toml = F.load_config_toml()
+            config_toml = F.load_file("config.toml")
 
             G.site["baseUrl"] = config_toml["site"]["baseUrl"]
             G.site["name"] = config_toml["site"]["name"]
@@ -88,7 +88,6 @@ class RouterCtl():
             G.db["host"] = config_toml["db"]["host"]
             G.db["port"] = config_toml["db"]["port"]
             G.db["database"] = config_toml["db"]["database"]
-
 
 
         except Exception as e:
@@ -182,7 +181,7 @@ class RouterCtl():
         request_data = request.get_json()
         logger.info("---ajax POST22")
 
-        ajax_obj = AjaxCtl(request_data)
+        ajax_obj = AjaxCtl(self.jug, request_data)
         ajax_obj.doAjax()
         result = ajax_obj.getResult()
 
@@ -218,7 +217,7 @@ class RouterCtl():
         @self.jug.before_request
         def before_request_route():
             # logger.info("---parseRoute: before_request---")
-            G.init()
+            G.init() # Reset global variable;
             # self.doBeforeRequest()
             self.router_init()
             self.doRequestUrl()
