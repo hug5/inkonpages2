@@ -69,8 +69,6 @@ function setContactSection() {
 
 
 
-
-
     //init events
     $("#sendBtn").on("click", function() {
 

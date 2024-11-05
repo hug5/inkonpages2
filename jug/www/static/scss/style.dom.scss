@@ -610,7 +610,8 @@ body{
             background-color:rgba(255, 255, 255, .85);
             float:left;
             padding:5px;
-            clear:left
+            clear:left;
+            // border:1px solid;
         }
 
         #textSection{
@@ -626,9 +627,8 @@ body{
             }
 
             p#emaillink{
-                margin-top:10px;
+                // margin-top:10px;
                 font-weight:700;
-
                 a{
                     font-weight:500;
                     // background-color: #D0E0DF;
@@ -637,12 +637,17 @@ body{
                     // padding:0 10px 0 10px;
                     // border-bottom:1px solid
                 }
+                a:hover{
+                    border-bottom:3px solid #7B7B7B;
+
+                }
+
             }
 
-            p:nth-child(3){
-                margin-top:20px;
-                //Or Message me using the form below:;
-            }
+            // p:nth-child(3){
+            //     margin-top:20px;
+            //     //Or Message me using the form below:;
+            // }
         }
 
         #formSection{
@@ -671,8 +676,8 @@ body{
                     float:left;
                     width:500px;
                 }
-                #nameField{}
-                #emailField{}
+                // #nameField{}
+                // #emailField{}
                 #msgField{
                     height:200px;
                 }
