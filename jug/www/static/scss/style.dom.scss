@@ -628,6 +628,7 @@ body{
 
             p#emaillink{
                 // margin-top:10px;
+                margin-top:-10px;
                 font-weight:700;
                 a{
                     font-weight:500;
@@ -686,7 +687,8 @@ body{
                     clear:left;
                     float:left;
                     width:500px;
-                    border-radius:10px;
+                    // border-radius:10px;
+                    border-radius: 0 0 15px 15px;
                 }
 
 
