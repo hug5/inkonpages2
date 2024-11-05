@@ -84,8 +84,10 @@ textarea {
         // color:rgba(255, 255, 151, .8); //yellow
         color:rgba(255, 255, 255, 1); //white
 
-        border: 1px solid #003366;
-        background-color:#002D59;
+        // border: 1px solid #003366;
+        // background-color:#002D59;
+        border: 1px solid #2B3C4F;
+        background-color:#414C59;
 
         max-width:100%;
         clear:left;
@@ -93,11 +95,12 @@ textarea {
 
         &:hover{
             cursor:pointer;
-            background-color:rgba(0, 45, 89, .9);
+            // background-color:rgba(0, 45, 89, .9);
+            background-color:rgba(70, 89, 109, .95);
         }
         &:focus{}
         &:active{
-            background-color:rgba(0, 45, 89, .8);
+            background-color:rgba(70, 89, 109, 1);
         }
 }
 
