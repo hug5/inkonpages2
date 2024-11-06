@@ -18,13 +18,15 @@ class MailCtl():
     def do_contact_us(self, data):
 
         # logger.info(f"---mailCtl data: {data}")
-        from_name = data.get("name")
-        from_email = data.get("email")
-        from_msg = data.get("msg").replace("\n", "<br>")
+        # from_name = data.get("name")
+        # from_email = data.get("email")
+        # from_msg = data.get("msg").replace("\n", "<br>")
 
-        # from_name = parse.unquote_plus(data.get("name"))
-        # from_email = parse.unquote_plus(data.get("email"))
-        # from_msg = parse.unquote_plus(data.get("msg"))
+        from_name = F.hesc(F.unquote(data.get("name")))
+        from_email = F.hesc(F.unquote(data.get("email")))
+        from_msg1 = F.hesc(F.unquote(data.get("msg")))
+        from_msg = from_msg1.replace("\n", "<br>")
+
 
         # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
         self.jug.config['MAIL_SERVER']         = G.api["mail.smtp"]
@@ -59,12 +61,17 @@ class MailCtl():
         # msg.recipients = ['hello@inkonpages.com']
         # msg.body =
 
-        sender_ip = "838423423"
+        sender_ip = G.sys["remote_ip"]
         timestamp = F.getDateTime()
         # timezone = "America/LA"
         timezone = F.get_timezone()
 
-        html_body = f"Sender Name: {from_name} <br>Sender Email: {from_email} <br>Sender IP: {sender_ip} <br>Timestamp: {timestamp}, {timezone} <br>Message: {from_msg}"
+        html_body = f"Sender Name: {from_name}<br>\
+        Sender Email: {from_email}<br>\
+        Sender IP: {sender_ip}<br>\
+        Timestamp: {timestamp} ({timezone})<br><br>\
+        <u>Message:</u><br>\
+        {from_msg}"
 
         # msg.html =f"<!DOCTYPE HTML><html lang='eng'><head><meta charset='UTF-8'></head><body> {html_body} </body></html>"
         msg.html =f"<html lang='en'><body> {html_body} </body></html>"

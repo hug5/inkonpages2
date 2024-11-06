@@ -5,15 +5,23 @@
 # from markupsafe import Markup, escape
 from jug.lib.logger import logger
 
-from markupsafe import escape
 import random
 import os
 from pathlib import Path
 from datetime import datetime
 from jug.lib.gLib import G
+from urllib import parse
+
+# from markupsafe import escape
+import html
 
 
 class F():
+
+
+    @staticmethod
+    def unquote(str):
+       return parse.unquote_plus(str)
 
     @staticmethod
     def getUriList():
@@ -45,18 +53,18 @@ class F():
         now = datetime.now()
 
         # 2024-11-23 16:13, Mon
-        if param == "basic_dow":
+        if param == "basic_now":
             dt_string = now.strftime("%Y-%m-%d %H:%M, %a")
 
         # 2024-11-23 04:13 PM, Mon
-        elif param == "basic2_dow":
+        elif param == "basic2_now":
             dt_string = now.strftime("%Y-%m-%d %I:%M %p, %a")
 
-        # 2024-11-23 16:13
+        # 2024-11-23 16:13:16
         else:
             # if param == "basic":
             # datetime object containing current date and time
-            dt_string = now.strftime("%Y-%m-%d %H:%M")
+            dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
 
 
         # https://www.programiz.com/python-programming/datetime/strftime
@@ -211,14 +219,22 @@ class F():
 
     @staticmethod
     def hesc(str):
-        # result = flask.escape(str)
-          # Not work
-        # result = html.escape(str)
-          # Works
-        result = escape(str)
-          # Works
-        # return str
-        return result
+
+        # # Using markupsafe module
+        # # result = flask.escape(str)
+        #   # Not work
+        # # result = html.escape(str)
+        #   # Works
+        # return escape(str)
+        #   # Works
+
+        # Using html module
+        return html.escape(str)
+
+        # Note: STrange behavior; with the markupsafe module, it seems to escape
+        # characters that it shouldn't, ie, AFTER the escape was done;
+        # It's like a ghost escaping in the FUTURE.
+
 
     @staticmethod
     def cd():

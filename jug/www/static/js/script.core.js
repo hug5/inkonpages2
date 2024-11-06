@@ -81,7 +81,7 @@ function setContactSection() {
             console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
         });
 
-        $(this_btn).removeClass("disabled");
+        // $(this_btn).removeClass("disabled");
 
 
     };
