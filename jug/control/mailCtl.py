@@ -2,7 +2,7 @@ from jug.lib.logger import logger
 
 # from flask import redirect, request, jsonify, session
 #, make_response
-# from jug.lib.fLib import F
+from jug.lib.fLib import F
 from jug.lib.gLib import G
 from flask_mail import Mail, Message
 
@@ -17,22 +17,23 @@ class MailCtl():
     # public
     def do_contact_us(self, data):
 
-        # from_name = data.get["name"]
-        # from_email = data.get["email"]
-        # from_msg = data.get["msg"]
+        # logger.info(f"---mailCtl data: {data}")
+        from_name = data.get("name")
+        from_email = data.get("email")
+        from_msg = data.get("msg").replace("\n", "<br>")
 
-        # to_email = G.contact["email"]
-        # to_email_name = G.contact["email_name"]
-        # bounce_email = G.contact["bounce_email"]
+        # from_name = parse.unquote_plus(data.get("name"))
+        # from_email = parse.unquote_plus(data.get("email"))
+        # from_msg = parse.unquote_plus(data.get("msg"))
 
-
-        self.jug.config['MAIL_SERVER'] = 'mail.paperdrift.com'
-        self.jug.config['MAIL_PORT'] = 587
-        self.jug.config['MAIL_USE_TLS'] = True
-        self.jug.config['MAIL_USE_SSL'] = False
-        self.jug.config['MAIL_USERNAME'] = 'hello@paperdrift.com'
-        self.jug.config['MAIL_PASSWORD'] = 'um4#Qp$9zut75@ELfMHL9!3yUfWfns#7v'
-        self.jug.config['MAIL_DEFAULT_SENDER'] = 'hello@paperdrift.com'
+        # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
+        self.jug.config['MAIL_SERVER']         = G.api["mail.smtp"]
+        self.jug.config['MAIL_PORT']           = G.api["mail.port"]
+        self.jug.config['MAIL_USE_TLS']        = True
+        self.jug.config['MAIL_USE_SSL']        = False
+        self.jug.config['MAIL_USERNAME']       = G.api["mail.username"]
+        self.jug.config['MAIL_PASSWORD']       = G.api["mail.password"]
+        self.jug.config['MAIL_DEFAULT_SENDER'] = G.contact["email"]
 
         # self.jug.config['MAIL_DEBUG: bool'] = app.debug
         # self.jug.config['MAIL_MAX_EMAILS'] = : int | None = None
@@ -44,18 +45,38 @@ class MailCtl():
 
 
 
-
         mail = Mail(self.jug)
         # mail = Mail()
         # mail.init_app(self.jug)
 
 
         msg = Message(
-          subject="Hello",
-          sender=("hello//paperdrift", "hello@paperdrift.com"),
-          recipients=['hello@inkonpages.com'],
-          body='This is a test email sent from Flask-Mail!'
+          subject="Contact Us //inkonpages.com",
+          sender=(G.contact["email_name"], G.contact["email"]),
+          recipients=[ G.contact["email"] ]
         )
+
+        # msg.recipients = ['hello@inkonpages.com']
+        # msg.body =
+
+        sender_ip = "838423423"
+        timestamp = F.getDateTime()
+        # timezone = "America/LA"
+        timezone = F.get_timezone()
+
+        html_body = f"Sender Name: {from_name} <br>Sender Email: {from_email} <br>Sender IP: {sender_ip} <br>Timestamp: {timestamp}, {timezone} <br>Message: {from_msg}"
+
+        # msg.html =f"<!DOCTYPE HTML><html lang='eng'><head><meta charset='UTF-8'></head><body> {html_body} </body></html>"
+        msg.html =f"<html lang='en'><body> {html_body} </body></html>"
+
+
+        # msg = Message(
+        #   subject="Contact Us //inkonpages.com",
+        #   sender=("hello ౾inkonpages", "hello@inkonpages.com"),
+        #   recipients=['hello@inkonpages.com'],
+        #   body='This is a test email sent from Flask-Mail!'
+        # )
+
         # msg.recipients = ["you@example.com"]
         # msg.add_recipient("somebodyelse@example.com")
         # msg.body = "testing"

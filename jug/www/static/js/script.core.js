@@ -30,6 +30,9 @@ function setContactSection() {
             "name" : lib.ajaxencode(name),
             "email" : lib.ajaxencode(email),
             "msg" : lib.ajaxencode(msg),
+            // "name" : name,
+            // "email" : email,
+            // "msg" : msg,
         }
         let settings = {
             type: "POST",

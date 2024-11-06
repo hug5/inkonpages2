@@ -19,11 +19,13 @@ class G():
         # weatherAPI_key
 
     sys = dict()
+
         # "debug": False,
         # req_uri = request.environ["REQUEST_URI"]
-
         # error : redirect, 404
         # redirect_uri
+        # remote_ip
+
 
     # Call at start to reset varables;
     @staticmethod

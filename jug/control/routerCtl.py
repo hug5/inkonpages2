@@ -9,26 +9,31 @@ from jug.lib.gLib import G
 # from pathlib import Path
 # import tomli
 # import re
-from urllib import parse
+# from urllib import parse
 from jug.control.pageCtl import PageCtl
+from jug.lib import loadConfig
 
 
 class RouterCtl():
 
     def __init__(self, jug):
         self.jug = jug
+
         logger.info('==== Begin RouterCtl __init__ ===')
 
 
-    def router_init(self):
+    def init_conf(self):
 
-        logger.info('---router_init---')
+        logger.info('---init_conf')
 
         # init variables:
 
         self.response_obj = None
         self.redirect = [False, '']
-        self.setConfig_toml()
+        # self.setConfig_toml()
+
+        # load config toml file into G var
+        loadConfig.loadConfig_toml()
 
         # This makes the session last as per PERMANENT_SESSION_LIFETIME
         session.permanent = True
@@ -46,57 +51,61 @@ class RouterCtl():
             logger.info('---RUNNING DEBUG MODE')
             G.sys["debug"] = True
 
-
     def getResponse_obj(self):
         return self.response_obj
 
-    def setConfig_toml(self):
+    # def setConfig_toml(self):
+        # try:
+        #     # config_toml_path = Path("jug/conf/config.toml")
+        #     # if not Path(config_toml_path).is_file():
+        #     #     raise FileNotFoundError(f"File Not Found: {config_toml_path}.")
 
-        try:
-            # config_toml_path = Path("jug/conf/config.toml")
-            # if not Path(config_toml_path).is_file():
-            #     raise FileNotFoundError(f"File Not Found: {config_toml_path}.")
+        #     # with config_toml_path.open(mode='rb') as file_toml:
+        #     #     config_toml = tomli.load(file_toml)
+        #     #     # If bad, should give FileNotFoundError
 
-            # with config_toml_path.open(mode='rb') as file_toml:
-            #     config_toml = tomli.load(file_toml)
-            #     # If bad, should give FileNotFoundError
+        #     # config_toml = F.load_config_toml()
+        #     config_toml = F.load_file("config.toml")
 
-            # config_toml = F.load_config_toml()
-            config_toml = F.load_file("config.toml")
+        #     G.site["baseUrl"] = config_toml["site"]["baseUrl"]
+        #     G.site["name"] = config_toml["site"]["name"]
+        #     G.site["tagline"] = config_toml["site"]["tagline"]
+        #     G.site["logo_title"] = config_toml["site"]["logo_title"]
+        #     G.site["description"] = config_toml["site"]["description"]
+        #     G.site["keywords"] = config_toml["site"]["keywords"]
+        #     G.site["secret_key"] = config_toml["site"]["secret_key"]
 
-            G.site["baseUrl"] = config_toml["site"]["baseUrl"]
-            G.site["name"] = config_toml["site"]["name"]
-            G.site["tagline"] = config_toml["site"]["tagline"]
-            G.site["logo_title"] = config_toml["site"]["logo_title"]
-            G.site["description"] = config_toml["site"]["description"]
-            G.site["keywords"] = config_toml["site"]["keywords"]
-            G.site["secret_key"] = config_toml["site"]["secret_key"]
-
-            G.site["time_zone"] = config_toml["site"]["time_zone"]
-            G.site["time_zone_name"] = config_toml["site"]["time_zone_name"]
-            G.site["time_zone_mail"] = config_toml["site"]["time_zone_mail"]
-            G.site["time_zone_mail_name"] = config_toml["site"]["time_zone_mail_name"]
-            # G.site["book_url"] = config_toml["site"]["book_url"]
-
-
-            G.contact["email"] = config_toml["contact"]["email"]
-            G.contact["email_name"] = config_toml["contact"]["email_name"]
-            G.contact["bounce_email"] = config_toml["contact"]["bounce_email"]
-
-            G.db["un"] = config_toml["db"]["un"]
-            G.db["pw"] = config_toml["db"]["pw"]
-            G.db["host"] = config_toml["db"]["host"]
-            G.db["port"] = config_toml["db"]["port"]
-            G.db["database"] = config_toml["db"]["database"]
+        #     G.site["time_zone"] = config_toml["site"]["time_zone"]
+        #     G.site["time_zone_name"] = config_toml["site"]["time_zone_name"]
+        #     G.site["time_zone_mail"] = config_toml["site"]["time_zone_mail"]
+        #     G.site["time_zone_mail_name"] = config_toml["site"]["time_zone_mail_name"]
+        #     # G.site["book_url"] = config_toml["site"]["book_url"]
 
 
-        except Exception as e:
-            logger.exception(f"setConfig_toml Error: {e}")
-        finally:
-            pass
-            # logger.info(f'weatherAPI_key: {G["weatherAPI_key"]}')
-            # logger.info(f'weatherAPI_key: {G.api["weatherAPI_key"]}')
-            # logger.info(f'Anything in G AFTER?: [{G.api}][{G.db}][{G.site}]')
+        #     G.contact["email"] = config_toml["contact"]["email"]
+        #     G.contact["email_name"] = config_toml["contact"]["email_name"]
+        #     G.contact["bounce_email"] = config_toml["contact"]["bounce_email"]
+
+        #     G.db["un"] = config_toml["db"]["un"]
+        #     G.db["pw"] = config_toml["db"]["pw"]
+        #     G.db["host"] = config_toml["db"]["host"]
+        #     G.db["port"] = config_toml["db"]["port"]
+        #     G.db["database"] = config_toml["db"]["database"]
+
+        #     G.api["mailgun.smtp"] = config_toml["api"]["mailgun.smtp"]
+        #     G.api["mailgun.port"] = config_toml["api"]["mailgun.port"]
+        #     G.api["mailgun.username"] = config_toml["api"]["mailgun.username"]
+        #     G.api["mailgun.password"] = config_toml["api"]["mailgun.password"]
+
+
+        # except Exception as e:
+        #     logger.exception(f"setConfig_toml Error: {e}")
+        # finally:
+        #     pass
+
+
+
+
 
     # def cleanUrl(self, url):
         # url2 = parse.unquote_plus(url)
@@ -219,7 +228,7 @@ class RouterCtl():
             # logger.info("---parseRoute: before_request---")
             G.init() # Reset global variable;
             # self.doBeforeRequest()
-            self.router_init()
+            self.init_conf()
             self.doRequestUrl()
 
 

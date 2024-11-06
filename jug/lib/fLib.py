@@ -21,6 +21,24 @@ class F():
         req_uri = G.sys["req_uri"]
         return req_uri.split("/")
 
+
+    @staticmethod
+    def get_timezone():
+        # Get server's time zone
+        # Get timezone info from /etc/timezone file
+        # eg: America/Los_Angeles
+
+        try:
+            with open('/etc/timezone', 'r') as file:
+                timezone = file.read().strip()
+                # Gets whole file
+            return timezone
+        except FileNotFoundError:
+            return "/etc/timezone file not found."
+        except Exception as e:
+            return f"An error occurred: {e}"
+
+
     @staticmethod
     def getDateTime(param="basic"):
 
