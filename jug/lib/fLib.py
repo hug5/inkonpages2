@@ -18,7 +18,6 @@ import html
 
 class F():
 
-
     @staticmethod
     def unquote(str):
        return parse.unquote_plus(str)

@@ -24,8 +24,7 @@ class MailCtl():
 
         from_name = F.hesc(F.unquote(data.get("name")))
         from_email = F.hesc(F.unquote(data.get("email")))
-        from_msg1 = F.hesc(F.unquote(data.get("msg")))
-        from_msg = from_msg1.replace("\n", "<br>")
+        from_msg = F.hesc(F.unquote(data.get("msg"))).replace("\n", "<br>")
 
 
         # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
@@ -66,9 +65,13 @@ class MailCtl():
         # timezone = "America/LA"
         timezone = F.get_timezone()
 
+        # https://whatismyipaddress.com/ip/{sender_ip}
+        # https://tools.keycdn.com/geo?host={sender_ip}
+        ip_lookup = f"https://whatismyipaddress.com/ip/{sender_ip}"
+
         html_body = f"Sender Name: {from_name}<br>\
         Sender Email: {from_email}<br>\
-        Sender IP: {sender_ip}<br>\
+        Sender IP: <a href='{ip_lookup}'>{sender_ip}</a><br>\
         Timestamp: {timestamp} ({timezone})<br><br>\
         <u>Message:</u><br>\
         {from_msg}"
@@ -76,35 +79,35 @@ class MailCtl():
         # msg.html =f"<!DOCTYPE HTML><html lang='eng'><head><meta charset='UTF-8'></head><body> {html_body} </body></html>"
         msg.html =f"<html lang='en'><body> {html_body} </body></html>"
 
+        ###
+          # msg = Message(
+          #   subject="Contact Us //inkonpages.com",
+          #   sender=("hello ౾inkonpages", "hello@inkonpages.com"),
+          #   recipients=['hello@inkonpages.com'],
+          #   body='This is a test email sent from Flask-Mail!'
+          # )
 
-        # msg = Message(
-        #   subject="Contact Us //inkonpages.com",
-        #   sender=("hello ౾inkonpages", "hello@inkonpages.com"),
-        #   recipients=['hello@inkonpages.com'],
-        #   body='This is a test email sent from Flask-Mail!'
-        # )
+          # msg.recipients = ["you@example.com"]
+          # msg.add_recipient("somebodyelse@example.com")
+          # msg.body = "testing"
+          # msg.html = "<b>testing</b>"
+          # msg.html = """
+          # <html>
+          #     <body>
+          #         <p>Here is an embedded image:</p>
+          #         <img src="cid:image1">
+          #     </body>
+          # </html>
+          # """
 
-        # msg.recipients = ["you@example.com"]
-        # msg.add_recipient("somebodyelse@example.com")
-        # msg.body = "testing"
-        # msg.html = "<b>testing</b>"
-        # msg.html = """
-        # <html>
-        #     <body>
-        #         <p>Here is an embedded image:</p>
-        #         <img src="cid:image1">
-        #     </body>
-        # </html>
-        # """
-
-        # # attachments:
-        # with app.open_resource("image.png") as fp:
-        #      msg.attach("image.png", "image/png", fp.read())
-          # Open a resource file relative to root_path for reading.
-          # For example, if the file schema.sql is next to the file app.py where the Flask app is defined, it can be opened with above;
-        # Can also open the file with python's native open:
-        # with open("invoice.pdf", "rb") as fp:
-        #   msg.attach("invoice.pdf", "application/pdf", fp.read())
+          # # attachments:
+          # with app.open_resource("image.png") as fp:
+          #      msg.attach("image.png", "image/png", fp.read())
+            # Open a resource file relative to root_path for reading.
+            # For example, if the file schema.sql is next to the file app.py where the Flask app is defined, it can be opened with above;
+          # Can also open the file with python's native open:
+          # with open("invoice.pdf", "rb") as fp:
+          #   msg.attach("invoice.pdf", "application/pdf", fp.read())
 
 
         try:
@@ -115,55 +118,56 @@ class MailCtl():
 
         return "ok"
 
-        # Batch sending
-        # with mail.connect() as conn:
-        #     for user in users:
-        #         msg = Message(
-        #             subject=f"hello, {user.name}",
-        #             body="...",
-        #             recipients=[user.email],
-        #         )
-        #         conn.send(msg)
+        ###
+          # Batch sending
+          # with mail.connect() as conn:
+          #     for user in users:
+          #         msg = Message(
+          #             subject=f"hello, {user.name}",
+          #             body="...",
+          #             recipients=[user.email],
+          #         )
+          #         conn.send(msg)
 
 
 
-        #------------------------------------------------------------
-        # $arr =  F::json("config-admin", "mail_settings");
+          #------------------------------------------------------------
+          # $arr =  F::json("config-admin", "mail_settings");
 
-        # $arr["subject"] = "Contact Message: " . "$from_name/$from_email";
+          # $arr["subject"] = "Contact Message: " . "$from_name/$from_email";
 
-        # // from and to are same; sending to ourselves
-        # $arr["from_email"] = [
-        #     "address" => $to_email,
-        #     "name"    => "Contact Page/" . $to_email_name,
-        #     "bounce"  => $bounce_email
-        # ];
+          # // from and to are same; sending to ourselves
+          # $arr["from_email"] = [
+          #     "address" => $to_email,
+          #     "name"    => "Contact Page/" . $to_email_name,
+          #     "bounce"  => $bounce_email
+          # ];
 
-        # $arr["to_email"] = ["address" => [$to_email => $to_email_name]];
-
-
-        # $userIp     = G::$oIP;
-        # $timestamp  = date("D, M j, Y, g:ia", time());
-        # $timeZone   = F::json("config", "timeZoneName");
+          # $arr["to_email"] = ["address" => [$to_email => $to_email_name]];
 
 
-        # $body =
-        #     "<!DOCTYPE HTML><html><body style=\"font-size:15px;\">" .
-        #         "Sender Name: $from_name" .
-        #         "<br>Sender Email: $from_email" .
-        #         "<br>Sender IP: $userIp" .
-        #         "<br>Timestamp: $timestamp, $timeZone" .
-        #         "<br><a href=\"http://en.utrace.de/?query=$userIp\">IP Lookup - utrace</a>" .
-        #         "<br><a href=\"http://whatismyipaddress.com/ip/$userIp\">IP Lookup - What's my IP</a>" .
-        #         "<br><br>. . . . . . . . . . . . . . . . . . . . . .<br><br>" .
-        #         nl2br($msg1) .
-        #     "</body></html>";
+          # $userIp     = G::$oIP;
+          # $timestamp  = date("D, M j, Y, g:ia", time());
+          # $timeZone   = F::json("config", "timeZoneName");
 
 
-        # $arr["body"] = ["message" => $body];
+          # $body =
+          #     "<!DOCTYPE HTML><html><body style=\"font-size:15px;\">" .
+          #         "Sender Name: $from_name" .
+          #         "<br>Sender Email: $from_email" .
+          #         "<br>Sender IP: $userIp" .
+          #         "<br>Timestamp: $timestamp, $timeZone" .
+          #         "<br><a href=\"http://en.utrace.de/?query=$userIp\">IP Lookup - utrace</a>" .
+          #         "<br><a href=\"http://whatismyipaddress.com/ip/$userIp\">IP Lookup - What's my IP</a>" .
+          #         "<br><br>. . . . . . . . . . . . . . . . . . . . . .<br><br>" .
+          #         nl2br($msg1) .
+          #     "</body></html>";
 
-        # // get back # email sent; if zero, then error
-        # $result = $this->callMailRouter($arr);
 
-        # echo $result ? "ok" : "bad";
+          # $arr["body"] = ["message" => $body];
+
+          # // get back # email sent; if zero, then error
+          # $result = $this->callMailRouter($arr);
+
+          # echo $result ? "ok" : "bad";
 
