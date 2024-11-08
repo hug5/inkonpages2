@@ -66,18 +66,35 @@ class MailCtl():
         timezone = F.get_timezone()
 
         # https://whatismyipaddress.com/ip/{sender_ip}
-        # https://tools.keycdn.com/geo?host={sender_ip}
-        ip_lookup = f"https://whatismyipaddress.com/ip/{sender_ip}"
+        # json: https://api.iplocation.net/?ip=84.239.5.12
+        # https://www.ip2location.com/demo/84.239.5.12
+        ip_lookup_iplocation = f"https://www.iplocation.net/ip-lookup/{sender_ip}"
+        ip_lookup_what_is = f"https://whatismyipaddress.com/ip/{sender_ip}"
+        ip_lookup_utrace = f"http://en.utrace.de/?query={sender_ip}"
+        ip_lookup_keycdn = f"https://tools.keycdn.com/geo?host={sender_ip}"
+
+        head = "<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'></head>"
 
         html_body = f"Sender Name: {from_name}<br>\
         Sender Email: {from_email}<br>\
-        Sender IP: <a href='{ip_lookup}'>{sender_ip}</a><br>\
-        Timestamp: {timestamp} ({timezone})<br><br>\
+        Sender IP: sender_ip | Lookup:\
+        <a href='{ip_lookup_iplocation}'>iplocation</a>, \
+        <a href='{ip_lookup_what_is}'>whatismyipaddress</a>, \
+        <a href='{ip_lookup_keycdn}'>keycdn</a>, \
+        <a href='{ip_lookup_utrace}'>utrace</a><br>\
+        Timestamp: {timestamp} [{timezone}]<br>\
+        <br>\
         <u>Message:</u><br>\
         {from_msg}"
 
+        # msg.body = f"<html>{head}<body> {html_body} </body></html>"
+          # Non-html mail
+
+
         # msg.html =f"<!DOCTYPE HTML><html lang='eng'><head><meta charset='UTF-8'></head><body> {html_body} </body></html>"
-        msg.html =f"<html lang='en'><body> {html_body} </body></html>"
+        # msg.html = f"<html lang='en'><body> {html_body} </body></html>"
+        # msg.html = f"<html>{head}<body> {html_body} </body></html>"
+        msg.html = html_body
 
         ###
           # msg = Message(
@@ -129,45 +146,4 @@ class MailCtl():
           #         )
           #         conn.send(msg)
 
-
-
-          #------------------------------------------------------------
-          # $arr =  F::json("config-admin", "mail_settings");
-
-          # $arr["subject"] = "Contact Message: " . "$from_name/$from_email";
-
-          # // from and to are same; sending to ourselves
-          # $arr["from_email"] = [
-          #     "address" => $to_email,
-          #     "name"    => "Contact Page/" . $to_email_name,
-          #     "bounce"  => $bounce_email
-          # ];
-
-          # $arr["to_email"] = ["address" => [$to_email => $to_email_name]];
-
-
-          # $userIp     = G::$oIP;
-          # $timestamp  = date("D, M j, Y, g:ia", time());
-          # $timeZone   = F::json("config", "timeZoneName");
-
-
-          # $body =
-          #     "<!DOCTYPE HTML><html><body style=\"font-size:15px;\">" .
-          #         "Sender Name: $from_name" .
-          #         "<br>Sender Email: $from_email" .
-          #         "<br>Sender IP: $userIp" .
-          #         "<br>Timestamp: $timestamp, $timeZone" .
-          #         "<br><a href=\"http://en.utrace.de/?query=$userIp\">IP Lookup - utrace</a>" .
-          #         "<br><a href=\"http://whatismyipaddress.com/ip/$userIp\">IP Lookup - What's my IP</a>" .
-          #         "<br><br>. . . . . . . . . . . . . . . . . . . . . .<br><br>" .
-          #         nl2br($msg1) .
-          #     "</body></html>";
-
-
-          # $arr["body"] = ["message" => $body];
-
-          # // get back # email sent; if zero, then error
-          # $result = $this->callMailRouter($arr);
-
-          # echo $result ? "ok" : "bad";
 

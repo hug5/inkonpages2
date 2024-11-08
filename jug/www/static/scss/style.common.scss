@@ -106,8 +106,10 @@ textarea {
 
 
 .disabled{
-    opacity:.2;
+    opacity:.5;
     &:hover{
-        cursor:not-allowed;
+        cursor: wait;
+        // cursor:progress;
+        // cursor:not-allowed;
     }
 }

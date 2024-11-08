@@ -25,6 +25,15 @@ function setContactSection() {
 
     var doAjax = function(name, email, msg) {
 
+        // vanilla js
+        // let inputs = document.querySelectorAll('input, textarea');
+        // inputs.forEach(input => {
+        //     input.style.cursor = 'wait';
+        // });
+
+        $('body, input, textarea').css('cursor', 'wait');
+        $(this_btn).addClass("disabled");     // disable btn
+
         let data = {
             "action" : "contact_us",
             "name" : lib.ajaxencode(name),
@@ -79,14 +88,15 @@ function setContactSection() {
             // $("#formSection p").fadeIn(300).html("Oops! There was an error.");
             do_message("bad")
             console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus + ", errorThrown: " + errorThrown);
+        })
+        .always(function() {
+            // $(this_btn).removeClass("disabled");
+            // document.body.style.cursor = "default";
+            $('body, input, textarea').css('cursor', 'default');
         });
-
-        // $(this_btn).removeClass("disabled");
 
 
     };
-
-
 
     //init events
     $("#sendBtn").on("click", function() {
@@ -98,10 +108,10 @@ function setContactSection() {
         let name  = $("#nameField").val(),
             email = $("#emailField").val(),
             msg   = $("#msgField").val();
+
         this_btn = $(this); //not part of var inititialization above
 
         doAjax(name, email, msg);
-
         return false;
     });
 
