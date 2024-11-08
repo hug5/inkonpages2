@@ -26,6 +26,10 @@ class MailCtl():
         from_email = F.hesc(F.unquote(data.get("email")))
         from_msg = F.hesc(F.unquote(data.get("msg"))).replace("\n", "<br>")
 
+        # from_name = "jane"
+        # from_email = "jane@mark.com"
+        # from_msg = "hello, my message"
+
 
         # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
         self.jug.config['MAIL_SERVER']         = G.api["mail.smtp"]
