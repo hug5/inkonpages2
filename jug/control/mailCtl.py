@@ -115,7 +115,7 @@ class MailCtl():
         # message.add_header('Content-Transfer-Encoding', '8bit')
         # message.add_header('Content-Type', 'text/html; charset=UTF-8')
 
-        msg.add_header('Content-Transfer-Encoding', '8bit')
+        message.add_header('Content-Transfer-Encoding', '8bit')
 
 
         try:
