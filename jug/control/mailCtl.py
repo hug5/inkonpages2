@@ -46,7 +46,21 @@ class MailCtl():
           # If the setting TESTING is set to True, emails will be suppressed.
           # Calling Message.send() will not result in any messages being actually sent.
         # self.jug.config['MAIL_ASCII_ATTACHMENTS'] = : bool = False
-        # flask_mail.Message(subject='', recipients=None, body=None, sender=None, cc=None, bcc=None, reply_to=None, date=None, charset=None, extra_headers=None, mail_options=None, rcpt_options=None)
+
+        # flask_mail.Message(
+        #   subject='',
+        #   recipients=None,
+        #   body=None,
+        #   sender=None,
+        #   cc=None,
+        #   bcc=None,
+        #   reply_to=None,
+        #   date=None,
+        #   charset=None,
+        #   extra_headers=None,
+        #   mail_options=None,
+        #   rcpt_options=None
+        # )
 
 
 
@@ -79,6 +93,18 @@ class MailCtl():
 
         head = "<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'></head>"
 
+        # html_body = f"Sender Name: {from_name}<br>\
+        # Sender Email: {from_email}<br>\
+        # Sender IP: sender_ip | Lookup:\
+        # <a href='{ip_lookup_iplocation}'>iplocation</a>, \
+        # <a href='{ip_lookup_what_is}'>whatismyipaddress</a>, \
+        # <a href='{ip_lookup_keycdn}'>keycdn</a>, \
+        # <a href='{ip_lookup_utrace}'>utrace</a><br>\
+        # Timestamp: {timestamp} [{timezone}]<br>\
+        # <br>\
+        # <u>Message:</u><br>\
+        # {from_msg}"
+
         html_body = f"Sender Name: {from_name}<br>\
         Sender Email: {from_email}<br>\
         Sender IP: sender_ip | Lookup:\
@@ -97,8 +123,28 @@ class MailCtl():
 
         # msg.html =f"<!DOCTYPE HTML><html lang='eng'><head><meta charset='UTF-8'></head><body> {html_body} </body></html>"
         # msg.html = f"<html lang='en'><body> {html_body} </body></html>"
-        # msg.html = f"<html>{head}<body> {html_body} </body></html>"
-        msg.html = html_body
+        # msg.html = html_body
+        msg.html = F.stripJinja( f"<html>{head}<body>{html_body}</body></html>" )
+        # extra_headers take a dictionary:
+        msg.extra_headers = {'X-Hypersonic': 'Hyperman'}
+        # msg.body = None
+
+
+# msg = Message(
+#     subject='Hello from Flask!',
+#     sender='your_email@example.com',
+#     recipients=['recipient@example.com'],
+#     body='This is the body of the email.',
+#     extra_headers={'X-Custom-Header': 'CustomValue'}
+# )
+
+# extra_headers={'X-Custom-Header': 'CustomValue'}
+
+# Extra Headers: The extra_headers parameter accepts a dictionary where you can set custom headers like X-Custom-Header, which can be useful for tracking or categorizing emails.
+
+# Sending Email: After setting up the message with headers, you can send it using mail.send(msg).
+
+
 
         ###
           # msg = Message(
