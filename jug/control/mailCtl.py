@@ -103,7 +103,8 @@ class MailCtl():
         # Attach the HTML part
         # message.attach(MIMEText(msg_html, "html"))
         # message = MIMEText(msg_html, "html", "utf-8")
-        message = MIMEText(msg_html, 'plain', 'ascii')
+        # message = MIMEText(msg_html, 'plain', 'us-ascii')
+        message = MIMEText(msg_html, 'plain', 'utf-8')
         message["From"] = sender_email
         message["To"] = receiver_email
         message["Subject"] = subject
@@ -113,6 +114,8 @@ class MailCtl():
         # message['Content-Transfer-Encoding'] = '8bit'
         # message.add_header('Content-Transfer-Encoding', '8bit')
         # message.add_header('Content-Type', 'text/html; charset=UTF-8')
+
+        msg.add_header('Content-Transfer-Encoding', '8bit')
 
 
         try:
