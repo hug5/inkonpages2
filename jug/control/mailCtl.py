@@ -4,8 +4,14 @@ from jug.lib.logger import logger
 #, make_response
 from jug.lib.fLib import F
 from jug.lib.gLib import G
-from flask_mail import Mail, Message
+# from flask_mail import Mail, Message
 
+import smtplib
+from email.mime.text import MIMEText
+# from email.mime.multipart import MIMEMultipart
+from email.utils import formatdate
+from email import encoders
+import random
 
 class MailCtl():
 
@@ -24,60 +30,37 @@ class MailCtl():
 
         from_name = F.hesc(F.unquote(data.get("name")))
         from_email = F.hesc(F.unquote(data.get("email")))
-        from_msg = F.hesc(F.unquote(data.get("msg"))).replace("\n", "<br>")
-
-        # from_name = "jane"
-        # from_email = "jane@mark.com"
-        # from_msg = "hello, my message"
+        from_msg = F.hesc(F.unquote(data.get("msg"))).replace("\n", "<br> ")
+          # Add extra space with <br> to prevent possible split of that word!
 
 
-        # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
-        self.jug.config['MAIL_SERVER']         = G.api["mail.smtp"]
-        self.jug.config['MAIL_PORT']           = G.api["mail.port"]
-        self.jug.config['MAIL_USE_TLS']        = True
-        self.jug.config['MAIL_USE_SSL']        = False
-        self.jug.config['MAIL_USERNAME']       = G.api["mail.username"]
-        self.jug.config['MAIL_PASSWORD']       = G.api["mail.password"]
-        self.jug.config['MAIL_DEFAULT_SENDER'] = G.contact["email"]
+        # Configuration
+        port = G.api["mail.port"]
+        smtp_server = G.api["mail.smtp"]
+        login = G.api["mail.username"]
+        password = G.api["mail.password"]
 
-        # self.jug.config['MAIL_DEBUG: bool'] = app.debug
-        # self.jug.config['MAIL_MAX_EMAILS'] = : int | None = None
-        # self.jug.config['MAIL_SUPPRESS_SEND'] = : bool = app.testing
-          # If the setting TESTING is set to True, emails will be suppressed.
-          # Calling Message.send() will not result in any messages being actually sent.
-        # self.jug.config['MAIL_ASCII_ATTACHMENTS'] = : bool = False
+        sender_email = G.contact["email"]
+        receiver_email = G.contact["email"]
+        # receiver_email = "yooliganz@yahoo.com"
 
-        # flask_mail.Message(
-        #   subject='',
-        #   recipients=None,
-        #   body=None,
-        #   sender=None,
-        #   cc=None,
-        #   bcc=None,
-        #   reply_to=None,
-        #   date=None,
-        #   charset=None,
-        #   extra_headers=None,
-        #   mail_options=None,
-        #   rcpt_options=None
-        # )
+        # # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
+        # self.jug.config['MAIL_USE_TLS']        = True
+        # self.jug.config['MAIL_USE_SSL']        = False
+        # self.jug.config['MAIL_DEFAULT_SENDER'] = G.contact["email"]
 
 
-
-        mail = Mail(self.jug)
-        # mail = Mail()
-        # mail.init_app(self.jug)
+        subject = "Contact Us //inkonpages.com"
+        # html = from_msg
 
 
-        msg = Message(
-          subject="Contact Us //inkonpages.com",
-          sender=(G.contact["email_name"], G.contact["email"]),
-          recipients=[ G.contact["email"] ]
-        )
+        # message = MIMEMultipart()
+        # message["From"] = sender_email
+        # message["To"] = receiver_email
+        # message["Subject"] = subject
 
-        # msg.recipients = ['hello@inkonpages.com']
-        # msg.body =
 
+        #--------------------------------
         sender_ip = G.sys["remote_ip"]
         timestamp = F.getDateTime()
         # timezone = "America/LA"
@@ -91,109 +74,72 @@ class MailCtl():
         ip_lookup_utrace = f"http://en.utrace.de/?query={sender_ip}"
         ip_lookup_keycdn = f"https://tools.keycdn.com/geo?host={sender_ip}"
 
-        head = "<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'></head>"
-
-        # html_body = f"Sender Name: {from_name}<br>\
-        # Sender Email: {from_email}<br>\
-        # Sender IP: sender_ip | Lookup:\
-        # <a href='{ip_lookup_iplocation}'>iplocation</a>, \
-        # <a href='{ip_lookup_what_is}'>whatismyipaddress</a>, \
-        # <a href='{ip_lookup_keycdn}'>keycdn</a>, \
-        # <a href='{ip_lookup_utrace}'>utrace</a><br>\
-        # Timestamp: {timestamp} [{timezone}]<br>\
-        # <br>\
-        # <u>Message:</u><br>\
-        # {from_msg}"
-
-        html_body = f"Sender Name: {from_name}<br>\
-        Sender Email: {from_email}<br>\
-        Sender IP: sender_ip | Lookup:\
-        <a href='{ip_lookup_iplocation}'>iplocation</a>, \
-        <a href='{ip_lookup_what_is}'>whatismyipaddress</a>, \
-        <a href='{ip_lookup_keycdn}'>keycdn</a>, \
-        <a href='{ip_lookup_utrace}'>utrace</a><br>\
-        Timestamp: {timestamp} [{timezone}]<br>\
-        <br>\
-        <u>Message:</u><br>\
-        {from_msg}"
-
-        # msg.body = f"<html>{head}<body> {html_body} </body></html>"
-          # Non-html mail
-
-
-        # msg.html =f"<!DOCTYPE HTML><html lang='eng'><head><meta charset='UTF-8'></head><body> {html_body} </body></html>"
-        # msg.html = f"<html lang='en'><body> {html_body} </body></html>"
-        # msg.html = html_body
-        msg.html = F.stripJinja( f"<html>{head}<body>{html_body}</body></html>" )
+        style = "<style>p{margin:2px 0 4px 0;}#info{width:fit-content;padding-bottom:15px;border-bottom:1px solid #CACACA;}.shade{background-color:#E1E1E1;border:1px solid #C2C2C2;padding:0 7px 0 7px;margin-left:5px;border-radius:5px;}#message1{margin-top:20px;}</style>"
+        style = ''
         # extra_headers take a dictionary:
-        msg.extra_headers = {'X-Hypersonic': 'Hyperman'}
-        # msg.body = None
-
-
-# msg = Message(
-#     subject='Hello from Flask!',
-#     sender='your_email@example.com',
-#     recipients=['recipient@example.com'],
-#     body='This is the body of the email.',
-#     extra_headers={'X-Custom-Header': 'CustomValue'}
-# )
-
-# extra_headers={'X-Custom-Header': 'CustomValue'}
-
-# Extra Headers: The extra_headers parameter accepts a dictionary where you can set custom headers like X-Custom-Header, which can be useful for tracking or categorizing emails.
-
-# Sending Email: After setting up the message with headers, you can send it using mail.send(msg).
+        head = f"<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'> {style}</head>"
+        # doctype = "<!DOCTYPE HTML>"
+        # msg.extra_headers = {'X-engine': 'hypersonic'}
 
 
 
-        ###
-          # msg = Message(
-          #   subject="Contact Us //inkonpages.com",
-          #   sender=("hello ౾inkonpages", "hello@inkonpages.com"),
-          #   recipients=['hello@inkonpages.com'],
-          #   body='This is a test email sent from Flask-Mail!'
-          # )
+        # html_body = F.stripJinja( f"<div id='info'>\
+        #   <p>Sender Name: {from_name}</p>\
+        #   <p>Sender Email: {from_email}</p>\
+        #   <p>Sender IP: {sender_ip} \
+        #     <span class='shade'><a href='{ip_lookup_iplocation}'>iplocation</a></span>\
+        #     <span class='shade'><a href='{ip_lookup_what_is}'>whatismyipaddress</a></span>\
+        #     <span class='shade'><a href='{ip_lookup_keycdn}'>keycdn</a></span>\
+        #     <span class='shade'><a href='{ip_lookup_utrace}'>utrace</a></span></p>\
+        #   <p>Timestamp: {timestamp} [{timezone}]</p></div>\
+        #   <div id='message1'>{from_msg}</div>" )
 
-          # msg.recipients = ["you@example.com"]
-          # msg.add_recipient("somebodyelse@example.com")
-          # msg.body = "testing"
-          # msg.html = "<b>testing</b>"
-          # msg.html = """
-          # <html>
-          #     <body>
-          #         <p>Here is an embedded image:</p>
-          #         <img src="cid:image1">
-          #     </body>
-          # </html>
-          # """
+        # ####
+        # msg_html = f"<html>{head}<body>{html_body}</body></html>"
 
-          # # attachments:
-          # with app.open_resource("image.png") as fp:
-          #      msg.attach("image.png", "image/png", fp.read())
-            # Open a resource file relative to root_path for reading.
-            # For example, if the file schema.sql is next to the file app.py where the Flask app is defined, it can be opened with above;
-          # Can also open the file with python's native open:
-          # with open("invoice.pdf", "rb") as fp:
-          #   msg.attach("invoice.pdf", "application/pdf", fp.read())
+        msg_html = "<html>hello, my name is bob.</html>"
+
+
+        # Attach the HTML part
+        # message.attach(MIMEText(msg_html, "html"))
+        # message = MIMEText(msg_html, "html", "utf-8")
+        message = MIMEText(msg_html, 'plain', 'utf-8')
+        message["From"] = sender_email
+        message["To"] = receiver_email
+        message["Subject"] = subject
+        message['Message-ID'] = "ink_" + str(random.randrange(1, 9999999999999999999))
+        message['Date'] = formatdate(localtime=True)
+          # Example output: 'Fri, 10 Nov 2024 16:30:00 -0800'
+        # message['Content-Transfer-Encoding'] = '8bit'
+        # message.add_header('Content-Transfer-Encoding', '8bit')
+        # message.add_header('Content-Type', 'text/html; charset=UTF-8')
 
 
         try:
-            mail.send(msg)
+
+          # Send the email
+          with smtplib.SMTP(smtp_server, port) as server:
+              server.starttls()
+              server.login(login, password)
+              server.sendmail(sender_email, receiver_email, message.as_string())
+
         except Exception as e:
             logger.debug(f'email send fail: {e}')
             return "bad"
 
         return "ok"
 
-        ###
-          # Batch sending
-          # with mail.connect() as conn:
-          #     for user in users:
-          #         msg = Message(
-          #             subject=f"hello, {user.name}",
-          #             body="...",
-          #             recipients=[user.email],
-          #         )
-          #         conn.send(msg)
+# msg.attach(MIMEText(text, 'plain'))
+# msg.attach(MIMEText(html, 'html'))
+# msg.add_header('Content-Transfer-Encoding', 'quoted-printable')  # or 'base64'
+# msg.add_header('Content-Transfer-Encoding', '8bit')  # Set encoding to 8bit
+# message.add_header('Content-Transfer-Encoding', '7bit')
+# message.add_header('Content-Type', 'text/plain; charset=UTF-8')
+# encoders.encode_7or8bit(message)
 
+# import uuid
 
+# def generate_message_id():
+#     domain = "example.com"  # Replace with your domain
+#     unique_id = uuid.uuid4()  # Generate a unique UUID
+#     return f"<{unique_id}@{domain}>"

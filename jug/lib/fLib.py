@@ -202,6 +202,7 @@ class F():
 
     @staticmethod
     def stripJinja(html):
+
         # html = html.replace('\n', '').replace('   ', '').replace('  ', '')
         # # return html.replace('    ', '')
         # return html
