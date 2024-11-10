@@ -97,13 +97,13 @@ class MailCtl():
         # ####
         # msg_html = f"<html>{head}<body>{html_body}</body></html>"
 
-        msg_html = "<html>hello, my name is bob.</html>"
+        msg_html = "hello, my name is bob."
 
 
         # Attach the HTML part
         # message.attach(MIMEText(msg_html, "html"))
         # message = MIMEText(msg_html, "html", "utf-8")
-        message = MIMEText(msg_html, 'plain', 'utf-8')
+        message = MIMEText(msg_html, 'plain', 'ascii')
         message["From"] = sender_email
         message["To"] = receiver_email
         message["Subject"] = subject
