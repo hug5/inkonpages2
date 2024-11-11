@@ -8,9 +8,16 @@ from flask_mail import Mail, Message
 
 
 class MailCtl():
+    """ // 2024-11-10
+        This is the flask-mail implementation of mail;
+        However, not suing because it fails dkim on long messages;
+        Note: Remember that using flask-mail requires that you pass
+        the flask object or self.jug in;
+    """
 
     def __init__(self, jug):
         self.jug = jug
+
         pass
 
 

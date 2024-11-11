@@ -39,7 +39,14 @@ class MailCtl():
         password = G.api["mail.password"]
 
         sender = G.contact["email"]
-        recipient = G.contact["email"]
+        recipients = [ G.contact["email"] ]
+          # Pass recipients as list
+
+        # Also set cc and bcc recipients in a list;
+        # cc = ["yooliganz@yahoo.com", "dhub2@gmx.com"]
+        cc = []
+        bcc = []
+
         subject = G.contact["contact_us_subject"]
 
         #--------------------------------
@@ -97,14 +104,26 @@ class MailCtl():
 
         msg = MIMEText(msg_html, 'html', 'utf-8')
         msg["From"] = sender
-        msg["To"] = recipient
-        msg["Subject"] = subject
 
+        # To and Cc needs to be a string; if multiple, separated by commas;
+
+        # Convert recipients list to string;
+        msg["To"] = ', '.join(recipients)
+        # Convert cc list to string;
+        if len(cc) > 0: msg["Cc"] = ', '.join(cc)
+
+        # Combine lists: recipients, cc, bcc
+        recipients_all = recipients + cc + bcc
+
+
+        msg["Subject"] = subject
         msg['Message-ID'] = F.get_uuid("email")
         msg['Date'] = F.getDateTime("email")
           # Returns a date string as per RFC 2822, e.g.:
           # Fri, 09 Nov 2001 01:08:47 -0000
           # Example: 'Fri, 10 Nov 2024 16:30:00 -0800'
+
+
 
         msg.add_header('X-Engine', 'hypersonic')
 
@@ -126,27 +145,30 @@ class MailCtl():
           #   # Doesn't work; errors;
           #   # "Cannot set verify_mode to CERT_NONE when check_hostname is enabled."
 
-        msg_string = msg.as_string()
-          # Returns the formatted message as a string;
 
         try:
-          # Send the email
-          with smtplib.SMTP(
-              smtp_server,
-              port
-          ) as server:
-              #server.ehlo()  # Can be omitted
-              # server.starttls()
-              server.starttls()
-              # server.starttls(context=context)
-              #server.ehlo()  # Can be omitted
-              server.login(login, password)
+            # Send the email
+            with smtplib.SMTP(
+                smtp_server,
+                port
+            ) as server:
+                #server.ehlo()  # Can be omitted
+                # server.starttls()
+                server.starttls()
+                # server.starttls(context=context)
+                #server.ehlo()  # Can be omitted
+                server.login(login, password)
 
-              server.sendmail(
-                  sender,
-                  recipient,
-                  msg_string
-              )
+                for recipient in recipients_all:
+                    server.sendmail(
+                        sender,
+                        recipient,
+                        msg.as_string()
+                          # formatted message as string;
+                          # Could also customize the msg here;
+                    )
+                # Note: To send recipients_all as a batch, then
+                # pass the list as the recipient without loop;
 
         except Exception as e:
             logger.debug(f'email send fail: {e}')
