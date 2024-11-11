@@ -8,15 +8,30 @@ from jug.lib.logger import logger
 import random
 import os
 from pathlib import Path
-from datetime import datetime
 from jug.lib.gLib import G
 from urllib import parse
 
 # from markupsafe import escape
 import html
+import uuid
 
 
 class F():
+
+    @staticmethod
+    def get_uuid(utype=''):
+        unique_uuid = str(uuid.uuid4())
+
+        # If used for email, then include site name,
+        # And formatted for use in email ID:
+        if utype == "email":
+            domain = G.site["name"].replace(" ", "-")
+            return f"<{unique_uuid}@{domain}>"
+
+        # Otherwise, just return the unique uuid string:
+        return unique_uuid
+
+
 
     @staticmethod
     def unquote(str):
@@ -47,27 +62,37 @@ class F():
 
 
     @staticmethod
-    def getDateTime(param="basic"):
+    def getDateTime(format=""):
 
+        # For email use:
+        # Returns a date string as per RFC 2822, e.g.:
+        # Fri, 09 Nov 2001 01:08:47 -0000
+        if format == "email":
+            from email.utils import formatdate
+            return formatdate(localtime=True)
+
+
+        from datetime import datetime
         now = datetime.now()
 
-        # 2024-11-23 16:13, Mon
-        if param == "basic_now":
-            dt_string = now.strftime("%Y-%m-%d %H:%M, %a")
+        # 2024-11-23 16:13, Mon (24hr  + dayofweek)
+        if format == "24h":
+            return now.strftime("%Y-%m-%d %H:%M, %a")
 
-        # 2024-11-23 04:13 PM, Mon
-        elif param == "basic2_now":
-            dt_string = now.strftime("%Y-%m-%d %I:%M %p, %a")
+        # 2024-11-23 04:13 PM, Mon (12hr + dayofweek)
+        elif format == "12h":
+            return now.strftime("%Y-%m-%d %I:%M %p, %a")
 
+        # Basic format:
         # 2024-11-23 16:13:16
         else:
-            # if param == "basic":
+            # if format == "basic":
             # datetime object containing current date and time
-            dt_string = now.strftime("%Y-%m-%d %H:%M:%S")
+            return now.strftime("%Y-%m-%d %H:%M:%S")
 
 
         # https://www.programiz.com/python-programming/datetime/strftime
-        return dt_string
+        # return dt_string
 
         # If you want to convert a given date to another kind of date:
         # x = datetime.strptime("2024-11-23 16:13", "%Y-%m-%d %H:%M")

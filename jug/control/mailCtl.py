@@ -9,7 +9,7 @@ from jug.lib.gLib import G
 import smtplib
 from email.mime.text import MIMEText
 # from email.mime.multipart import MIMEMultipart
-from email.utils import formatdate
+# from email.utils import formatdate
 from email import encoders
 import random
 
@@ -79,47 +79,47 @@ class MailCtl():
         # extra_headers take a dictionary:
         head = f"<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'> {style}</head>"
         # doctype = "<!DOCTYPE HTML>"
-        # msg.extra_headers = {'X-engine': 'hypersonic'}
 
 
+        html_body = F.stripJinja( f"<div id='info'>\
+          <p>Sender Name: {from_name}</p>\
+          <p>Sender Email: {from_email}</p>\
+          <p>Sender IP: {sender_ip} \
+            <span class='shade'><a href='{ip_lookup_iplocation}'>iplocation</a></span>\
+            <span class='shade'><a href='{ip_lookup_what_is}'>whatismyipaddress</a></span>\
+            <span class='shade'><a href='{ip_lookup_keycdn}'>keycdn</a></span>\
+            <span class='shade'><a href='{ip_lookup_utrace}'>utrace</a></span></p>\
+          <p>Timestamp: {timestamp} [{timezone}]</p></div>\
+          <div id='message1'>{from_msg}</div>" )
 
-        # html_body = F.stripJinja( f"<div id='info'>\
-        #   <p>Sender Name: {from_name}</p>\
-        #   <p>Sender Email: {from_email}</p>\
-        #   <p>Sender IP: {sender_ip} \
-        #     <span class='shade'><a href='{ip_lookup_iplocation}'>iplocation</a></span>\
-        #     <span class='shade'><a href='{ip_lookup_what_is}'>whatismyipaddress</a></span>\
-        #     <span class='shade'><a href='{ip_lookup_keycdn}'>keycdn</a></span>\
-        #     <span class='shade'><a href='{ip_lookup_utrace}'>utrace</a></span></p>\
-        #   <p>Timestamp: {timestamp} [{timezone}]</p></div>\
-        #   <div id='message1'>{from_msg}</div>" )
 
-        # ####
-        # msg_html = f"<html>{head}<body>{html_body}</body></html>"
-
-        msg_html = "hello, my name is bob."
+        msg_html = f"<html>{head}<body>{html_body}</body></html>"
 
 
         # Attach the HTML part
-        # message.attach(MIMEText(msg_html, "html"))
-        # message = MIMEText(msg_html, "html", "utf-8")
-        # message = MIMEText(msg_html, 'plain', 'us-ascii')
-        message = MIMEText(msg_html, 'plain', 'utf-8')
-        message["From"] = sender_email
-        message["To"] = receiver_email
-        message["Subject"] = subject
-        message['Message-ID'] = "ink_" + str(random.randrange(1, 9999999999999999999))
-        message['Date'] = formatdate(localtime=True)
-          # Example output: 'Fri, 10 Nov 2024 16:30:00 -0800'
+        # msg.attach(MIMEText(msg_html, "html"))
+        # msg = MIMEText(msg_html, "html", "utf-8")
+        # msg = MIMEText(msg_html, 'plain', 'us-ascii')
+        # msg = MIMEText(msg_html, 'plain', 'utf-8)
+
+        msg = MIMEText(msg_html, 'html', 'utf-8')
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
+        msg["Subject"] = subject
+        msg['Message-ID'] = F.get_uuid("email")
+        msg['Date'] = F.getDateTime("email")
+          # Returns a date string as per RFC 2822, e.g.:
+          # Fri, 09 Nov 2001 01:08:47 -0000
+          # Example: 'Fri, 10 Nov 2024 16:30:00 -0800'
+
+        msg.add_header('X-engine', 'hypersonic')
+
+
         # message['Content-Transfer-Encoding'] = '8bit'
         # message.add_header('Content-Transfer-Encoding', '8bit')
         # message.add_header('Content-Type', 'text/html; charset=UTF-8')
 
-        message.add_header('Content-Transfer-Encoding', '8bit')
-
-
         try:
-
           # Send the email
           with smtplib.SMTP(smtp_server, port) as server:
               server.starttls()
@@ -132,6 +132,10 @@ class MailCtl():
 
         return "ok"
 
+# ----------------------------------------------------------------
+#
+# Notes:
+#
 # msg.attach(MIMEText(text, 'plain'))
 # msg.attach(MIMEText(html, 'html'))
 # msg.add_header('Content-Transfer-Encoding', 'quoted-printable')  # or 'base64'
@@ -140,9 +144,3 @@ class MailCtl():
 # message.add_header('Content-Type', 'text/plain; charset=UTF-8')
 # encoders.encode_7or8bit(message)
 
-# import uuid
-
-# def generate_message_id():
-#     domain = "example.com"  # Replace with your domain
-#     unique_id = uuid.uuid4()  # Generate a unique UUID
-#     return f"<{unique_id}@{domain}>"
