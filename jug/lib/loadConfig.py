@@ -32,6 +32,8 @@ def loadConfig_toml():
         G.contact["email"] = config_toml["contact"]["email"]
         G.contact["email_name"] = config_toml["contact"]["email_name"]
         G.contact["bounce_email"] = config_toml["contact"]["bounce_email"]
+        G.contact["contact_us_subject"] = config_toml["contact"]["contact_us_subject"]
+
 
         G.db["un"] = config_toml["db"]["un"]
         G.db["pw"] = config_toml["db"]["pw"]

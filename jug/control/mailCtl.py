@@ -6,12 +6,13 @@ from jug.lib.fLib import F
 from jug.lib.gLib import G
 # from flask_mail import Mail, Message
 
+import ssl
 import smtplib
 from email.mime.text import MIMEText
 # from email.mime.multipart import MIMEMultipart
 # from email.utils import formatdate
-from email import encoders
-import random
+# from email import encoders
+
 
 class MailCtl():
 
@@ -42,7 +43,6 @@ class MailCtl():
 
         sender_email = G.contact["email"]
         receiver_email = G.contact["email"]
-        # receiver_email = "yooliganz@yahoo.com"
 
         # # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
         # self.jug.config['MAIL_USE_TLS']        = True
@@ -50,7 +50,7 @@ class MailCtl():
         # self.jug.config['MAIL_DEFAULT_SENDER'] = G.contact["email"]
 
 
-        subject = "Contact Us //inkonpages.com"
+        subject = G.contact["contact_us_subject"]
         # html = from_msg
 
 
@@ -75,7 +75,6 @@ class MailCtl():
         ip_lookup_keycdn = f"https://tools.keycdn.com/geo?host={sender_ip}"
 
         style = "<style>p{margin:2px 0 4px 0;}#info{width:fit-content;padding-bottom:15px;border-bottom:1px solid #CACACA;}.shade{background-color:#E1E1E1;border:1px solid #C2C2C2;padding:0 7px 0 7px;margin-left:5px;border-radius:5px;}#message1{margin-top:20px;}</style>"
-        style = ''
         # extra_headers take a dictionary:
         head = f"<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'> {style}</head>"
         # doctype = "<!DOCTYPE HTML>"
@@ -112,19 +111,35 @@ class MailCtl():
           # Fri, 09 Nov 2001 01:08:47 -0000
           # Example: 'Fri, 10 Nov 2024 16:30:00 -0800'
 
-        msg.add_header('X-engine', 'hypersonic')
+        msg.add_header('X-Engine', 'hypersonic')
 
 
         # message['Content-Transfer-Encoding'] = '8bit'
         # message.add_header('Content-Transfer-Encoding', '8bit')
         # message.add_header('Content-Type', 'text/html; charset=UTF-8')
 
+        context = ssl.create_default_context()
+          # Requires: import ssl
+          # Self-signed fails
+        context.check_hostname = False
+          # Disable hostname checking; but doing this,
+          # and turning on verification probably moots
+          # doing ssl at all;
+        context.verify_mode = ssl.CERT_NONE
+          # Disable certificate verification
+          # Doesn't work; errors;
+          # "Cannot set verify_mode to CERT_NONE when check_hostname is enabled."
+
         try:
           # Send the email
           with smtplib.SMTP(smtp_server, port) as server:
-              server.starttls()
+              #server.ehlo()  # Can be omitted
+              # server.starttls()
+              server.starttls(context=context)
+              #server.ehlo()  # Can be omitted
               server.login(login, password)
-              server.sendmail(sender_email, receiver_email, message.as_string())
+              server.sendmail(sender_email, receiver_email, msg.as_string())
+
 
         except Exception as e:
             logger.debug(f'email send fail: {e}')
@@ -133,7 +148,7 @@ class MailCtl():
         return "ok"
 
 # ----------------------------------------------------------------
-#
+####
 # Notes:
 #
 # msg.attach(MIMEText(text, 'plain'))

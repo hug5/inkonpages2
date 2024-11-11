@@ -7,7 +7,6 @@ $(function() {
 //////////////////////////////////
 
 
-
 function setHomeSection() {
 
     if ( $("#homeSection").length < 1 ) return false;
@@ -31,7 +30,8 @@ function setContactSection() {
         //     input.style.cursor = 'wait';
         // });
 
-        $('body, input, textarea').css('cursor', 'wait');
+        $('body, input, textarea, button').css('cursor', 'wait');
+        // $(this_btn).addClass("disabled").css('cursor', 'wait');
         $(this_btn).addClass("disabled");     // disable btn
 
         let data = {
@@ -92,7 +92,9 @@ function setContactSection() {
         .always(function() {
             // $(this_btn).removeClass("disabled");
             // document.body.style.cursor = "default";
-            $('body, input, textarea').css('cursor', 'default');
+            $('body, input, textarea, buttom').css('cursor', 'default');
+            // $(this_btn).css('cursor', 'default');
+
         });
 
 
