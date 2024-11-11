@@ -6,7 +6,7 @@ from jug.lib.fLib import F
 from jug.lib.gLib import G
 # from flask_mail import Mail, Message
 
-import ssl
+# import ssl
 import smtplib
 from email.mime.text import MIMEText
 # from email.mime.multipart import MIMEMultipart
