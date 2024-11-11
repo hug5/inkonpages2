@@ -16,8 +16,10 @@ from email.mime.text import MIMEText
 
 class MailCtl():
 
-    def __init__(self, jug):
-        self.jug = jug
+    # def __init__(self, jug):
+    def __init__(self):
+        # self.jug = jug
+        # Remember that flask-mail module will require self.jug!
         pass
 
 
@@ -139,6 +141,7 @@ class MailCtl():
               # server.starttls(context=context)
               #server.ehlo()  # Can be omitted
               server.login(login, password)
+
               server.sendmail(
                   sender,
                   recipient,
