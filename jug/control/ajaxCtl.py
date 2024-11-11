@@ -10,12 +10,13 @@ from jug.lib.logger import logger
 
 class AjaxCtl:
 
-    def __init__(self, jug, request_data):
+    # def __init__(self, jug, request_data):
+    def __init__(self, request_data):
 
         # logger.info('LocationCtl __init__')
         # self.url = url.rstrip('/').capitalize()
 
-        self.jug = jug
+        # self.jug = jug
 
         logger.info('--- Ajax init')
 
@@ -67,7 +68,8 @@ class AjaxCtl:
         logger.info("---doing contact_us")
 
 
-        mail = MailCtl(self.jug)
+        # mail = MailCtl(self.jug)
+        mail = MailCtl()
         result = mail.do_contact_us(self.data)
 
         logger.info(f'--- mail contact_us result: {result}')

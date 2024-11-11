@@ -25,9 +25,14 @@ class MailCtl():
     def do_contact_us(self, data):
 
         # logger.info(f"---mailCtl data: {data}")
+        # from_name = data.get("name")
+        # from_email = data.get("email")
+        # from_msg = data.get("msg").replace("\n", "<br>")
+
         from_name = F.hesc(F.unquote(data.get("name")))
         from_email = F.hesc(F.unquote(data.get("email")))
-        from_msg = F.hesc(F.unquote(data.get("msg"))).replace("\n", "<br>")
+        from_msg = F.hesc(F.unquote(data.get("msg"))).replace("\n", "<br> ")
+          # Add extra space with <br> to prevent possible split of that word!
 
 
         # Configuration
@@ -36,33 +41,44 @@ class MailCtl():
         login = G.api["mail.username"]
         password = G.api["mail.password"]
 
-        sender = G.contact["email"]
-        recipient = G.contact["email"]
+        sender_email = G.contact["email"]
+        receiver_email = G.contact["email"]
+
+        # # self.jug.config['MAIL_SERVER']       = 'mail.paperdrift.com'
+        # self.jug.config['MAIL_USE_TLS']        = True
+        # self.jug.config['MAIL_USE_SSL']        = False
+        # self.jug.config['MAIL_DEFAULT_SENDER'] = G.contact["email"]
+
+
         subject = G.contact["contact_us_subject"]
+        # html = from_msg
+
+
+        # message = MIMEMultipart()
+        # message["From"] = sender_email
+        # message["To"] = receiver_email
+        # message["Subject"] = subject
+
 
         #--------------------------------
-
         sender_ip = G.sys["remote_ip"]
         timestamp = F.getDateTime()
+        # timezone = "America/LA"
         timezone = F.get_timezone()
-          # "America/LA"
 
         # https://whatismyipaddress.com/ip/{sender_ip}
         # json: https://api.iplocation.net/?ip=84.239.5.12
         # https://www.ip2location.com/demo/84.239.5.12
         ip_lookup_iplocation = f"https://www.iplocation.net/ip-lookup/{sender_ip}"
-        ip_lookup_what_is    = f"https://whatismyipaddress.com/ip/{sender_ip}"
-        ip_lookup_utrace     = f"http://en.utrace.de/?query={sender_ip}"
-        ip_lookup_keycdn     = f"https://tools.keycdn.com/geo?host={sender_ip}"
-
-
-        #--------------------------------
-
+        ip_lookup_what_is = f"https://whatismyipaddress.com/ip/{sender_ip}"
+        ip_lookup_utrace = f"http://en.utrace.de/?query={sender_ip}"
+        ip_lookup_keycdn = f"https://tools.keycdn.com/geo?host={sender_ip}"
 
         style = "<style>p{margin:2px 0 4px 0;}#info{width:fit-content;padding-bottom:15px;border-bottom:1px solid #CACACA;}.shade{background-color:#E1E1E1;border:1px solid #C2C2C2;padding:0 7px 0 7px;margin-left:5px;border-radius:5px;}#message1{margin-top:20px;}</style>"
         # extra_headers take a dictionary:
         head = f"<head><meta http-equiv='content-type' content='text/html; charset=UTF-8'> {style}</head>"
-        doctype = "<!DOCTYPE HTML>"
+        # doctype = "<!DOCTYPE HTML>"
+
 
         html_body = F.stripJinja( f"<div id='info'>\
           <p>Sender Name: {from_name}</p>\
@@ -76,10 +92,7 @@ class MailCtl():
           <div id='message1'>{from_msg}</div>" )
 
 
-        msg_html = f"{doctype}<html>{head}<body>{html_body}</body></html>"
-
-
-        # ----------------------------
+        msg_html = f"<html>{head}<body>{html_body}</body></html>"
 
 
         # Attach the HTML part
@@ -88,14 +101,9 @@ class MailCtl():
         # msg = MIMEText(msg_html, 'plain', 'us-ascii')
         # msg = MIMEText(msg_html, 'plain', 'utf-8)
 
-        # msg = MIMEMultipart()
-        # msg["From"] = sender
-        # msg["To"] = recipient
-        # msg["Subject"] = subject
-
         msg = MIMEText(msg_html, 'html', 'utf-8')
-        msg["From"] = sender
-        msg["To"] = recipient
+        msg["From"] = sender_email
+        msg["To"] = receiver_email
         msg["Subject"] = subject
 
         msg['Message-ID'] = F.get_uuid("email")
@@ -106,9 +114,10 @@ class MailCtl():
 
         msg.add_header('X-Engine', 'hypersonic')
 
-        # msg['Content-Transfer-Encoding'] = '8bit'
-        # msg.add_header('Content-Transfer-Encoding', '8bit')
-        # msg.add_header('Content-Type', 'text/html; charset=UTF-8')
+
+        # message['Content-Transfer-Encoding'] = '8bit'
+        # message.add_header('Content-Transfer-Encoding', '8bit')
+        # message.add_header('Content-Type', 'text/html; charset=UTF-8')
 
         # SSL
           # NOt gonna use any of this below!
@@ -124,9 +133,6 @@ class MailCtl():
           #   # Doesn't work; errors;
           #   # "Cannot set verify_mode to CERT_NONE when check_hostname is enabled."
 
-        msg_string = msg.as_string()
-          # Returns the formatted message as a string;
-
         try:
           # Send the email
           with smtplib.SMTP(
@@ -138,11 +144,14 @@ class MailCtl():
               server.starttls()
               # server.starttls(context=context)
               #server.ehlo()  # Can be omitted
-              server.login(login, password)
+              server.login(
+                  login,
+                  password
+              )
               server.sendmail(
-                  sender,
-                  recipient,
-                  msg_string
+                  sender_email,
+                  receiver_email,
+                  msg.as_string()
               )
 
         except Exception as e:
