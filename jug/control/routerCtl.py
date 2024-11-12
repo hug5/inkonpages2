@@ -182,13 +182,28 @@ class RouterCtl():
         # Also:
         # logger.debug, logger.info, logger.warning, logger.error, logger.critical
 
+    def doRest(self, url):
+
+        from jug.control.restCtl import RestCtl
+
+        # logger.info("---rest")
+        # request_data = request.get_json()
+        # logger.info("---ajax POST22")
+
+        # ajax_obj = AjaxCtl(self.jug, request_data)
+        rest_obj = RestCtl(url)
+        rest_obj.doRest()
+        # result = rest_obj.getResult()
+
+
+
     # def doAjax(self, param):
-    def doAjaxPost(self):
+    def doAjax(self):
         from jug.control.ajaxCtl import AjaxCtl
 
-        logger.info("---ajax POST")
+        logger.info("---ajax")
         request_data = request.get_json()
-        logger.info("---ajax POST22")
+        logger.info("---ajax 22")
 
         # ajax_obj = AjaxCtl(self.jug, request_data)
         ajax_obj = AjaxCtl(request_data)
@@ -255,10 +270,17 @@ class RouterCtl():
 
         # @self.jug.route('/ajax/', methods=['GET', 'POST'])
         @self.jug.route('/ajax/', methods=['POST'])
-        def ajaxPost():
-            logger.info("---in ajaxPost")
+        def ajax():
+            logger.info("---in ajax")
             # self.doAjax(request.method)
-            self.doAjaxPost()
+            self.doAjax()
+            return self.doRoute()
+
+        @self.jug.route('/rest/<path:url>/', methods=['get'])
+        @self.jug.route('/rest/', methods=['get'])
+        def rest(url=''):
+            logger.info("---in rest_call")
+            self.doRest(url)
             return self.doRoute()
 
 
