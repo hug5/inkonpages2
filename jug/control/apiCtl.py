@@ -8,18 +8,18 @@ from jug.lib.logger import logger
 
 
 
-class RestCtl:
+class ApiCtl:
 
     def __init__(self, url):
         self.url = url
-        self.result = None
+        self.result = {"result":"?"}
 
 
     def getResult(self):
         return self.result
 
 
-    def spider_bestseller(self):
+    def scrape_bestseller(self):
 
         from jug.lib.scrape import Scrape
 
@@ -28,12 +28,17 @@ class RestCtl:
         scrape_list = scrape_obj.getResult()
 
         logger.info(f'---bestseller scrape: {scrape_list}')
-        self.result = "ok"
+        self.result = {"result":"ok"}
 
 
-    def doRest(self):
+    def doApi(self):
 
-        if self.url == "spider_bestseller":
-            self.spider_bestseller()
+        if self.url == "scrape-bestseller":
+            logger.info(f'---doRest')
+            self.scrape_bestseller()
+
+        else:
+            logger.info(f'---ELSE bestseller scrape: {self.url}')
+            # self.result = ""
 
 

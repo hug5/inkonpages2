@@ -1,7 +1,7 @@
 from jug.lib.logger import logger
 
 from flask import redirect, request, jsonify, session
-#, make_response
+                                            #, make_response
 
 from jug.lib.fLib import F
 from jug.lib.gLib import G
@@ -106,7 +106,6 @@ class RouterCtl():
 
 
 
-
     # def cleanUrl(self, url):
         # url2 = parse.unquote_plus(url)
         # url3 = (url2.replace('[', '').replace(']', '').replace('{', '')
@@ -182,19 +181,23 @@ class RouterCtl():
         # Also:
         # logger.debug, logger.info, logger.warning, logger.error, logger.critical
 
-    def doRest(self, url):
+    def doApi(self, url):
 
-        from jug.control.restCtl import RestCtl
+        from jug.control.apiCtl import ApiCtl
 
         # logger.info("---rest")
         # request_data = request.get_json()
         # logger.info("---ajax POST22")
 
         # ajax_obj = AjaxCtl(self.jug, request_data)
-        rest_obj = RestCtl(url)
-        rest_obj.doRest()
-        # result = rest_obj.getResult()
+        api_obj = ApiCtl(url)
+        api_obj.doApi()
+        result= api_obj.getResult()
 
+        try:
+            self.response_obj = jsonify(result)
+        except Exception as e:
+            logger.info(f'---jsonify exception: {e}')
 
 
     # def doAjax(self, param):
@@ -227,12 +230,15 @@ class RouterCtl():
 
         if not G.sys.get("error"):
             return self.response_obj
+
         elif G.sys.get("error") == "redirect":
             logger.info(f'--redirecting: {G.sys["redirect"]}')
             return redirect(G.sys["redirect"], code=301)
+
         elif G.sys.get("error") == "404":
             # do 404 page
             return "404"
+
         else:
             return "404X"
 
@@ -276,13 +282,23 @@ class RouterCtl():
             self.doAjax()
             return self.doRoute()
 
-        @self.jug.route('/rest/<path:url>/', methods=['get'])
-        @self.jug.route('/rest/', methods=['get'])
-        def rest(url=''):
+        @self.jug.route('/api/<path:url>/', methods=['GET', 'POST'])
+        @self.jug.route('/api/', methods=['GET', 'POST'])
+        def api(url=''):
             logger.info("---in rest_call")
-            self.doRest(url)
+            # return jsonify({"res": "ok"})
+            # return make_response('', 204)
+            self.doApi(url)
             return self.doRoute()
 
+
+
+
+
+
+        # @self.jug.route('/favicon.ico')
+        # def favicon():
+        #     return make_response('', 204)
 
         # @self.jug.route('/<path:url>/')
         # def locationUrl(url):
