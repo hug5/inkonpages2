@@ -105,11 +105,11 @@ class PageCtl():
         elif page == "rank":
             self.doRank()
         else:
-            G.sys["error"] = "redirect"
-            G.sys["redirect"] = "/"
+            # G.sys["error"] = "redirect"
+            # G.sys["redirect"] = "/"
+            F.abort("redirect", "/")
 
     def doPage(self, page):
-
         self.doPage_route(page)
         if G.sys.get("error"): return
         self.doPage_render_template()

@@ -51,13 +51,14 @@ class RankCtl():
         # ['', 'rank', 'bestseller', 'nonfiction', '']
         # ['', 'rank', 'alltime', '']
 
-        G.sys["error"] = "redirect"
+        # G.sys["error"] = "redirect"
 
         # if uri_list[2] == 'bestseller' or len(uri_list) > 3:
 
         if uri_list[2] != "bestseller" and uri_list[2] != "alltime":
             logger.info("---check 0")
-            G.sys["redirect"] = f"/{uri_list[1]}/bestseller/fiction/"
+            # G.sys["redirect"] = f"/{uri_list[1]}/bestseller/fiction/"
+            F.abort("redirect", f"/{uri_list[1]}/bestseller/fiction/")
             return False
 
         elif uri_list[2] == 'bestseller' and \
@@ -65,21 +66,25 @@ class RankCtl():
          (len(uri_list) > 5 or uri_list[4] != ''):
             logger.info("---check 1")
 
-            G.sys["redirect"] = f"/{uri_list[1]}/{uri_list[2]}/{uri_list[3]}/"
+            # G.sys["redirect"] = f"/{uri_list[1]}/{uri_list[2]}/{uri_list[3]}/"
+            F.abort("redirect", f"/{uri_list[1]}/{uri_list[2]}/{uri_list[3]}/")
+
             return False
 
         elif uri_list[2] == 'alltime' and (len(uri_list) > 4 or uri_list[3] != ''):
             logger.info("---check 2")
-            G.sys["redirect"] = f"/{uri_list[1]}/{uri_list[2]}/"
+            # G.sys["redirect"] = f"/{uri_list[1]}/{uri_list[2]}/"
+            F.abort("redirect", f"/{uri_list[1]}/{uri_list[2]}/")
             return False
 
         elif uri_list[2] == "bestseller" and (uri_list[3] != "fiction" and uri_list[3] != "nonfiction"):
             logger.info("---check 3")
-            G.sys["redirect"] = f"/{uri_list[1]}/{uri_list[2]}/fiction/"
+            # G.sys["redirect"] = f"/{uri_list[1]}/{uri_list[2]}/fiction/"
+            F.abort("redirect", f"/{uri_list[1]}/{uri_list[2]}/fiction/")
             return False
 
         # url is okay
-        G.sys["error"] = ""
+        # G.sys["error"] = ""
 
         if uri_list[2] != "bestseller":
             # alltime page

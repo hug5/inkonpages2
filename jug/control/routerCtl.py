@@ -1,7 +1,7 @@
 from jug.lib.logger import logger
 
 from flask import redirect, request, jsonify, session
-                                            #, make_response
+                # , make_response, render_template
 
 from jug.lib.fLib import F
 from jug.lib.gLib import G
@@ -11,7 +11,7 @@ from jug.lib.gLib import G
 # import re
 # from urllib import parse
 from jug.control.pageCtl import PageCtl
-from jug.lib import loadConfig
+from jug.lib import configLoad
 
 
 class RouterCtl():
@@ -29,11 +29,11 @@ class RouterCtl():
         # init variables:
 
         self.response_obj = None
-        self.redirect = [False, '']
+        # self.redirect = [False, '']
         # self.setConfig_toml()
 
         # load config toml file into G var
-        loadConfig.loadConfig_toml()
+        configLoad.configLoad_toml()
 
         # This makes the session last as per PERMANENT_SESSION_LIFETIME
         session.permanent = True
@@ -181,19 +181,18 @@ class RouterCtl():
         # Also:
         # logger.debug, logger.info, logger.warning, logger.error, logger.critical
 
-    def doApi(self, url):
+    def doRest(self, url):
 
-        from jug.control.apiCtl import ApiCtl
+        from jug.control.restCtl import RestCtl
 
         # logger.info("---rest")
         # request_data = request.get_json()
         # logger.info("---ajax POST22")
 
         # ajax_obj = AjaxCtl(self.jug, request_data)
-        api_obj = ApiCtl(url)
-        api_obj.doApi()
-        result= api_obj.getResult()
-
+        rest_obj = RestCtl(url)
+        rest_obj.doRest()
+        result= rest_obj.getResult()
         try:
             self.response_obj = jsonify(result)
         except Exception as e:
@@ -226,28 +225,34 @@ class RouterCtl():
         self.response_obj = page_obj.getHtml()
 
 
-    def doRoute(self):
+    def doResponse_obj(self):
 
-        if not G.sys.get("error"):
+        logger.info(f'---response_obj: {G.sys.get("abort")}')
+
+        if not G.sys.get("abort"):
+            # logger.debug(f"---self.response_obj type: {type(self.response_obj)}")
+              # <class 'flask.wrappers.Response'>
             return self.response_obj
 
-        elif G.sys.get("error") == "redirect":
-            logger.info(f'--redirecting: {G.sys["redirect"]}')
-            return redirect(G.sys["redirect"], code=301)
+        if G.sys["abort"].get("type") == "redirect":
+            logger.info(f'--redirecting: {G.sys["abort"].get("redirect")}')
+            return redirect(G.sys["abort"].get("redirect"), code=301)
 
-        elif G.sys.get("error") == "404":
+        if G.sys["abort"].get("type") == "404":
             # do 404 page
+            # return make_response("404", 404)
+            # return make_response(render_template("404.html"), 404)
+            # return make_response(render_template("404Html.jinja"), 404)
             return "404"
 
-        else:
-            return "404X"
+        return "404X"
 
 
-    def parseRoute(self):
+    def doRoute(self):
 
         @self.jug.before_request
         def before_request_route():
-            # logger.info("---parseRoute: before_request---")
+            # logger.info("---doRoute: before_request---")
             G.init() # Reset global variable;
             # self.doBeforeRequest()
             self.init_conf()
@@ -258,21 +263,24 @@ class RouterCtl():
         @self.jug.route("/")
         def home(url=''):
             logger.info("---in home")
+            # G.sys["X"] = "hello"
+            # logger.info(f"---Showing X: {G.sys.get('X')}")
             self.doPage("home")
-            return self.doRoute()
+            return self.doResponse_obj()
 
         @self.jug.route('/contact/')
         @self.jug.route('/contact/<path:url>/') # The slash seems to always add a slash to the end, regardless
         def contact(url=''):
             logger.info("---in contact")
+            # logger.info(f"---Showing X: {G.sys.get('X')}")
             self.doPage("contact")
-            return self.doRoute()
+            return self.doResponse_obj()
 
         @self.jug.route('/rank/<path:url>/')
         def rank(url=''):
             logger.info("---in rank")
             self.doPage("rank")
-            return self.doRoute()
+            return self.doResponse_obj()
 
         # @self.jug.route('/ajax/', methods=['GET', 'POST'])
         @self.jug.route('/ajax/', methods=['POST'])
@@ -280,16 +288,16 @@ class RouterCtl():
             logger.info("---in ajax")
             # self.doAjax(request.method)
             self.doAjax()
-            return self.doRoute()
+            return self.doResponse_obj()
 
-        @self.jug.route('/api/<path:url>/', methods=['GET', 'POST'])
-        @self.jug.route('/api/', methods=['GET', 'POST'])
-        def api(url=''):
+        @self.jug.route('/rest/<path:url>/', methods=['GET', 'POST'])
+        @self.jug.route('/rest/', methods=['GET', 'POST'])
+        def rest(url=''):
             logger.info("---in rest_call")
             # return jsonify({"res": "ok"})
             # return make_response('', 204)
-            self.doApi(url)
-            return self.doRoute()
+            self.doRest(url)
+            return self.doResponse_obj()
 
 
 
@@ -304,13 +312,13 @@ class RouterCtl():
         # def locationUrl(url):
         #     logger.info(f"---in path: {url}")
         #     self.doLocationUrl(url)
-        #     return self.doRoute()
+        #     return self.doResponse_obj()
 
         # # @self.jug.route('/<path:url>/<path:url2>/')
         # # def locationUrl2(url, url2):
         # #     logger.info("---in path url2")
         # #     self.redirect = [True, f"/{url}/"]
-        # #     return self.doRoute()
+        # #     return self.doResponse_obj()
 
 
         # # @self.jug.route('/ajax/', methods=['GET', 'POST'])
@@ -319,7 +327,7 @@ class RouterCtl():
         #     logger.info("---in path: ajax")
         #     # self.doAjax(request.method)
         #     self.doAjaxPost()
-        #     return self.doRoute()
+        #     return self.doResponse_obj()
 
 
         # @self.jug.after_request
@@ -341,18 +349,18 @@ class RouterCtl():
 
 
 
-    # def parseRoutexx(self):
+    # def doRoutexx(self):
 
         # @self.jug.before_request
         # def before_request_route():
-        #     logger.info("---parseRoute: before_request---")
+        #     logger.info("---doRoute: before_request---")
         #     self.doBeforeRequest()
 
         # @self.jug.route('/')
         # def home():
         #     logger.info("---in home")
         #     self.doHome()
-        #     return self.doRoute()
+        #     return self.doResponse_obj()
 
 
         # @self.jug.route('/contact/')
@@ -383,7 +391,7 @@ class RouterCtl():
         # def ajaxPost():
         #     logger.info("---in path: ajax")
         #     self.doAjaxPost()
-        #     return self.doRoute()
+        #     return self.doResponse_obj()
 
         # @self.jug.after_request
         # def after_request_route(response_object):

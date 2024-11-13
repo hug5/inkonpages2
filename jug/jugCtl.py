@@ -75,7 +75,7 @@ class JugCtl():
         # G.init() ## doesn't always run
         Router = RouterCtl(self.jug)
         # Router.router_init()
-        Router.parseRoute()
+        Router.doRoute()
         return self.jug
 
 # ---------------------------------------------------

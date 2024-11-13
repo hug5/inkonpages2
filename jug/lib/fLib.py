@@ -19,6 +19,25 @@ import uuid
 class F():
 
     @staticmethod
+    def abort(type, url=''):
+
+        G.sys["abort"] = {
+            "type" : type,    # redirect, 404
+            "redirect" : url  # redirect url
+        }
+
+        # G.sys["abort"]["type"] = type
+        # G.sys["abort"]["redirect"] = url
+          # This syntax doesn't work
+
+        # G.sys = {
+        #     "abort" : {
+        #         "type" : type,    # redirect, 404
+        #         "redirect" : url  # redirect url
+        #     }
+        # }
+
+    @staticmethod
     def get_uuid(utype=''):
         unique_uuid = str(uuid.uuid4())
 
@@ -75,20 +94,21 @@ class F():
         from datetime import datetime
         now = datetime.now()
 
+        # Tuesday, Nov. 12, 2024
+        if format == "long1":
+            return now.strftime("%A, %b. %d, %Y")
+
         # 2024-11-23 16:13, Mon (24hr  + dayofweek)
         if format == "24h":
             return now.strftime("%Y-%m-%d %H:%M, %a")
 
         # 2024-11-23 04:13 PM, Mon (12hr + dayofweek)
-        elif format == "12h":
+        if format == "12h":
             return now.strftime("%Y-%m-%d %I:%M %p, %a")
 
-        # Basic format:
+        # Default format:
         # 2024-11-23 16:13:16
-        else:
-            # if format == "basic":
-            # datetime object containing current date and time
-            return now.strftime("%Y-%m-%d %H:%M:%S")
+        return now.strftime("%Y-%m-%d %H:%M:%S")
 
 
         # https://www.programiz.com/python-programming/datetime/strftime

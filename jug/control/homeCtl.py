@@ -47,16 +47,19 @@ class HomeCtl():
 
         # The url should be / only
         if len(uri_list) > 2 or uri_list[1] != '':
-            G.sys["error"] = "redirect"
-            G.sys["redirect"] = "/"
+            # G.sys["error"] = "redirect"
+            # G.sys["redirect"] = "/"
+            # F.abort("404")
+            F.abort("redirect", "/")
             return False
 
 
     def doHome(self):
         if self.checkUrl() is False: return
 
-        from datetime import date
-        today = date.today().strftime("%A, %b. %d, %Y")
+        # from datetime import date
+        # today = date.today().strftime("%A, %b. %d, %Y")
+        today = F.getDateTime("long1")
           # there datetime.datetime, datetime.date, datetime.time, datetime.timedelta, tzinfo;
           # datetime may be a combination of date/time;
           # date is just date;

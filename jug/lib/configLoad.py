@@ -5,7 +5,7 @@ from flask import request
 from jug.lib.fLib import F
 from jug.lib.gLib import G
 
-def loadConfig_toml():
+def configLoad_toml():
 
     try:
 

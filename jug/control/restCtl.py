@@ -6,9 +6,11 @@ from jug.lib.logger import logger
 # import random
 # import random
 
+# Maybe revisit this in future:
+# https://flask-restful.readthedocs.io/en/latest/index.html
 
 
-class ApiCtl:
+class RestCtl:
 
     def __init__(self, url):
         self.url = url
@@ -31,10 +33,12 @@ class ApiCtl:
         self.result = {"result":"ok"}
 
 
-    def doApi(self):
+    def doRest(self):
+
+        logger.info('---doRest')
 
         if self.url == "scrape-bestseller":
-            logger.info(f'---doRest')
+            logger.info('---scrape-bestseller')
             self.scrape_bestseller()
 
         else:
