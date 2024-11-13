@@ -28,9 +28,11 @@ class RestCtl:
         scrape_obj = Scrape()
         scrape_obj.doScrape()
         scrape_list = scrape_obj.getResult()
+        self.result = scrape_list
 
-        logger.info(f'---bestseller scrape: {scrape_list}')
-        self.result = {"result":"ok"}
+        # logger.info(f'---bestseller scrape: {scrape_list}')
+        # Return json
+        # self.result = {"result":"ok"}
 
 
     def doRest(self):
