@@ -189,7 +189,6 @@ class RouterCtl():
         # request_data = request.get_json()
         # logger.info("---ajax POST22")
 
-        # ajax_obj = AjaxCtl(self.jug, request_data)
         rest_obj = RestCtl(url)
         rest_obj.doRest()
         result = rest_obj.getResult()

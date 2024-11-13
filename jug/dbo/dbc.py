@@ -10,6 +10,7 @@ class Dbc():
     def __init__(self):
         # self.db
         self.pool = None
+        # self.cursor = None
         pass
 
 
@@ -31,14 +32,9 @@ class Dbc():
             self.pool = None
         # When to close connection??
 
+#--- Not sure if I should be closing self.pool or local pool?
 
-    # Public
-    def doQuery(self, query):
-
-        # https://mariadb.com/docs/server/connect/programming-languages/python/example/
-        # F.uwsgi_log("Begin Query")
-        logger.info('Begin Query + get pool connection')
-
+    def getPoolConnection(self):
 
         # F.uwsgi_log("get pool connection")
         logger.info('get pool connection')
@@ -78,23 +74,127 @@ class Dbc():
         # logger.info("here 3")
         # instantiate the cursor
         # curs = self.db.cursor()
-        curs = pool_connect.cursor()
-
         # pool_connect.begin()
+
+        return pool_connect
+
+        # cursor = pool_connect.cursor()
+        # return cursor
 
         # https://mariadb-corporation.github.io/mariadb-connector-python/cursor.html
         # curs.prepared = True
           # Not sure if you really need this?
 
+
+    # Public
+    def doQuery(self, query):
+
+        # https://mariadb.com/docs/server/connect/programming-languages/python/example/
+        # F.uwsgi_log("Begin Query")
+        # logger.info('Begin Query + get pool connection')
+
         # result = curs.execute(query)
         # The result itself doesn't seem to be iterable; have to put into list??
         # I guess it doesn't really return anything??
+        # logger.info("run query")
 
-        logger.info("run query")
+        pool_connect = self.getPoolConnection()
+
+        try:
+
+            cursor = pool_connect.cursor()
+
+            # Start a transaction
+            pool_connect.start_transaction()
+
+            # Run the query;
+            # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
+            cursor.execute(query)
+
+            pool_connect.commit()
+            # pool_connect.commit()
+            # pool_connect.rollback()
+
+            ###
+              # resultList = []
+
+              # # Prepare result:
+
+              # # Method 1
+              # # for (ARTICLENO, HEADLINE, BLURB) in cur:
+              # #     resultList.append(f"{first_name} {last_name} <{email}>")
+
+              #     # This should put everything in a list as a single string;
+              #     # Could also use this method to create a dictionary; with the field name as the index;
+
+              # # Method 2
+              # for row in curs:
+              #     # arr.append(f"{row}")  # This would probably be like above;
+              #     resultList.append(row)
+              #     # This should create multidimensional list;
+              #     # Each field is a separate list item;
+
+              # # for (first_name, last_name) in cur:
+              # #     print(f"First Name: {first_name}, Last Name: {last_name}")
+
+            cc = self.pool.connection_count
+            ps = self.pool.pool_size
+            logger.info(f"connection count: {cc}, pool size: {ps}")
+
+            pool_connect.close()
+
+            ###
+              # # cc = self.pool.connection_count
+              # # ps = self.pool.pool_size
+              # # F.uwsgi_log(f"connection count2: {cc}")
+              # # F.uwsgi_log(f"pool size2: {ps}")
+
+              # # for x in range(10000000):
+              # #     y = "hello"
+
+              # logger.info(f"resultList: {resultList}")
+              # # self.doDisconnect()
+              # return resultList
+
+            return cursor
+
+
+        except Exception as e:
+            # print(f"Error occurred: {e}")
+            # Rollback in case of error
+            pool_connect.rollback()
+            # print("Transaction rolled back.")
+            # Close cursor and return connection to the pool
+            cursor.close()
+
+        finally:
+            # self.doDisconnect()
+            self.pool.close()
+            pass
+
+
+
+    # Public
+    def doInsert(self, query):
+
+        # https://mariadb.com/docs/server/connect/programming-languages/python/example/
+        # F.uwsgi_log("Begin Query")
+        # logger.info('Begin Query + get pool connection')
+
+        # result = curs.execute(query)
+        # The result itself doesn't seem to be iterable; have to put into list??
+        # I guess it doesn't really return anything??
+        # logger.info("run query")
+
+        pool_connect = self.getPoolConnection()
+        cursor = pool_connect.cursor()
+
+        # Start a transaction
+        pool_connect.start_transaction()
 
         # Run the query;
         # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
-        curs.execute(query)
+        cursor.execute(query)
 
         # pool_connect.commit()
         # pool_connect.rollback()
@@ -121,7 +221,6 @@ class Dbc():
           # # for (first_name, last_name) in cur:
           # #     print(f"First Name: {first_name}, Last Name: {last_name}")
 
-
         cc = self.pool.connection_count
         ps = self.pool.pool_size
         logger.info(f"connection count: {cc}, pool size: {ps}")
@@ -141,8 +240,8 @@ class Dbc():
           # # self.doDisconnect()
           # return resultList
 
+        return cursor
 
-        return curs
 
     def getConfig(self):
 
@@ -152,9 +251,9 @@ class Dbc():
             "host"               : G.db["host"],
             "port"               : G.db["port"],
             "database"           : G.db["database"],
-            "autocommit"         : True,
+            "autocommit"         : False,
             "pool_name"          : "pool_1",
-            "pool_size"          : 64,        # The max should be 64
+            "pool_size"          : 5,        # The max should be 64
             "pool_reset_connect" : False,
             "pool_valid_int"     : 500,       # 500 is default
         }
@@ -197,6 +296,9 @@ class Dbc():
             # Might need more if there are simultaneous connections?
             self.pool.add_connection()
             # logger.info("end try connect")
+
+# ---- When do I really need to add_connection? Am I doing this correctly??
+
 
             logger.info("---dbc connected")
         except mariadb.Error as e:

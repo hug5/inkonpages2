@@ -10,6 +10,7 @@ from jug.lib.logger import logger
 # https://flask-restful.readthedocs.io/en/latest/index.html
 
 
+
 class RestCtl:
 
     def __init__(self, url):
@@ -20,19 +21,29 @@ class RestCtl:
     def getResult(self):
         return self.result
 
+    def do_scrape_bestseller_Db(self, scrape_list):
+        from jug.dbo.rankDb import RankDb
 
-    def scrape_bestseller(self):
+        rankDb = RankDb()
+        rankDb.postBestSellerScrape(scrape_list)
+
+
+    def do_scrape_bestseller(self):
 
         from jug.lib.scrape import Scrape
 
         scrape_obj = Scrape()
         scrape_obj.doScrape()
         scrape_list = scrape_obj.getResult()
-        self.result = scrape_list
+
+        # Do database post
+        result = self.do_scrape_bestseller(scrape_list)
+
+        # self.result = scrape_list
 
         # logger.info(f'---bestseller scrape: {scrape_list}')
         # Return json
-        # self.result = {"result":"ok"}
+        self.result = {"result":"ok"}
 
 
     def doRest(self):
