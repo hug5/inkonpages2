@@ -21,15 +21,17 @@ class F():
     @staticmethod
     def abort(type, url=''):
 
+        # G.sys["abort"]["type"] = type
+        # G.sys["abort"]["redirect"] = url
+          # This syntax doesn't work
+
+        # Works
         G.sys["abort"] = {
             "type" : type,    # redirect, 404
             "redirect" : url  # redirect url
         }
 
-        # G.sys["abort"]["type"] = type
-        # G.sys["abort"]["redirect"] = url
-          # This syntax doesn't work
-
+        # Works
         # G.sys = {
         #     "abort" : {
         #         "type" : type,    # redirect, 404

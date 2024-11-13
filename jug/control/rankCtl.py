@@ -297,7 +297,8 @@ class RankCtl():
             nonfictiontabstatus  = ("", "selectedtab")[category == "nonfiction"]
 
         # Saturday, Nov 2, 2024
-        today = datetime.today().strftime("%b %-d, %Y, %A")
+        # today = datetime.today().strftime("%b %-d, %Y, %A")
+        today = F.getDateTime("long1")
         self.doConfig()
 
         self.html = render_template(
