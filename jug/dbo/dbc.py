@@ -38,34 +38,29 @@ class Dbc():
     # Private
     def getPoolConnection(self):
 
-        # F.uwsgi_log("get pool connection")
-        logger.info('-- getPoolConnection')
-        # Create connection pool;
-        # self.doConnect()
-
-        # logger.info("here 1")
         try:
-            # self.pool.connect()
-            # logger.info("here 2")
+            return current_app.pool.get_connection()
 
-            # self.pool.add_connection()
-            pool_connect = self.pool.get_connection()
-            return pool_connect
-
-
-        except mariadb.PoolError as e:
-            logger.exception(f"---Error opening pool connection: {e}")
-            # self.pool.add_connection()
-            # pool_connect = self.pool.get_connection()
-
+        # except mariadb.PoolError as e:
         except Exception as e:
-            logger.exception(f"---Misc dbc pool error: {e}")
-            # self.doDisconnect()
-            # self.doConnect()
-            # self.pool.add_connection()
-            # pool_connect = self.pool.get_connection()
+            logger.exception(f"---Couldn't get pool connection: {e}")
 
-        # return pool_connect
+            try:
+                current_app.pool.add_connection()
+                logger.info("---added pool")
+                logger.info("---try again")
+                return current_app.pool.get_connection()
+
+            except Exception as e:
+                logger.exception(f"---2nd Pool connection error: {e}")
+
+                try:
+                    import time
+                    time.sleep(1)
+                    return current_app.pool.get_connection()
+                except Exception as e:
+                    logger.exception(f"---3rd Pool connection error: {e}")
+
         return None
 
 
@@ -74,9 +69,14 @@ class Dbc():
 
         try:
 
-            pool_connect = current_app.pool.get_connection()
+            pool_connect = self.getPoolConnection()
+
+            # pool_connect = current_app.pool.get_connection()
+            # pool_connect = None
             if not pool_connect:
                 raise Exception("No pool connection")
+              # Raises exception anyways;
+
 
             # pool_connect = self.getPoolConnection()
             cursor = pool_connect.cursor()
@@ -92,16 +92,19 @@ class Dbc():
 
             # pool_connect.commit()
             # pool_connect.commit()
-            # pool_connect.rollback()
+            pool_connect.rollback()
             logger.info("---rollback")
 
             #------------------
             cc = current_app.pool.connection_count
             ps = current_app.pool.pool_size
-            logger.info(f"---connection count: {cc}, pool size: {ps}")
+            ms = current_app.pool.max_size
+            pn = current_app.pool.pool_name
+
+            logger.info(f"---connection_count: {cc}; pool_size: {ps}; max_size: {ms}; pool_name: {pn}")
             #------------------
 
-            pool_connect.close()
+            # pool_connect.close()
 
             return cursor
 
@@ -118,7 +121,8 @@ class Dbc():
         except Exception as e:
             logger.exception(f"---Pool or query error: {e}")
 
-            cursor.close()
+
+            # cursor.close()
 
             # if pool_connect:
             #   pool_connect.rollback()
@@ -126,6 +130,9 @@ class Dbc():
         finally:
             # self.doDisconnect()
             # current_app.pool.close()
+            # cursor.close()
+            # if pool_connect:
+            #     pool_connect.close()
             pass
 
 
@@ -256,6 +263,8 @@ class Dbc():
                     # autocommit = pool_conf["autocommit"],
                     autocommit = 1,
                 )
+
+                current_app.pool.add_connection()
 
             # Create an initial connection pool slot
             # If we free up after every query, should be able to reuset his repeatedly and never exceed connection_count=1

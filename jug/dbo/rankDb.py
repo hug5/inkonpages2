@@ -38,6 +38,9 @@ class RankDb():
 
         try:
             cursor = dbo.doQuery(query)
+            logger.info("---cursor back")
+            if not cursor:
+                raise Exception("No cursor")
             # While fetchone appears to return in correct format, the type returned is datetime.date, not string;
             # So can't do a comparison later when I convert to a string with same format;
             # What's more, it's a date, not datetime; leaves out hour:minute:second
@@ -50,6 +53,7 @@ class RankDb():
             result_list.append(f_row)
 
             logger.info(f"db_result: {type(date_str1)}")
+
 
             # This continues from 2nd row, not first; Not sure how to reset to first row;
             for row in cursor:
@@ -112,6 +116,7 @@ class RankDb():
         finally:
             cursor.close()
             # dbo.doDisconnect()
+            pass
 
     # public
     def getAlltimeRankDb(self):
