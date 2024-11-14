@@ -34,38 +34,38 @@ class Dbc():
 
 #--- Not sure if I should be closing self.pool or local pool?
 
-    # # Private
-    # def getPoolConnection(self):
+    # Private
+    def getPoolConnection(self):
 
-        # # F.uwsgi_log("get pool connection")
-        # logger.info('-- getPoolConnection')
-        # # Create connection pool;
-        # # self.doConnect()
+        # F.uwsgi_log("get pool connection")
+        logger.info('-- getPoolConnection')
+        # Create connection pool;
+        # self.doConnect()
 
-        # # logger.info("here 1")
-        # try:
-        #     # self.pool.connect()
-        #     # logger.info("here 2")
+        # logger.info("here 1")
+        try:
+            # self.pool.connect()
+            # logger.info("here 2")
 
-        #     # self.pool.add_connection()
-        #     pool_connect = self.pool.get_connection()
-        #     return pool_connect
+            # self.pool.add_connection()
+            pool_connect = self.pool.get_connection()
+            return pool_connect
 
 
-        # except mariadb.PoolError as e:
-        #     logger.exception(f"---Error opening pool connection: {e}")
-        #     # self.pool.add_connection()
-        #     # pool_connect = self.pool.get_connection()
+        except mariadb.PoolError as e:
+            logger.exception(f"---Error opening pool connection: {e}")
+            # self.pool.add_connection()
+            # pool_connect = self.pool.get_connection()
 
-        # except Exception as e:
-        #     logger.exception(f"---Misc dbc pool error: {e}")
-        #     # self.doDisconnect()
-        #     # self.doConnect()
-        #     # self.pool.add_connection()
-        #     # pool_connect = self.pool.get_connection()
+        except Exception as e:
+            logger.exception(f"---Misc dbc pool error: {e}")
+            # self.doDisconnect()
+            # self.doConnect()
+            # self.pool.add_connection()
+            # pool_connect = self.pool.get_connection()
 
-        # # return pool_connect
-        # return None
+        # return pool_connect
+        return None
 
 
     # Public
@@ -80,8 +80,9 @@ class Dbc():
             # pool_connect = self.getPoolConnection()
             cursor = pool_connect.cursor()
 
+            pool_connect.autocommit = False
             # Start a transaction
-            pool_connect.start_transaction()
+            # pool_connect.start_transaction()
 
             # Run the query;
             # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
@@ -254,13 +255,23 @@ class Dbc():
             # If we free up after every query, should be able to reuset his repeatedly and never exceed connection_count=1
             # Might need more if there are simultaneous connections?
 
-            # self.pool.add_connection()
+            self.pool.add_connection()
+            self.pool.add_connection()
+            self.pool.add_connection()
+            self.pool.add_connection()
+            self.pool.add_connection()
             # Not sure if this is necessary???
+
+            cc = self.pool.connection_count
+            ps = self.pool.pool_size
+            logger.info(f"---doConnect / connection count: {cc} / pool size: {ps}")
+
 
             logger.info("---dbc connected; pool created;")
 
         # except mariadb.PoolError as e: ???
         except mariadb.Error as e:
             logger.exception(f"---dbc connect fail; pool creation error: {e}")
+
         finally:
             pass
