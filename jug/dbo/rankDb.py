@@ -111,12 +111,12 @@ class RankDb():
 
         except Exception as e:
             # print(f"Error committing transaction: {e}")
-            logger.info(f"XXX!!!!! getBSListDb exception: {e}")
+            logger.info(f"---getBSListDb exception: {e}")
 
         finally:
             cursor.close()
             # dbo.doDisconnect()
-            pass
+
 
     # public
     def getAlltimeRankDb(self):
@@ -130,6 +130,9 @@ class RankDb():
 
         try:
             cursor = dbo.doQuery(query)
+            if not cursor:
+                raise Exception("No cursor")
+
             self.db_result = cursor.fetchall()
             # logger.info(f"xxxxxxxxxx {self.db_result}")
 
@@ -142,7 +145,7 @@ class RankDb():
 
         except Exception as e:
             # print(f"Error committing transaction: {e}")
-            logger.info(f"XXX!!!!! getAlltimeRankDb exception: {e}")
+            logger.info(f"---getAlltimeRankDb exception: {e}")
 
         finally:
             cursor.close()
@@ -155,52 +158,50 @@ class RankDb():
         dbo = Dbc()
         dbo.doConnect()
 
-        # dbo.start_transaction()
+        statement = "INSERT INTO IPBRANK (CATEGORY, RANK, TITLE, AUTHOR, AMAZONURL, IMGURL) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                    # "category" : category,
+                    # "rank" : rank_num,
+                    # "title" : title,
+                    # "author": author,
+                    # "amazonurl" : base_url + url,
+                    # "imgurl" : img_src,
 
-        # query = "SELECT TITLE, AUTHOR, IMGURL, AMAZONURL FROM ALLTIMERANK ORDER BY RANK ASC"
-        # $query  = "INSERT INTO PROFILEADDRESS (IDNO, NAME, COMPANY, ADDRESS1, ADDRESS2, CITY, STATE, ZIP,
-        #            COUNTRYCODE, PHONE, ADDTYPE) VALUES ($idNo, '$name', '$company', '$address1',
-        #            '$address2', '$city', '$state', '$zip', '$countryCode', '$phone', '$addType')";
-
-        # statement = Dbc::doParamPrepare( "INSERT INTO IPBRANK \
-        #     (DATETIME, RANK, CATEGORY, AMAZONURL, IMGURL, TITLE, \
-        #      AUTHOR) VALUES (?, ?, ?, ?, ?, ?, ?)" )
-
-        # cursor.execute (
-        #     "INSERT INTO employees (first_name,last_name) VALUES (?, ?)",
-        #     (first_name, last_name)
-        # )
-
-        # Start a transaction (optional if autocommit is False)
-        # conn.start_transaction()
-
-
+        # Data to be inserted
+        # data = [
+        #     ('value1a', 'value2a'),
+        #     ('value1b', 'value2b'),
+        #     ('value1c', 'value2c')
+        # ]
 
         try:
-            # curs = dbo.doQuery(query)
-            # self.db_result = curs.fetchall()
+            result = dbo.doInsert(statement, scrape_list)
 
-            sql = "INSERT INTO your_table (column1, column2) VALUES (?, ?)"
+            self.db_result = result
 
-            # Data to be inserted
-            data = [
-                ('value1a', 'value2a'),
-                ('value1b', 'value2b'),
-                ('value1c', 'value2c')
-            ]
+        # try:
+        #     # curs = dbo.doQuery(query)
+        #     # self.db_result = curs.fetchall()
 
-            for record in data:
-                cursor.execute(sql, record)
+        #     sql = "INSERT INTO your_table (column1, column2) VALUES (?, ?)"
 
-            conn.commit()
+        #     # Data to be inserted
+        #     data = [
+        #         ('value1a', 'value2a'),
+        #         ('value1b', 'value2b'),
+        #         ('value1c', 'value2c')
+        #     ]
+
+        #     for record in data:
+        #         cursor.execute(sql, record)
+
+        #     conn.commit()
 
         except Exception as e:
             # print(f"Error committing transaction: {e}")
-            logger.info(f"XXX!!!!! getAlltimeRankDb exception: {e}")
+            logger.info(f"---insert exception: {e}")
 
         finally:
-            curs.close()
-            dbo.doDisconnect()
+            # cursor.close()
 
 
 

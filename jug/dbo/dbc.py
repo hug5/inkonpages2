@@ -35,6 +35,7 @@ class Dbc():
 
         # #--- Not sure if I should be closing self.pool or local pool?
 
+
     # Private
     def getPoolConnection(self):
 
@@ -43,23 +44,28 @@ class Dbc():
 
         # except mariadb.PoolError as e:
         except Exception as e:
-            logger.exception(f"---Couldn't get pool connection: {e}")
-
+            # logger.exception(f"---Couldn't get pool connection: {e}")
             try:
                 current_app.pool.add_connection()
-                logger.info("---added pool")
-                logger.info("---try again")
+                # logger.info("---added pool")
+                # logger.info("---try again")
                 return current_app.pool.get_connection()
 
             except Exception as e:
-                logger.exception(f"---2nd Pool connection error: {e}")
-
+                # logger.exception(f"---2nd Pool connection error: {e}")
+                # We're maxed out at this point; have to wait for open pool;
                 try:
                     import time
-                    time.sleep(1)
+                    time.sleep(2)
                     return current_app.pool.get_connection()
                 except Exception as e:
                     logger.exception(f"---3rd Pool connection error: {e}")
+                    logger.exception("---Pool maxed out")
+                    cc = current_app.pool.connection_count
+                    ps = current_app.pool.pool_size
+                    ms = current_app.pool.max_size
+                    pn = current_app.pool.pool_name
+                    logger.info(f"---connection_count: {cc}; pool_size: {ps}; max_size: {ms}; pool_name: {pn}")
 
         return None
 
@@ -81,9 +87,9 @@ class Dbc():
             # pool_connect = self.getPoolConnection()
             cursor = pool_connect.cursor()
 
-            pool_connect.autocommit = False
+            # pool_connect.autocommit = False
             # Start a transaction
-            # pool_connect.start_transaction()
+            # pool_connect.start_transaction()  # This doesn't work
             cursor.execute("START TRANSACTION")
 
             # Run the query;
@@ -131,13 +137,14 @@ class Dbc():
             # self.doDisconnect()
             # current_app.pool.close()
             # cursor.close()
-            # if pool_connect:
-            #     pool_connect.close()
-            pass
+            if pool_connect:
+                pool_connect.close()
+
+        return None
 
 
     # Public
-    def doInsert(self, query):
+    def doInsert(self, statement, data):
 
         # https://mariadb.com/docs/server/connect/programming-languages/python/example/
         # F.uwsgi_log("Begin Query")
@@ -148,61 +155,68 @@ class Dbc():
         # I guess it doesn't really return anything??
         # logger.info("run query")
 
-        pool_connect = self.getPoolConnection()
-        cursor = pool_connect.cursor()
 
-        # Start a transaction
-        pool_connect.start_transaction()
+        try:
+            pool_connect = self.getPoolConnection()
 
-        # Run the query;
-        # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
-        cursor.execute(query)
+            # pool_connect = current_app.pool.get_connection()
+            # pool_connect = None
+            if not pool_connect:
+                raise Exception("No pool connection")
+              # Raises exception anyways;
 
-        # pool_connect.commit()
-        # pool_connect.rollback()
 
-        ###
-          # resultList = []
+            # pool_connect = self.getPoolConnection()
+            cursor = pool_connect.cursor()
 
-          # # Prepare result:
+            # pool_connect.autocommit = False
+            # Start a transaction
+            # pool_connect.start_transaction()  # This doesn't work
+            cursor.execute("START TRANSACTION")
 
-          # # Method 1
-          # # for (ARTICLENO, HEADLINE, BLURB) in cur:
-          # #     resultList.append(f"{first_name} {last_name} <{email}>")
+            # Run the query;
+            # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
+            # cursor.execute(statement)
 
-          #     # This should put everything in a list as a single string;
-          #     # Could also use this method to create a dictionary; with the field name as the index;
+            for row in data:
+                cursor.execute(statement, row)
 
-          # # Method 2
-          # for row in curs:
-          #     # arr.append(f"{row}")  # This would probably be like above;
-          #     resultList.append(row)
-          #     # This should create multidimensional list;
-          #     # Each field is a separate list item;
 
-          # # for (first_name, last_name) in cur:
-          # #     print(f"First Name: {first_name}, Last Name: {last_name}")
 
-        cc = self.pool.connection_count
-        ps = self.pool.pool_size
-        logger.info(f"connection count: {cc}, pool size: {ps}")
+            # sql = "INSERT INTO your_table (column1, column2) VALUES (?, ?)"
 
-        pool_connect.close()
+            # # Data to be inserted
+            # data = [
+            #     ('value1a', 'value2a'),
+            #     ('value1b', 'value2b'),
+            #     ('value1c', 'value2c')
+            # ]
 
-        ###
-          # # cc = self.pool.connection_count
-          # # ps = self.pool.pool_size
-          # # F.uwsgi_log(f"connection count2: {cc}")
-          # # F.uwsgi_log(f"pool size2: {ps}")
+            # for record in data:
+            #     cursor.execute(sql, record)
 
-          # # for x in range(10000000):
-          # #     y = "hello"
+            # conn.commit()
 
-          # logger.info(f"resultList: {resultList}")
-          # # self.doDisconnect()
-          # return resultList
+            pool_connect.commit()
+            # pool_connect.rollback()
+            # logger.info("---rollback")
 
-        return cursor
+            # return cursor
+            return "success"
+
+        except mariadb.PoolError as e:
+            logger.exception(f"---Could not get pool connection: {e}")
+
+        except Exception as e:
+            logger.exception(f"---Pool or query error: {e}")
+
+        finally:
+            if pool_connect:
+                pool_connect.close()
+
+        return "fail"
+
+
 
     # Private
     def getConfig(self):
@@ -217,7 +231,7 @@ class Dbc():
             "database"           : G.db["database"],
             "autocommit"         : False,
             "pool_name"          : "pool_1",
-            "pool_size"          : 5,
+            "pool_size"          : 10,
               # Number of pool connections; max should be 64
             "pool_reset_connect" : False,
               # connection will be reset on both client and server side after .close() method is called. default:true
@@ -260,10 +274,12 @@ class Dbc():
                     port = pool_conf["port"],
                     database = pool_conf["database"],
                     # protocol = "SOCKET",
-                    # autocommit = pool_conf["autocommit"],
-                    autocommit = 1,
+                    autocommit = pool_conf["autocommit"],
+                    # autocommit = 1,
                 )
 
+                # Start with 2 pools
+                current_app.pool.add_connection()
                 current_app.pool.add_connection()
 
             # Create an initial connection pool slot
@@ -276,12 +292,10 @@ class Dbc():
             # mariadb.PoolError("Can't add connection to pool %s: "
             # mariadb.PoolError: Can't add connection to pool pool_1: No free slot available (3).
 
-            cc = current_app.pool.connection_count
-            ps = current_app.pool.pool_size
-            logger.info(f"---doConnect / connection count: {cc} / pool size: {ps}")
-
-
-            logger.info("---dbc connected; pool created;")
+            # cc = current_app.pool.connection_count
+            # ps = current_app.pool.pool_size
+            # logger.info(f"---doConnect / connection count: {cc} / pool size: {ps}")
+            # logger.info("---dbc connected; pool created;")
 
         # except mariadb.PoolError as e: ???
         except mariadb.Error as e:

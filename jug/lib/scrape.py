@@ -172,6 +172,7 @@ class Scrape():
         category = "fiction"
 
         # response_list = []
+        rank = []
         for url in url_list:
             response = self.send_req(url)
 
@@ -184,7 +185,7 @@ class Scrape():
 
             # lines = soup.find("a", class_="kc-cover-link app-specific-display not_app")
 
-            rank = []
+            # rank = []
             rank_num = 0
             for line in lines:
                 rank_num += 1
@@ -203,19 +204,37 @@ class Scrape():
                 author = title3[1].strip()
                   # 2nd half is author
 
-                rank.append({
-                    "category" : category,
-                    "rank" : rank_num,
-                    "title" : title,
-                    "author": author,
-                    "link_url" : base_url + url,
-                    "img_url" : img_src,
-                })
+                # rank.append({
+                #     "category" : category,
+                #     "rank" : rank_num,
+                #     "title" : title,
+                #     "author": author,
+                #     "amazonurl" : base_url + url,
+                #     "imgurl" : img_src,
+                # })
+                row = (category,
+                    rank_num,
+                    title,
+                    author,
+                    base_url + url,
+                    img_src
+                )
+                rank.append(row)
 
-            rank_all.append(rank)
+                # rank.append(category,
+                #     rank_num,
+                #     title,
+                #     author,
+                #     base_url + url,
+                #     img_src
+                # )
+
+
+            # rank_all.append(rank)
             category = "nonfiction"
 
-        self.result = rank_all
+        self.result = rank
+        # self.result = rank_all
         # This should result a list composed of 2 dictionaries:
           # rank_all = [
           #     {

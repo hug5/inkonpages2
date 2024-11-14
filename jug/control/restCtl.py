@@ -37,13 +37,14 @@ class RestCtl:
         scrape_list = scrape_obj.getResult()
 
         # Do database post
-        result = self.do_scrape_bestseller(scrape_list)
+        # result = self.do_scrape_bestseller(scrape_list)
 
         # self.result = scrape_list
 
-        # logger.info(f'---bestseller scrape: {scrape_list}')
+        logger.info(f'---bestseller scrape: {scrape_list}')
         # Return json
-        self.result = {"result":"ok"}
+        # self.result = {"result":"ok"}
+        self.result = {"result":f"{scrape_list}"}
 
 
     def doRest(self):
@@ -52,7 +53,7 @@ class RestCtl:
 
         if self.url == "scrape-bestseller":
             logger.info('---scrape-bestseller')
-            self.scrape_bestseller()
+            self.do_scrape_bestseller()
 
         else:
             logger.info(f'---ELSE bestseller scrape: {self.url}')
