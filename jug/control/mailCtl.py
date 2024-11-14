@@ -171,7 +171,7 @@ class MailCtl():
                 # pass the list as the recipient without loop;
 
         except Exception as e:
-            logger.debug(f'email send fail: {e}')
+            logger.debug(f'---email send fail: {e}')
             return "bad"
 
         return "ok"

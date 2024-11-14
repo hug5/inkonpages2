@@ -138,7 +138,7 @@ class MailCtl():
         try:
             mail.send(msg)
         except Exception as e:
-            logger.debug(f'email send fail: {e}')
+            logger.debug(f'---email send fail: {e}')
             return "bad"
 
         return "ok"
