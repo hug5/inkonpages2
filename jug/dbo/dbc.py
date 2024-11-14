@@ -107,6 +107,9 @@ class Dbc():
         #     # Some discussion that this error may not be caught;
         #     # https://jira.mariadb.org/browse/CONPY-255
         #     logger.exception(f"---Could not get pool connection: {e}")
+        except mariadb.PoolError as e:
+            logger.exception(f"---Could not get pool connection: {e}")
+            # ("No connection available")
 
         except Exception as e:
             logger.exception(f"---Pool or query error: {e}")
