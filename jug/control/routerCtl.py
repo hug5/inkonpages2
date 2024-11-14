@@ -207,7 +207,7 @@ class RouterCtl():
         logger.info("---ajax 22")
 
         # ajax_obj = AjaxCtl(self.jug, request_data)
-        ajax_obj = AjaxCtl(request_data)
+        ajax_obj = AjaxCtl(self.jug, request_data)
         ajax_obj.doAjax()
         result = ajax_obj.getResult()
 

@@ -1,6 +1,6 @@
 class G():
 
-    pool = None
+    # pool = None
 
     site = dict()
         # name

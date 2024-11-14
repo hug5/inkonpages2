@@ -7,10 +7,11 @@ from jug.lib.gLib import G
 
 class Dbc():
 
-    def __init__(self):
+    def __init__(self, jug):
         # self.db
         # self.pool = None
         # self.cursor = None
+        self.jug = jug
         pass
 
 
@@ -73,7 +74,7 @@ class Dbc():
 
         try:
 
-            pool_connect = self.pool.get_connection()
+            pool_connect = self.jug.pool.get_connection()
             if not pool_connect:
                 raise Exception("No pool connection")
 
@@ -83,6 +84,7 @@ class Dbc():
             pool_connect.autocommit = False
             # Start a transaction
             # pool_connect.start_transaction()
+            cursor.execute("START TRANSACTION")
 
             # Run the query;
             # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
@@ -90,13 +92,13 @@ class Dbc():
 
             # pool_connect.commit()
             # pool_connect.commit()
-            pool_connect.rollback()
+            # pool_connect.rollback()
             logger.info(f"---rollback")
 
 
             #------------------
-            cc = self.pool.connection_count
-            ps = self.pool.pool_size
+            cc = self.jug.pool.connection_count
+            ps = self.jug.pool.pool_size
             logger.info(f"---connection count: {cc}, pool size: {ps}")
             #------------------
 
@@ -118,12 +120,12 @@ class Dbc():
 
             cursor.close()
 
-            if pool_connect:
-              pool_connect.rollback()
+            # if pool_connect:
+            #   pool_connect.rollback()
 
         finally:
             # self.doDisconnect()
-            # self.pool.close()
+            # self.jug.pool.close()
             pass
 
 
@@ -236,36 +238,37 @@ class Dbc():
         
         try:
 
-            if not self.pool:
-                # logger.info("begin try connect")
-                self.pool = mariadb.ConnectionPool(
+            if not self.jug.pool:
+                logger.info("---Get pool config")
+                self.jug.pool = mariadb.ConnectionPool(
                     pool_name = pool_conf["pool_name"],
                     pool_size = pool_conf["pool_size"],
                     pool_reset_connection = pool_conf["pool_reset_connect"],
                     pool_validation_interval = pool_conf["pool_valid_int"]
                 )
-                self.pool.set_config(
+                self.jug.pool.set_config(
                     user = pool_conf["un"],
                     password = pool_conf["pw"],
                     # host = host,
                     port = pool_conf["port"],
                     database = pool_conf["database"],
                     # protocol = "SOCKET",
-                    autocommit = pool_conf["autocommit"],
+                    # autocommit = pool_conf["autocommit"],
+                    autocommit = 1,
                 )
 
             # Create an initial connection pool slot
             # If we free up after every query, should be able to reuset his repeatedly and never exceed connection_count=1
             # Might need more if there are simultaneous connections?
 
-            self.pool.add_connection()
-            self.pool.add_connection()
+            # self.jug.pool.add_connection()
+            # self.jug.pool.add_connection()
             # Not sure if this is necessary???
             # mariadb.PoolError("Can't add connection to pool %s: "
             # mariadb.PoolError: Can't add connection to pool pool_1: No free slot available (3).
 
-            cc = self.pool.connection_count
-            ps = self.pool.pool_size
+            cc = self.jug.pool.connection_count
+            ps = self.jug.pool.pool_size
             logger.info(f"---doConnect / connection count: {cc} / pool size: {ps}")
 
 

@@ -47,6 +47,10 @@ class JugCtl():
             PERMANENT_SESSION_LIFETIME = datetime.timedelta(minutes=60)
         )
 
+        self.jug.pool = None
+
+
+
         # As an environment variable:
         # FLASK_DEBUG=1
         # session["name"] = "Bob"
