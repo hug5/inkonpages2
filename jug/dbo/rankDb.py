@@ -4,12 +4,12 @@ from jug.dbo.dbc import Dbc
 
 class RankDb():
 
-    def __init__(self, jug):
+    def __init__(self):
         # self.config = {}
         # self.html = ''
         # self.url_page = ''  # what url are we at?
 
-        self.jug = jug
+        # self.jug = jug
         self.db_result = []
 
     def get_db_result(self):
@@ -22,7 +22,7 @@ class RankDb():
 
         logger.info("---begin getBSListDb")
 
-        dbo = Dbc(self.jug)
+        dbo = Dbc()
         dbo.doConnect()
 
         # category = self.url_page
@@ -118,7 +118,7 @@ class RankDb():
 
         logger.info("---begin getAlltimeDb")
 
-        dbo = Dbc(self.jug)
+        dbo = Dbc()
         dbo.doConnect()
 
         query = "SELECT TITLE, AUTHOR, IMGURL, AMAZONURL FROM ALLTIMERANK ORDER BY RANK ASC"
@@ -147,7 +147,7 @@ class RankDb():
 
     def postBestSellerScrape(self, scrape_list):
 
-        dbo = Dbc(self.jug)
+        dbo = Dbc()
         dbo.doConnect()
 
         # dbo.start_transaction()

@@ -1,3 +1,4 @@
+from flask import current_app
 from jug.lib.logger import logger
 
 import mariadb
@@ -7,11 +8,11 @@ from jug.lib.gLib import G
 
 class Dbc():
 
-    def __init__(self, jug):
+    def __init__(self):
         # self.db
         # self.pool = None
         # self.cursor = None
-        self.jug = jug
+        # self.jug = jug
         pass
 
 
@@ -20,20 +21,19 @@ class Dbc():
         pass
 
     # Public
-    def doDisconnect(self):
+    # def doDisconnect(self):
+        # # if self.db:
+        # #     self.db.close
+        #     # self.db = False
+        # # F.uwsgi_log("Disconnecting")
+        # logger.info('Disconnecting')
 
-        # if self.db:
-        #     self.db.close
-            # self.db = False
-        # F.uwsgi_log("Disconnecting")
-        logger.info('Disconnecting')
+        # if self.pool is not None:
+        #     self.pool.close()
+        #     self.pool = None
+        # # When to close connection??
 
-        if self.pool is not None:
-            self.pool.close()
-            self.pool = None
-        # When to close connection??
-
-#--- Not sure if I should be closing self.pool or local pool?
+        # #--- Not sure if I should be closing self.pool or local pool?
 
     # Private
     def getPoolConnection(self):
@@ -74,7 +74,7 @@ class Dbc():
 
         try:
 
-            pool_connect = self.jug.pool.get_connection()
+            pool_connect = current_app.pool.get_connection()
             if not pool_connect:
                 raise Exception("No pool connection")
 
@@ -93,12 +93,11 @@ class Dbc():
             # pool_connect.commit()
             # pool_connect.commit()
             # pool_connect.rollback()
-            logger.info(f"---rollback")
-
+            logger.info("---rollback")
 
             #------------------
-            cc = self.jug.pool.connection_count
-            ps = self.jug.pool.pool_size
+            cc = current_app.pool.connection_count
+            ps = current_app.pool.pool_size
             logger.info(f"---connection count: {cc}, pool size: {ps}")
             #------------------
 
@@ -114,6 +113,7 @@ class Dbc():
         except mariadb.PoolError as e:
             logger.exception(f"---Could not get pool connection: {e}")
             # ("No connection available")
+            # raise mariadb.PoolError("No connection available")
 
         except Exception as e:
             logger.exception(f"---Pool or query error: {e}")
@@ -125,7 +125,7 @@ class Dbc():
 
         finally:
             # self.doDisconnect()
-            # self.jug.pool.close()
+            # current_app.pool.close()
             pass
 
 
@@ -238,15 +238,15 @@ class Dbc():
         
         try:
 
-            if not self.jug.pool:
+            if not current_app.pool:
                 logger.info("---Get pool config")
-                self.jug.pool = mariadb.ConnectionPool(
+                current_app.pool = mariadb.ConnectionPool(
                     pool_name = pool_conf["pool_name"],
                     pool_size = pool_conf["pool_size"],
                     pool_reset_connection = pool_conf["pool_reset_connect"],
                     pool_validation_interval = pool_conf["pool_valid_int"]
                 )
-                self.jug.pool.set_config(
+                current_app.pool.set_config(
                     user = pool_conf["un"],
                     password = pool_conf["pw"],
                     # host = host,
@@ -261,14 +261,14 @@ class Dbc():
             # If we free up after every query, should be able to reuset his repeatedly and never exceed connection_count=1
             # Might need more if there are simultaneous connections?
 
-            # self.jug.pool.add_connection()
-            # self.jug.pool.add_connection()
+            # current_app.pool.add_connection()
+            # current_app.pool.add_connection()
             # Not sure if this is necessary???
             # mariadb.PoolError("Can't add connection to pool %s: "
             # mariadb.PoolError: Can't add connection to pool pool_1: No free slot available (3).
 
-            cc = self.jug.pool.connection_count
-            ps = self.jug.pool.pool_size
+            cc = current_app.pool.connection_count
+            ps = current_app.pool.pool_size
             logger.info(f"---doConnect / connection count: {cc} / pool size: {ps}")
 
 

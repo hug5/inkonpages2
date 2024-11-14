@@ -46,10 +46,11 @@ class RouterCtl():
         # session["user"] = user                      # init session
 
 
-        G.sys["debug"] = False
-        if self.jug.debug:
-            logger.info('---RUNNING DEBUG MODE')
-            G.sys["debug"] = True
+        # G.sys["debug"] = False
+        # if self.jug.debug:
+        #     logger.info('---RUNNING DEBUG MODE')
+        #     G.sys["debug"] = True
+        # I don't even know what debug mode does!!
 
     def getResponse_obj(self):
         return self.response_obj
@@ -207,7 +208,7 @@ class RouterCtl():
         logger.info("---ajax 22")
 
         # ajax_obj = AjaxCtl(self.jug, request_data)
-        ajax_obj = AjaxCtl(self.jug, request_data)
+        ajax_obj = AjaxCtl(request_data)
         ajax_obj.doAjax()
         result = ajax_obj.getResult()
 

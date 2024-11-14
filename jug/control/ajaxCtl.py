@@ -11,12 +11,12 @@ from jug.lib.logger import logger
 class AjaxCtl:
 
     # def __init__(self, jug, request_data):
-    def __init__(self, jug, request_data):
+    def __init__(self, request_data):
 
         # logger.info('LocationCtl __init__')
         # self.url = url.rstrip('/').capitalize()
 
-        self.jug = jug
+        # self.jug = jug
 
         logger.info('--- Ajax init')
 
@@ -84,7 +84,7 @@ class AjaxCtl:
         def get_rankDb(category):
             from jug.dbo.rankDb import RankDb
             # Get news item from Yahoo News with request
-            rankDb = RankDb(self.jug)
+            rankDb = RankDb()
             if category == "alltime":
                 rankDb.getAlltimeRankDb()
             else:
