@@ -110,7 +110,7 @@ class RankDb():
 
         finally:
             cursor.close()
-            dbo.doDisconnect()
+            # dbo.doDisconnect()
 
     # public
     def getAlltimeRankDb(self):

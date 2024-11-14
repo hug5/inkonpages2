@@ -9,7 +9,7 @@ class Dbc():
 
     def __init__(self):
         # self.db
-        self.pool = None
+        # self.pool = None
         # self.cursor = None
         pass
 
@@ -88,9 +88,10 @@ class Dbc():
             # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
             cursor.execute(query)
 
-            pool_connect.commit()
             # pool_connect.commit()
-            # pool_connect.rollback()
+            # pool_connect.commit()
+            pool_connect.rollback()
+            logger.info(f"---rollback")
 
 
             #------------------
@@ -122,7 +123,7 @@ class Dbc():
 
         finally:
             # self.doDisconnect()
-            self.pool.close()
+            # self.pool.close()
             pass
 
 
@@ -234,22 +235,24 @@ class Dbc():
         logger.info("---begin init mariadb ConnectionPool")
         
         try:
-            # logger.info("begin try connect")
-            self.pool = mariadb.ConnectionPool(
-                pool_name = pool_conf["pool_name"],
-                pool_size = pool_conf["pool_size"],
-                pool_reset_connection = pool_conf["pool_reset_connect"],
-                pool_validation_interval = pool_conf["pool_valid_int"]
-            )
-            self.pool.set_config(
-                user = pool_conf["un"],
-                password = pool_conf["pw"],
-                # host = host,
-                port = pool_conf["port"],
-                database = pool_conf["database"],
-                # protocol = "SOCKET",
-                autocommit = pool_conf["autocommit"],
-            )
+
+            if not self.pool:
+                # logger.info("begin try connect")
+                self.pool = mariadb.ConnectionPool(
+                    pool_name = pool_conf["pool_name"],
+                    pool_size = pool_conf["pool_size"],
+                    pool_reset_connection = pool_conf["pool_reset_connect"],
+                    pool_validation_interval = pool_conf["pool_valid_int"]
+                )
+                self.pool.set_config(
+                    user = pool_conf["un"],
+                    password = pool_conf["pw"],
+                    # host = host,
+                    port = pool_conf["port"],
+                    database = pool_conf["database"],
+                    # protocol = "SOCKET",
+                    autocommit = pool_conf["autocommit"],
+                )
 
             # Create an initial connection pool slot
             # If we free up after every query, should be able to reuset his repeatedly and never exceed connection_count=1
@@ -257,10 +260,9 @@ class Dbc():
 
             self.pool.add_connection()
             self.pool.add_connection()
-            self.pool.add_connection()
-            self.pool.add_connection()
-            self.pool.add_connection()
             # Not sure if this is necessary???
+            # mariadb.PoolError("Can't add connection to pool %s: "
+            # mariadb.PoolError: Can't add connection to pool pool_1: No free slot available (3).
 
             cc = self.pool.connection_count
             ps = self.pool.pool_size

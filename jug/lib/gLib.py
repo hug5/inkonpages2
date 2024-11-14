@@ -1,5 +1,7 @@
 class G():
 
+    pool = None
+
     site = dict()
         # name
         # tagline
