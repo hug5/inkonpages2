@@ -89,6 +89,7 @@ class AjaxCtl:
                 rankDb.getAlltimeRankDb()
             else:
                 rankDb.getBSListDb(category)
+
             return rankDb.get_db_result()
 
 

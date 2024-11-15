@@ -146,11 +146,20 @@ class RankDb():
             #   amazonurl = result_list[8]
             #   imgurl = result_list[4]
 
+            #   0       1     2          3
+            # TITLE, AUTHOR, IMGURL, AMAZONURL
+
             result_list = []
             for row in cursor:
+                if row[2] is None:
+                    row[2] = ''
+                if row[3] is None:
+                    row[3] = "https://www.amazon.com/s?k=" + row[0]
                 result_list.append(row)
+
             self.db_result = result_list
 
+            # logger.info("---done getalltimerank")
 
         except Exception as e:
             # print(f"Error committing transaction: {e}")
