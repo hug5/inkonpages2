@@ -229,6 +229,8 @@ function setRankSection() {
 
             console.log("Status Code: " + jqXHR.status + ", textStatus: " + textStatus);
 
+            // alert(data["rank_result"]);
+
             let status = data["status"];
             if (status != "ok") {
                 msg = data["message"]

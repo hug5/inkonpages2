@@ -149,16 +149,20 @@ class RankDb():
             #   0       1     2          3
             # TITLE, AUTHOR, IMGURL, AMAZONURL
 
+            # Convert cursor tuple to list
+            row_list = [ list(row) for row in cursor ]
+
             result_list = []
-            for row in cursor:
+            for row in row_list:
                 if row[2] is None:
                     row[2] = ''
-                if row[3] is None:
-                    row[3] = "https://www.amazon.com/s?k=" + row[0]
+                if row[3] is None or row[3] == '':
+                    row[3] = f"https://www.amazon.com/s?k={row[0]}"
                 result_list.append(row)
 
             self.db_result = result_list
 
+            # logger.info(f"--- {result_list}")
             # logger.info("---done getalltimerank")
 
         except Exception as e:
