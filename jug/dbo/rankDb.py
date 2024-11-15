@@ -12,6 +12,8 @@ class RankDb():
         # self.jug = jug
         self.db_result = []
 
+
+    # public
     def get_db_result(self):
         return self.db_result
 
@@ -49,7 +51,8 @@ class RankDb():
 
             # Do the first row; get the datetime
             f_row = cursor.fetchone()
-            date_str1 = f_row[4].strftime("%Y-%m-%d %H:%M:%S")
+            # date_str1 = f_row[4].strftime("%Y-%m-%d %H:%M:%S")
+            date_str1 = f_row[4].strftime("%Y-%m-%d %H:%M")
             result_list.append(f_row)
 
             logger.info(f"db_result: {type(date_str1)}")
@@ -61,7 +64,8 @@ class RankDb():
                 # date_str = row[1].datetime()
 
                 # Get the datetime as string; if the next date is different, then stop
-                date_str = row[4].strftime("%Y-%m-%d %H:%M:%S")
+                # date_str = row[4].strftime("%Y-%m-%d %H:%M:%S")
+                date_str = row[4].strftime("%Y-%m-%d %H:%M")
 
                 if date_str != date_str1:
                     # logger.info(f"db_result: {date_str} not equal")
@@ -134,7 +138,7 @@ class RankDb():
                 raise Exception("No cursor")
 
             self.db_result = cursor.fetchall()
-            # logger.info(f"xxxxxxxxxx {self.db_result}")
+            logger.info(f"xxxxxxxxxx {self.db_result}")
 
             # for n in len(result_list):
             #   title = result_list[2]
@@ -153,12 +157,12 @@ class RankDb():
 
 
 
-    def postBestSellerScrape(self, scrape_list):
+    def insertBestSellerScrape(self, scrape_list):
 
         dbo = Dbc()
         dbo.doConnect()
 
-        statement = "INSERT INTO IPBRANK (CATEGORY, RANK, TITLE, AUTHOR, AMAZONURL, IMGURL) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        statement = "INSERT INTO IPBRANK (CATEGORY, RANK, TITLE, AUTHOR, AMAZONURL, IMGURL) VALUES (?, ?, ?, ?, ?, ?)"
                     # "category" : category,
                     # "rank" : rank_num,
                     # "title" : title,
@@ -166,35 +170,18 @@ class RankDb():
                     # "amazonurl" : base_url + url,
                     # "imgurl" : img_src,
 
-        # Data to be inserted
-        # data = [
-        #     ('value1a', 'value2a'),
-        #     ('value1b', 'value2b'),
-        #     ('value1c', 'value2c')
+        # scrape_list should be in this format:
+        # scrape_list = [
+        #   (category, rank, title, author, amazonrul,imgurl),
+        #   (category, rank, title, author, amazonrul,imgurl),
+        #   (category, rank, title, author, amazonrul,imgurl),
+        #   ...
         # ]
 
         try:
             result = dbo.doInsert(statement, scrape_list)
-
             self.db_result = result
-
-        # try:
-        #     # curs = dbo.doQuery(query)
-        #     # self.db_result = curs.fetchall()
-
-        #     sql = "INSERT INTO your_table (column1, column2) VALUES (?, ?)"
-
-        #     # Data to be inserted
-        #     data = [
-        #         ('value1a', 'value2a'),
-        #         ('value1b', 'value2b'),
-        #         ('value1c', 'value2c')
-        #     ]
-
-        #     for record in data:
-        #         cursor.execute(sql, record)
-
-        #     conn.commit()
+            return result
 
         except Exception as e:
             # print(f"Error committing transaction: {e}")
@@ -202,49 +189,7 @@ class RankDb():
 
         finally:
             # cursor.close()
+            pass
 
+        return "fail"
 
-
-        # // I have more fields than question marks!
-        # $statement = Dbc::doParamPrepare( "INSERT INTO IPBRANK (DATETIME, RANK,
-        #              CATEGORY, AMAZONURL, IMGURL, TITLE, AUTHOR)
-        #              VALUES (?, ?, ?, ?, ?, ?, ?)" );
-
-        # // i:integer; d:double; s:string; b:blob
-        # $statement->bind_param("sisssss", $datetime, $rank, $category,
-        #                        $amazonurl, $imgurl, $title, $author);
-
-
-        # // $datetime = date("Y-m-d H:i:s");
-        # $datetime = F::mysqlDatetime();
-
-        # try {
-
-        #     Dbc::start_transaction();
-
-        #     foreach ($srcArr as $key => $value) {
-        #         $category = $key;
-        #         for ($i = 0; $i < count($srcArr[$category]); $i++) {
-
-        #             $rank       = $i + 1;
-        #             $amazonurl  = $srcArr[$category][$i]["amazonurl"];
-        #             $imgurl     = $srcArr[$category][$i]["imgurl"];
-        #             $title      = $srcArr[$category][$i]["title"];
-        #             $author     = $srcArr[$category][$i]["author"];
-        #             $result     = $statement->execute();
-
-        #             if (!$result) return false; //what to do if operation fails?
-
-        #         }
-        #     }
-
-        #     Dbc::commit_transaction();
-        #     return true;
-
-        # } catch (Exception $e) {
-
-        #     Dbc::rollback_transaction();
-        #     $errorMsg = $e->getMessage();
-
-        #     return $errorMsg;
-        # }

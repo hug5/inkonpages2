@@ -107,9 +107,13 @@ class AjaxCtl:
             self.result = json_result
 
 
+        logger.info("x1")
         db_result = get_rankDb(self.data['category'])
+        logger.info("x2")
         rankBookCell = do_rankBookCell(db_result)
+        logger.info("x3")
         do_json(rankBookCell)
+        logger.info("x4")
 
 
     def doAjax(self):

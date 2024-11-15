@@ -12,6 +12,12 @@ TITLE, AUTHOR, IMGURL, AMAZONURL
     <td id="error"> {{ RepoOutput[RepoName.index(repo)] }} </td>
 {% endif %}
 
+  # Set variable??
+  {% set link = db_result[i][2] %}
+  {% if link == "" %}
+  {% set link = "https://www.amazon.com/s?k=" + db_result[i][0] %}
+  {% endif %}
+
 #}
 
 {% for i in range(db_result|length) %}

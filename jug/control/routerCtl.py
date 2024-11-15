@@ -190,9 +190,9 @@ class RouterCtl():
         # request_data = request.get_json()
         # logger.info("---ajax POST22")
 
-        rest_obj = RestCtl(url)
-        rest_obj.doRest()
-        result = rest_obj.getResult()
+        resto = RestCtl(url)
+        resto.doRest()
+        result = resto.getResult()
         try:
             self.response_obj = jsonify(result)
         except Exception as e:

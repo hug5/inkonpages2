@@ -30,10 +30,11 @@ class RankCtl():
         # Called by router to set page title;
         return self.config
 
-    def doConfig(self):
+    def doConfig(self, category):
+        category = category.title()
 
         self.config = {
-            'site_title' : f"Rank | {G.site['name']}",
+            'site_title' : f"Rank {category} | {G.site['name']}",
             'site_keywords' : "rank, " + G.site["keywords"],
         }
 
@@ -266,14 +267,28 @@ class RankCtl():
             #     curs.close()
             #     dbo.doDisconnect()
 
-    # called by Ajax
+
+    # public; called by Ajax
     def do_rankBookCell(self, db_result):
+        #   0       1     2          3
+        # TITLE, AUTHOR, IMGURL, AMAZONURL
+
+        # for index, row in enumerate(db_result):
+        #     link = row[3]
+        #     if not link:
+        #         db_result[index][3] = "https://www.amazon.com/s?k=" + row[0]
+
+
+        # logger.info(f'{db_result}')
+
         self.html = render_template(
             "rankBookCellHtml.jinja",
             db_result = db_result,
         )
 
 
+
+    # public
     def doRank(self):
         logger.info('---doRank')
         if self.checkUrl() is False: return
@@ -284,13 +299,12 @@ class RankCtl():
         nonfictiontabstatus = ""
         category = self.url_page # fiction, nonfiction, alltime
         if category == "alltime":
-            # self.doAlltimeRankDb()
-            tagline = "A dubious and questionable list of the most read books. Ever."
+            tagline = "A questionable list of the most read books. Ever."
             title = "Most Popular Books of ALL TIME"
             alltimetabstatus = "selectedtab"
         else:
             # self.doBSListDb()
-            tagline = "Ranked lists of books sold in the U.S. smartly compiled from multiple sources, he NY Times, Amazon, USA Today, Barnes & Noble, and independent booksellers. Updated daily."
+            tagline = "Ranked lists of books sold in the U.S. smartly compiled from multiple sources, including the NY Times, Amazon, USA Today, Barnes & Noble, and independent booksellers. Updated daily."
             title = f"IP Bestsellers for {category}"
 
             fictiontabstatus = ("", "selectedtab")[category == "fiction"]
@@ -299,12 +313,12 @@ class RankCtl():
         # Saturday, Nov 2, 2024
         # today = datetime.today().strftime("%b %-d, %Y, %A")
         today = F.getDateTime("long1")
-        self.doConfig()
+        self.doConfig(category)
 
         self.html = render_template(
             "rankHtml.jinja",
             title = title,
-            db_result = self.db_result,
+            # db_result = self.db_result,
             today = today,
             tagline = tagline,
             category = category,
@@ -316,9 +330,25 @@ class RankCtl():
 
 
 
+
+
+
+
+
+
+
+
+
 # https://inkonpages.com/rank/bestseller/fiction/
   # IP Bestsellers for FICTION | Nov 1, 2024, Friday | Inkonpages Press
 # https://inkonpages.com/rank/bestseller/nonfiction/
   # IP Bestsellers for NONFICTION | Nov 1, 2024, Friday | Inkonpages Press
 # https://inkonpages.com/rank/alltime/
   # Most Popular Books of ALL TIME | Nov 1, 2024, Friday | Inkonpages Press
+
+
+
+
+
+
+

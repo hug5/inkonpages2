@@ -1,4 +1,7 @@
 from jug.lib.logger import logger
+from jug.dbo.rankDb import RankDb
+
+
 # from flask import render_template
 # from jug.lib.f import F
 # from jug.lib.weather_api import Weather_api
@@ -21,30 +24,37 @@ class RestCtl:
     def getResult(self):
         return self.result
 
-    def do_scrape_bestseller_Db(self, scrape_list):
-        from jug.dbo.rankDb import RankDb
+    # def do_scrape_bestseller_Db(self, scrape_list):
+    #     from jug.dbo.rankDb import RankDb
 
-        rankDb = RankDb()
-        rankDb.postBestSellerScrape(scrape_list)
+    #     rankDb = RankDb()
+    #     rankDb.inserttBestSellerScrape(scrape_list)
 
 
     def do_scrape_bestseller(self):
 
         from jug.lib.scrape import Scrape
 
-        scrape_obj = Scrape()
-        scrape_obj.doScrape()
-        scrape_list = scrape_obj.getResult()
+        scrapeo = Scrape()
+        scrapeo.doScrape()
+        scrape_list = scrapeo.getResult()
+
+        # now insert/post into db; call postBestSellerScrape()
+
+        rankDbo = RankDb()
+        result = rankDbo.insertBestSellerScrape(scrape_list)
+
+        self.result = {"result": result}
 
         # Do database post
         # result = self.do_scrape_bestseller(scrape_list)
 
         # self.result = scrape_list
 
-        logger.info(f'---bestseller scrape: {scrape_list}')
+        logger.info(f'---bestseller scrape insert: {self.result}')
         # Return json
         # self.result = {"result":"ok"}
-        self.result = {"result":f"{scrape_list}"}
+        # self.result = {"result":f"{scrape_list}"}
 
 
     def doRest(self):

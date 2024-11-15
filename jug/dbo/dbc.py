@@ -174,14 +174,8 @@ class Dbc():
             # pool_connect.start_transaction()  # This doesn't work
             cursor.execute("START TRANSACTION")
 
-            # Run the query;
-            # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
-            # cursor.execute(statement)
-
             for row in data:
                 cursor.execute(statement, row)
-
-
 
             # sql = "INSERT INTO your_table (column1, column2) VALUES (?, ?)"
 
@@ -211,6 +205,7 @@ class Dbc():
             logger.exception(f"---Pool or query error: {e}")
 
         finally:
+            cursor.close()
             if pool_connect:
                 pool_connect.close()
 
