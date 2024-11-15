@@ -137,14 +137,19 @@ class RankDb():
             if not cursor:
                 raise Exception("No cursor")
 
-            self.db_result = cursor.fetchall()
-            logger.info(f"xxxxxxxxxx {self.db_result}")
+            # self.db_result = cursor.fetchall()
+            # logger.info(f"xxxxxxxxxx {self.db_result}")
 
             # for n in len(result_list):
             #   title = result_list[2]
             #   author = result_list[3]
             #   amazonurl = result_list[8]
             #   imgurl = result_list[4]
+
+            result_list = []
+            for row in cursor:
+                result_list.append(row)
+            self.db_result = result_list
 
 
         except Exception as e:
