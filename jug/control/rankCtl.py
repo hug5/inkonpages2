@@ -304,7 +304,7 @@ class RankCtl():
             alltimetabstatus = "selectedtab"
         else:
             # self.doBSListDb()
-            tagline = "Ranked lists of books sold in the U.S. smartly compiled from multiple sources, including the NY Times, Amazon, USA Today, Barnes & Noble, and independent booksellers. Updated daily."
+            tagline = "Ranked lists of books sold in the U.S. smartly compiled from multiple sources, including the NY Times, Amazon, USA Today, Barnes & Noble and independent booksellers."
             title = f"IP Bestsellers for {category}"
 
             fictiontabstatus = ("", "selectedtab")[category == "fiction"]
