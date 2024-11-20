@@ -34,8 +34,8 @@ class RankCtl():
         category = category.title()
 
         self.config = {
-            'site_title' : f"Rank {category} | {G.site['name']}",
-            'site_keywords' : "rank, " + G.site["keywords"],
+            'site_title' : f"Bestseller List - {category} | {G.site['name']}",
+            'site_keywords' : "bestseller list, rank, " + G.site["keywords"],
         }
 
     def checkUrl(self):
@@ -96,41 +96,41 @@ class RankCtl():
 
     # def getDb(self):
 
-    #     try:
-    #         dbo = Dbc()
-    #         dbo.doConnect()
+        # try:
+        #     dbo = Dbc()
+        #     dbo.doConnect()
 
-    #         # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
-    #         query  = "SELECT HEADLINE FROM ARTICLES WHERE STATUS='N' AND TAGS='paperdrift'"
+        #     # query  = "SELECT ARTICLENO, HEADLINE, BLURB FROM ARTICLES"
+        #     query  = "SELECT HEADLINE FROM ARTICLES WHERE STATUS='N' AND TAGS='paperdrift'"
 
-    #         # get back cursor
-    #         curs = dbo.doQuery(query)
-    #         # logger.info(f"curs: {curs}")  # this gives me a binary value;
+        #     # get back cursor
+        #     curs = dbo.doQuery(query)
+        #     # logger.info(f"curs: {curs}")  # this gives me a binary value;
 
-    #         result_list = []
+        #     result_list = []
 
-    #         # If single field, do this way:
-    #         for row in curs:
-    #             result_list.append(row[0])
+        #     # If single field, do this way:
+        #     for row in curs:
+        #         result_list.append(row[0])
 
-    #         logger.info(f"db_result: {result_list}")
+        #     logger.info(f"db_result: {result_list}")
 
 
-    #         db_result = result_list[ random.randrange( len(result_list) ) ]
-    #         logger.info(f"db_result: {db_result}")
+        #     db_result = result_list[ random.randrange( len(result_list) ) ]
+        #     logger.info(f"db_result: {db_result}")
 
-    #     except Exception as e:
-    #         # print(f"Error committing transaction: {e}")
-    #         # return [["bad db connection", e]]
-    #         logger.info(f"exception: {e}")
+        # except Exception as e:
+        #     # print(f"Error committing transaction: {e}")
+        #     # return [["bad db connection", e]]
+        #     logger.info(f"exception: {e}")
 
-    #     finally:
-    #         dbo.doDisconnect()
-    #         pass
+        # finally:
+        #     dbo.doDisconnect()
+        #     pass
 
-    #     # logger.info('return result')
-    #     return [db_result]
-    #         # return as list, not string; will combine with other news list later;
+        # # logger.info('return result')
+        # return [db_result]
+        #     # return as list, not string; will combine with other news list later;
 
     def doBSListDb(self):
 
@@ -304,8 +304,8 @@ class RankCtl():
             alltimetabstatus = "selectedtab"
         else:
             # self.doBSListDb()
-            tagline = "Ranked lists of books sold in the U.S. smartly compiled from multiple sources, including the NY Times, Amazon, USA Today, Barnes & Noble and independent booksellers."
-            title = f"IP Bestsellers for {category}"
+            title = f"Inkonpages Bestsellers for {category}"
+            tagline = "Ranked list of books sold in the U.S. smartly compiled from multiple sources, including the NY Times, Amazon, USA Today, Barnes & Noble and independent booksellers."
 
             fictiontabstatus = ("", "selectedtab")[category == "fiction"]
             nonfictiontabstatus  = ("", "selectedtab")[category == "nonfiction"]
